@@ -93,6 +93,9 @@ const DesktopUI: React.FC<{
             if (contextMenuRef.current && contextMenuRef.current.contains(event.target as Node)) return;
             setContextMenu(prev => ({ ...prev, isOpen: false }));
         };
+        const handleResize = () => {
+            setContextMenu(prev => ({ ...prev, isOpen: false }));
+        };
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
                 setContextMenu(prev => ({ ...prev, isOpen: false }));
@@ -100,11 +103,11 @@ const DesktopUI: React.FC<{
         };
         window.addEventListener('mousedown', handlePointerDown);
         window.addEventListener('keydown', handleKeyDown);
-        window.addEventListener('resize', handlePointerDown);
+        window.addEventListener('resize', handleResize);
         return () => {
             window.removeEventListener('mousedown', handlePointerDown);
             window.removeEventListener('keydown', handleKeyDown);
-            window.removeEventListener('resize', handlePointerDown);
+            window.removeEventListener('resize', handleResize);
         };
     }, [contextMenu.isOpen]);
 
