@@ -1,5 +1,8 @@
 .unit-converter-widget {
   @apply w-full h-full flex flex-col p-4 gap-4 bg-gray-100 text-text-dark;
+  container-type: size;
+  padding: clamp(12px, 3cqw, 20px);
+  gap: clamp(12px, 3cqw, 20px);
 }
 
 .category-selector {
@@ -8,14 +11,20 @@
 
 .category-selector label {
   @apply font-semibold text-sm;
+  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 2.2cqw, 1.1rem);
 }
 
 .category-selector select {
   @apply flex-grow bg-white border-2 border-gray-300 rounded p-2 text-sm;
+  padding: clamp(6px, 1.8cqw, 12px);
+  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 2.2cqw, 1.05rem);
 }
 
 .conversion-interface {
   @apply flex-grow flex items-center justify-between gap-3;
+  gap: clamp(10px, 3cqw, 18px);
 }
 
 .unit-group {
@@ -25,16 +34,26 @@
 .unit-group input,
 .unit-group select {
   @apply w-full bg-white border-2 border-gray-300 rounded p-2 outline-none focus:border-accent;
+  padding: clamp(6px, 1.8cqw, 12px);
 }
 
 .unit-group input {
   @apply font-bold text-lg;
+  font-size: 1.1rem;
+  font-size: clamp(1rem, 3.2cqw, 1.8rem);
 }
 
 .unit-group select {
   @apply text-sm;
+  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 2.2cqw, 1.05rem);
 }
 
 .swap-button {
   @apply p-3 bg-gray-200 rounded-full hover:bg-accent hover:text-text-dark text-gray-600;
+  padding: clamp(8px, 2.2cqw, 14px);
+}
+.swap-button svg {
+  width: clamp(16px, 3cqw, 26px);
+  height: clamp(16px, 3cqw, 26px);
 }

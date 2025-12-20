@@ -1,5 +1,8 @@
 .sliding-puzzle-widget {
   @apply w-full h-full flex flex-col p-4 bg-gray-200 gap-4;
+  container-type: size;
+  padding: clamp(12px, 3cqw, 20px);
+  gap: clamp(10px, 3cqw, 18px);
 }
 
 .puzzle-placeholder {
@@ -7,11 +10,14 @@
 }
 .puzzle-placeholder p {
   @apply font-semibold my-2;
+  font-size: clamp(1rem, 3cqw, 1.6rem);
 }
 
 .puzzle-board {
   @apply flex-grow grid gap-1 relative bg-gray-900 p-1 rounded-lg shadow-inner;
   aspect-ratio: 1 / 1;
+  gap: clamp(4px, 1.6cqw, 10px);
+  padding: clamp(4px, 1.6cqw, 10px);
 }
 
 .puzzle-piece {
@@ -34,22 +40,33 @@
 .solved-overlay {
   @apply absolute inset-0 bg-black/70 flex items-center justify-center text-white text-4xl font-bold rounded-lg;
   animation: fade-in 0.5s;
+  font-size: clamp(1.6rem, 5cqw, 3.2rem);
 }
 
 .puzzle-controls {
   @apply flex-shrink-0 flex items-center justify-between;
+  gap: clamp(8px, 2.5cqw, 14px);
 }
 
 .puzzle-controls label {
   @apply flex items-center gap-2 text-sm font-semibold;
+  font-size: clamp(0.85rem, 2.2cqw, 1.05rem);
 }
 
 .puzzle-controls select {
   @apply bg-white border border-gray-300 rounded p-1;
+  padding: clamp(4px, 1.4cqw, 8px);
+  font-size: clamp(0.85rem, 2.2cqw, 1.05rem);
 }
 
 .puzzle-controls button {
   @apply flex items-center gap-2 bg-accent text-text-dark font-semibold py-2 px-3 rounded-lg hover:bg-[#8ec9c9] transition-colors;
+  font-size: clamp(0.85rem, 2.2cqw, 1.05rem);
+  padding: clamp(6px, 1.8cqw, 12px) clamp(10px, 2.6cqw, 16px);
+}
+.puzzle-controls button svg {
+  width: clamp(14px, 2.6cqw, 20px);
+  height: clamp(14px, 2.6cqw, 20px);
 }
 
 @keyframes fade-in {

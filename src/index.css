@@ -13,3 +13,142 @@ body {
   background-position: center;
   background-repeat: no-repeat;
 }
+
+/* --- Calendar Widget (responsive) --- */
+.calendar-widget {
+  @apply w-full h-full flex flex-col text-text-dark;
+  container-type: size;
+  padding: clamp(12px, 3cqw, 20px);
+}
+
+.calendar-header {
+  @apply flex justify-between items-center;
+  margin-bottom: clamp(8px, 2.5cqw, 16px);
+}
+
+.calendar-title {
+  @apply font-bold;
+  font-size: 1.1rem;
+  font-size: clamp(1rem, 3cqw, 1.6rem);
+  color: var(--color-text-light);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.25);
+  padding: clamp(4px, 1.2cqw, 8px) clamp(10px, 2.4cqw, 16px);
+  border-radius: 999px;
+}
+
+.calendar-nav-button {
+  @apply rounded-full;
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+  padding: clamp(6px, 2cqw, 12px);
+}
+
+.calendar-nav-button:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.calendar-nav-button svg {
+  width: clamp(16px, 3cqw, 24px);
+  height: clamp(16px, 3cqw, 24px);
+}
+
+.calendar-days {
+  @apply grid grid-cols-7 text-center font-semibold;
+  margin-bottom: clamp(6px, 2cqw, 12px);
+  font-size: 0.85rem;
+  font-size: clamp(0.75rem, 2.2cqw, 1rem);
+  color: var(--color-text-light);
+}
+
+.calendar-days span {
+  background: rgba(0, 0, 0, 0.2);
+  padding: clamp(3px, 0.8cqw, 6px) clamp(6px, 1.6cqw, 10px);
+  border-radius: 999px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.calendar-grid {
+  @apply grid grid-cols-7 text-center;
+  gap: clamp(4px, 1.4cqw, 8px);
+  color: var(--color-text-light);
+}
+
+.calendar-cell {
+  @apply flex items-center justify-center rounded-full;
+  width: clamp(28px, 8cqw, 54px);
+  height: clamp(28px, 8cqw, 54px);
+  font-size: 0.85rem;
+  font-size: clamp(0.75rem, 2.2cqw, 1.05rem);
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.calendar-cell--today {
+  @apply bg-widget-header text-text-light;
+  border: none;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+}
+
+/* --- Work List Widget (responsive) --- */
+.work-list-widget {
+  @apply w-full h-full flex flex-col text-text-dark;
+  container-type: size;
+  padding: clamp(12px, 3cqw, 20px);
+}
+
+.work-list-input {
+  @apply flex-grow bg-custom-bg border-2 border-accent rounded focus:border-widget-header outline-none;
+  padding: clamp(6px, 1.8cqw, 12px);
+  font-size: 0.95rem;
+  font-size: clamp(0.9rem, 2.4cqw, 1.15rem);
+}
+
+.work-list-icon-button {
+  @apply bg-accent rounded hover:bg-[#8ec9c9] transition-colors;
+  padding: clamp(6px, 1.8cqw, 12px);
+}
+
+.work-list-icon-button svg {
+  width: clamp(16px, 3cqw, 22px);
+  height: clamp(16px, 3cqw, 22px);
+}
+
+.work-list-items {
+  @apply flex-grow overflow-y-auto pr-2 min-h-0 space-y-2;
+}
+
+.work-list-item {
+  @apply flex items-center gap-3 rounded-md border border-black/10 bg-white/85 shadow-sm;
+  padding: clamp(6px, 1.6cqw, 12px);
+  font-size: 0.95rem;
+  font-size: clamp(0.9rem, 2.4cqw, 1.15rem);
+}
+
+.work-list-checkbox {
+  @apply rounded border-2 border-accent focus:ring-widget-header accent-accent;
+  width: clamp(16px, 3cqw, 22px);
+  height: clamp(16px, 3cqw, 22px);
+  background-color: white;
+}
+
+.work-list-edit-input {
+  @apply flex-grow bg-white border border-widget-header rounded;
+  padding: clamp(4px, 1.2cqw, 8px);
+  font-size: inherit;
+}
+
+.work-list-action {
+  @apply text-gray-400 hover:text-blue-500;
+}
+
+.work-list-action.delete {
+  @apply hover:text-red-500;
+}
+
+.work-list-hint {
+  @apply text-center text-gray-500;
+  font-size: clamp(0.75rem, 1.8cqw, 0.95rem);
+  margin-top: clamp(6px, 1.6cqw, 12px);
+}

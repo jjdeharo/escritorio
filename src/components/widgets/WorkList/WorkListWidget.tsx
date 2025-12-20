@@ -111,11 +111,11 @@ export const WorkListWidget: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col h-full text-text-dark p-4">
+    <div className="work-list-widget">
       <div className="flex gap-2 mb-2">
         <input
           type="text"
-          className="flex-grow bg-custom-bg border-2 border-accent rounded p-2 focus:border-widget-header outline-none"
+          className="work-list-input"
           placeholder={t('widgets.work_list.add_task_placeholder')}
           value={newTask}
           onChange={(e) => setNewTask(e.target.value)}
@@ -123,14 +123,14 @@ export const WorkListWidget: React.FC = () => {
         />
         <button 
           onClick={() => fileInputRef.current?.click()}
-          className="p-2 bg-accent rounded hover:bg-[#8ec9c9] transition-colors"
+          className="work-list-icon-button"
           title={t('widgets.work_list.load_csv')}
         >
           <Upload size={20} />
         </button>
         <button 
           onClick={downloadAsCSV}
-          className="p-2 bg-accent rounded hover:bg-[#8ec9c9] transition-colors"
+          className="work-list-icon-button"
           title={t('widgets.work_list.download_csv')}
         >
           <Download size={20} />
@@ -138,15 +138,15 @@ export const WorkListWidget: React.FC = () => {
       </div>
       
       {/* ¡ESTA ES LA PARTE QUE FALTABA! */}
-      <ul className="flex-grow overflow-y-auto pr-2 min-h-0 space-y-2">
+      <ul className="work-list-items">
         {tasks.map(task => (
           <li
             key={task.id}
-            className={`flex items-center gap-3 p-2 rounded-md border border-black/10 bg-white/85 shadow-sm ${task.completed ? 'opacity-50' : ''}`}
+            className={`work-list-item ${task.completed ? 'opacity-50' : ''}`}
           >
             <input
               type="checkbox"
-              className="form-checkbox h-5 w-5 rounded text-widget-header bg-white border-accent focus:ring-widget-header"
+              className="work-list-checkbox"
               checked={task.completed}
               onChange={() => toggleTask(task.id)}
             />
@@ -157,7 +157,7 @@ export const WorkListWidget: React.FC = () => {
                 onChange={(e) => setEditingTaskText(e.target.value)}
                 onKeyPress={handleUpdate}
                 onBlur={() => setEditingTaskId(null)}
-                className="flex-grow bg-white border border-widget-header rounded px-1 py-0.5"
+                className="work-list-edit-input"
                 autoFocus
               />
             ) : (
@@ -168,16 +168,16 @@ export const WorkListWidget: React.FC = () => {
                 {task.text}
               </span>
             )}
-            <button onClick={() => startEditing(task)} className="text-gray-400 hover:text-blue-500">
+            <button onClick={() => startEditing(task)} className="work-list-action">
               <Edit size={16} />
             </button>
-            <button onClick={() => removeTask(task.id)} className="text-gray-400 hover:text-red-500">
+            <button onClick={() => removeTask(task.id)} className="work-list-action delete">
               <X size={16} />
             </button>
           </li>
         ))}
       </ul>
-      <p className="text-xs text-gray-500 mt-2 text-center">{t('widgets.work_list.double_click_edit')}</p>
+      <p className="work-list-hint">{t('widgets.work_list.double_click_edit')}</p>
 
       <input
         type="file"

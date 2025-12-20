@@ -1,5 +1,6 @@
 .random-spinner-widget {
   @apply w-full h-full flex flex-nowrap p-4 gap-4 bg-gray-100 overflow-hidden;
+  container-type: size;
 }
 
 /* --- Área de la Ruleta --- */
@@ -53,12 +54,20 @@
 }
 
 .spin-button {
-  @apply absolute w-1/4 h-1/4 max-w-[80px] max-h-[80px] bg-white rounded-full flex items-center justify-center shadow-md border-4 border-gray-300;
+  @apply absolute bg-white rounded-full flex items-center justify-center shadow-md border-4 border-gray-300;
   @apply disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 transition-transform;
+  width: clamp(56px, 16cqw, 140px);
+  height: clamp(56px, 16cqw, 140px);
+  border-width: clamp(3px, 0.8cqw, 6px);
 }
 
 .spin-button:hover {
     @apply scale-110;
+}
+
+.spin-button svg {
+  width: clamp(22px, 6cqw, 44px);
+  height: clamp(22px, 6cqw, 44px);
 }
 
 .spinner-result {
@@ -66,10 +75,14 @@
   animation: fade-in 0.5s ease-out;
 }
 .spinner-result span {
-  @apply text-3xl font-bold;
+  @apply font-bold;
+  font-size: 1.5rem;
+  font-size: clamp(1.4rem, 4.8cqw, 3rem);
 }
 .spinner-result small {
-  @apply text-xs mt-2 opacity-70;
+  @apply mt-2 opacity-70;
+  font-size: 0.8rem;
+  font-size: clamp(0.7rem, 2cqw, 1rem);
 }
 
 /* --- Elementos del Gestor de Opciones (Sin cambios) --- */
@@ -78,10 +91,14 @@
 }
 .options-header h3 {
   @apply font-bold text-text-dark;
+  font-size: 1rem;
+  font-size: clamp(0.95rem, 2.2cqw, 1.2rem);
 }
 
 .remove-selected {
-  @apply flex items-center gap-2 text-sm text-text-dark;
+  @apply flex items-center gap-2 text-text-dark;
+  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 2cqw, 1rem);
 }
 
 .remove-selected input {
@@ -94,6 +111,7 @@
 
 .add-option input {
   @apply flex-grow bg-white border-2 border-gray-300 rounded p-2 focus:border-accent outline-none text-sm;
+  font-size: clamp(0.85rem, 2.1cqw, 1rem);
 }
 
 .add-option button {
@@ -103,10 +121,12 @@
 .upload-options-button {
   @apply w-full p-2 bg-white border-2 border-gray-300 rounded text-sm text-text-dark;
   @apply hover:bg-gray-100 transition-colors flex items-center justify-center gap-2;
+  font-size: clamp(0.85rem, 2.1cqw, 1rem);
 }
 
 .options-list {
   @apply flex-grow overflow-y-auto bg-white/50 rounded p-2 space-y-1 text-sm text-text-dark;
+  font-size: clamp(0.85rem, 2.1cqw, 1rem);
 }
 
 .options-list li {

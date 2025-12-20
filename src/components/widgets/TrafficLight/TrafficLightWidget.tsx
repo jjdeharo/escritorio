@@ -3,11 +3,12 @@ import { useLocalStorage } from '../../../hooks/useLocalStorage';
 import type { WidgetConfig } from '../../../types';
 import { useTranslation } from 'react-i18next';
 import { withBaseUrl } from '../../../utils/assetPaths';
+import './TrafficLight.css';
 
 type LightState = 'red' | 'yellow' | 'green';
 
 const Light: FC<{ color: string; active: boolean }> = ({ color, active }) => {
-  const baseStyle = 'w-20 h-20 rounded-full border-4 border-gray-700 transition-all duration-300';
+  const baseStyle = 'traffic-light-bulb rounded-full border-gray-700 transition-all duration-300';
   
   const colorVariants = {
     red: 'bg-red-500 shadow-[0_0_20px_5px_var(--tw-shadow-color)] shadow-red-400',
@@ -37,11 +38,11 @@ export const TrafficLightWidget: FC = () => {
 
   return (
     <div 
-      className="flex flex-col items-center justify-center cursor-pointer p-4"
+      className="traffic-light-widget cursor-pointer"
       onClick={handleClick}
       title={t('widgets.traffic_light.tooltip')}
     >
-      <div className="bg-gray-800 p-4 rounded-2xl flex flex-col gap-4 border-4 border-gray-600">
+      <div className="traffic-light-housing">
         <Light color="red" active={activeLight === 'red'} />
         <Light color="yellow" active={activeLight === 'yellow'} />
         <Light color="green" active={activeLight === 'green'} />

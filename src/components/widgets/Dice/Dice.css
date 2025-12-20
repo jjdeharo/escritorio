@@ -2,6 +2,16 @@
   /* 1. Añadimos 'relative' para el posicionamiento del botón de créditos */
   @apply flex flex-col h-full p-4 text-text-dark select-none relative;
   background-color: #0a4628; /* Un fondo de tapete de juego */
+  container-type: size;
+  --die-size: clamp(48px, 8vw, 120px);
+  --dot-size: clamp(8px, 1.6vw, 18px);
+}
+
+@supports (width: 1cqw) {
+  .dice-widget {
+    --die-size: clamp(48px, 12cqw, 140px);
+    --dot-size: clamp(8px, 3cqw, 22px);
+  }
 }
 
 /* ... (el resto de los estilos: .controls, .roll-button, etc. se mantienen igual) ... */
@@ -14,22 +24,36 @@
     @apply flex items-center gap-2;
     color: var(--color-text-light);
 }
+.dice-selector label {
+  font-size: clamp(0.85rem, 2.4cqw, 1.1rem);
+}
 
 .dice-selector input {
-  @apply w-16 text-center bg-transparent border-2 border-accent rounded p-1 text-text-light;
+  @apply w-16 text-center bg-transparent border-2 border-accent rounded text-text-light;
+  padding: clamp(4px, 1.6cqw, 10px);
+  font-size: clamp(0.85rem, 2.4cqw, 1.1rem);
 }
 
 .roll-button {
   @apply flex items-center gap-2 bg-accent text-text-dark font-semibold py-2 px-4 rounded-lg hover:bg-[#8ec9c9] transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+  font-size: clamp(0.85rem, 2.4cqw, 1.1rem);
+  padding: clamp(6px, 1.8cqw, 12px) clamp(10px, 2.6cqw, 16px);
+}
+.roll-button svg {
+  width: clamp(16px, 3cqw, 26px);
+  height: clamp(16px, 3cqw, 26px);
 }
 
 .dice-container {
   @apply flex-grow flex items-center justify-center gap-8 flex-wrap p-4;
   perspective: 1000px;
+  gap: clamp(8px, 3cqw, 24px);
 }
 
 .total {
-    @apply text-center text-2xl font-bold mt-4 text-white;
+    @apply text-center font-bold mt-4 text-white;
+    font-size: 1.5rem;
+    font-size: clamp(1rem, 4cqw, 2.4rem);
 }
 
 .total span {
@@ -37,8 +61,8 @@
 }
 
 .die-scene {
-  width: 60px;
-  height: 60px;
+  width: var(--die-size);
+  height: var(--die-size);
 }
 
 .die-3d {
@@ -54,19 +78,22 @@
 }
 
 .face {
-  @apply absolute w-full h-full bg-slate-100 border border-gray-400 rounded-md flex items-center justify-center p-1;
+  @apply absolute w-full h-full bg-slate-100 border border-gray-400 rounded-md flex items-center justify-center;
+  padding: clamp(2px, 0.6cqw, 6px);
 }
 
 .dot {
-  @apply block w-3 h-3 bg-slate-800 rounded-full;
+  @apply block bg-slate-800 rounded-full;
+  width: var(--dot-size);
+  height: var(--dot-size);
 }
 
-.face-1 { transform: rotateY(  0deg) translateZ(30px); }
-.face-2 { transform: rotateY( 90deg) translateZ(30px); }
-.face-3 { transform: rotateX( 90deg) translateZ(30px); }
-.face-4 { transform: rotateX(-90deg) translateZ(30px); }
-.face-5 { transform: rotateY(-90deg) translateZ(30px); }
-.face-6 { transform: rotateY(180deg) translateZ(30px); }
+.face-1 { transform: rotateY(  0deg) translateZ(calc(var(--die-size) / 2)); }
+.face-2 { transform: rotateY( 90deg) translateZ(calc(var(--die-size) / 2)); }
+.face-3 { transform: rotateX( 90deg) translateZ(calc(var(--die-size) / 2)); }
+.face-4 { transform: rotateX(-90deg) translateZ(calc(var(--die-size) / 2)); }
+.face-5 { transform: rotateY(-90deg) translateZ(calc(var(--die-size) / 2)); }
+.face-6 { transform: rotateY(180deg) translateZ(calc(var(--die-size) / 2)); }
 
 .die-3d.show-1 { transform: rotateY(  0deg); }
 .die-3d.show-2 { transform: rotateY(-90deg); }
@@ -77,7 +104,7 @@
 
 .face {
   display: grid;
-  gap: 4px;
+  gap: clamp(2px, 0.8cqw, 6px);
 }
 
 .face-1 { grid-template-areas: ". . ." ". a ." ". . ."; }
@@ -104,4 +131,10 @@
 /* 2. Añade los estilos para el botón de atribución */
 .attribution-button {
   @apply absolute bottom-2 right-2 w-6 h-6 flex items-center justify-center bg-black/20 rounded-full text-white/70 hover:bg-black/40 hover:text-white transition-colors;
+  width: clamp(20px, 3.5cqw, 32px);
+  height: clamp(20px, 3.5cqw, 32px);
+}
+.attribution-button svg {
+  width: clamp(10px, 1.8cqw, 16px);
+  height: clamp(10px, 1.8cqw, 16px);
 }

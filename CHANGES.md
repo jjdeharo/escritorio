@@ -1,4 +1,4 @@
-# Cambios realizados para informar al autor
+# Cambios realizados
 
 ## Ruleta (Random Spinner)
 - Corrección del nombre ganador para que coincida con la flecha del puntero.
@@ -46,3 +46,10 @@
 ## Otros
 - Ajuste de tamaño por defecto de la ruleta y mejoras de layout.
 
+## Responsivo (Fase 1)
+- Scoreboard, Ruleta, Gestos de trabajo, Semáforo, Sonómetro, Relojes globales, Dados y Memorama ahora escalan tipografías, iconos y controles con el tamaño del widget para proyección.
+- Uso de `clamp()` y unidades de contenedor (`cqw`) con valores de respaldo para mantener legibilidad en tamaños pequeños.
+
+## Responsivo (Fase 2)
+- Conversor de unidades, Calendario, Lista de trabajo, Asistencia, Tres en raya y Puzzle deslizante ajustan tamaños de texto/controles y espaciados según el tamaño de la ventana.
+- Calendario: números y cabecera con fondos/píldoras para mejorar contraste respetando el fondo del widget.

@@ -42,26 +42,29 @@ export const CalendarWidget: FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full text-text-dark p-4">
-      <div className="flex justify-between items-center mb-4">
-        <button onClick={goToPreviousMonth} className="p-2 rounded-full hover:bg-accent/50">
+    <div className="calendar-widget">
+      <div className="calendar-header">
+        <button onClick={goToPreviousMonth} className="calendar-nav-button">
           <ChevronLeft size={20} />
         </button>
-        <h3 className="text-lg font-bold">
+        <h3 className="calendar-title">
           {((t('widgets.calendar.months', { returnObjects: true }) as string[]) || ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'])[currentDate.getMonth()]} {currentDate.getFullYear()}
         </h3>
-        <button onClick={goToNextMonth} className="p-2 rounded-full hover:bg-accent/50">
+        <button onClick={goToNextMonth} className="calendar-nav-button">
           <ChevronRight size={20} />
         </button>
       </div>
-      <div className="grid grid-cols-7 text-center font-semibold text-sm mb-2">
+      <div className="calendar-days">
         {((t('widgets.calendar.days', { returnObjects: true }) as string[]) || ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá', 'Do']).map((day, index) => (
           <span key={index}>{day}</span>
         ))}
       </div>
-      <div className="grid grid-cols-7 text-center gap-1">
+      <div className="calendar-grid">
         {calendarDays.map((d, index) => (
-          <div key={index} className={`w-9 h-9 flex items-center justify-center rounded-full ${d.isPlaceholder ? '' : 'hover:bg-accent/50'} ${d.isToday ? 'bg-widget-header text-text-light' : ''}`}>
+          <div
+            key={index}
+            className={`calendar-cell ${d.isPlaceholder ? '' : 'hover:bg-accent/50'} ${d.isToday ? 'calendar-cell--today' : ''}`}
+          >
             {d.day}
           </div>
         ))}

@@ -1,6 +1,7 @@
 .memory-game-widget {
   @apply w-full h-full flex flex-col p-4 bg-gray-800;
   perspective: 1000px; /* Necesario para la animación 3D de volteo */
+  container-type: size;
 }
 
 /* --- Vista de Carga --- */
@@ -9,14 +10,19 @@
 }
 .memory-placeholder p {
   @apply font-semibold my-2;
+  font-size: 1.1rem;
+  font-size: clamp(1rem, 3cqw, 1.6rem);
 }
 .memory-placeholder small {
-    @apply text-xs text-gray-500 mb-4;
+    @apply text-gray-500 mb-4;
+    font-size: 0.75rem;
+    font-size: clamp(0.7rem, 1.8cqw, 0.95rem);
 }
 
 /* --- Tablero del Juego --- */
 .game-board {
   @apply flex-grow grid gap-2;
+  gap: clamp(6px, 2cqw, 16px);
 }
 
 .card {
@@ -38,7 +44,9 @@
 }
 
 .card-front {
-  @apply bg-accent text-text-dark text-4xl font-bold;
+  @apply bg-accent text-text-dark font-bold;
+  font-size: 2rem;
+  font-size: clamp(1.6rem, 5cqw, 3rem);
 }
 
 .card-back {
@@ -52,9 +60,18 @@
 /* --- Footer y Overlay --- */
 .game-footer {
   @apply flex-shrink-0 flex items-center justify-between text-white font-semibold mt-3 pt-3 border-t border-gray-700;
+  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 2.4cqw, 1.1rem);
 }
 .game-footer button {
   @apply flex items-center gap-2 bg-accent text-text-dark font-semibold py-1 px-3 rounded-lg hover:bg-[#8ec9c9] transition-colors text-sm;
+  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 2.4cqw, 1.1rem);
+  padding: clamp(6px, 1.8cqw, 12px) clamp(10px, 2.6cqw, 16px);
+}
+.game-footer button svg {
+  width: clamp(14px, 2.6cqw, 20px);
+  height: clamp(14px, 2.6cqw, 20px);
 }
 
 .game-won-overlay {
@@ -62,10 +79,21 @@
   animation: fade-in 0.5s;
 }
 .game-won-overlay h2 {
-  @apply text-5xl font-bold mb-2;
+  @apply font-bold mb-2;
+  font-size: 2.4rem;
+  font-size: clamp(1.8rem, 6cqw, 3.5rem);
 }
 .game-won-overlay p {
-  @apply text-lg mb-4;
+  @apply mb-4;
+  font-size: 1.2rem;
+  font-size: clamp(1rem, 3.5cqw, 2rem);
+}
+
+.game-won-overlay button {
+  @apply bg-accent text-text-dark font-semibold rounded-lg hover:bg-[#8ec9c9] transition-colors;
+  font-size: 1rem;
+  font-size: clamp(0.9rem, 2.6cqw, 1.2rem);
+  padding: clamp(8px, 2cqw, 14px) clamp(12px, 3cqw, 20px);
 }
 
 @keyframes fade-in {

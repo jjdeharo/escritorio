@@ -1,21 +1,28 @@
 .scoreboard-widget {
   @apply w-full h-full flex flex-col bg-gray-100;
+  container-type: size;
 }
 
 .player-list {
   @apply flex-grow p-4 overflow-y-auto space-y-3;
+  padding: clamp(12px, 3cqw, 24px);
 }
 
 .empty-message {
   @apply text-center text-gray-500 h-full flex items-center justify-center;
+  font-size: 1rem;
+  font-size: clamp(1rem, 3cqw, 1.6rem);
 }
 
 .player-row {
   @apply flex items-center justify-between bg-white p-3 rounded-lg shadow-sm;
+  padding: clamp(10px, 2.5cqw, 18px);
 }
 
 .player-name {
-  @apply font-bold text-lg text-text-dark;
+  @apply font-bold text-text-dark;
+  font-size: 1.125rem;
+  font-size: clamp(1rem, 3cqw, 2rem);
 }
 
 .player-controls {
@@ -23,11 +30,23 @@
 }
 
 .player-score {
-  @apply font-mono text-2xl font-bold w-12 text-center;
+  @apply font-mono font-bold text-center;
+  font-size: 1.5rem;
+  font-size: clamp(1.2rem, 4cqw, 2.8rem);
+  width: clamp(40px, 8cqw, 88px);
 }
 
 .score-button {
-  @apply w-8 h-8 rounded-full font-bold text-xl flex items-center justify-center transition-colors text-white;
+  @apply rounded-full font-bold flex items-center justify-center transition-colors text-white;
+  font-size: 1.25rem;
+  width: clamp(32px, 7cqw, 64px);
+  height: clamp(32px, 7cqw, 64px);
+  font-size: clamp(1rem, 3cqw, 1.6rem);
+}
+
+.score-button svg {
+  width: clamp(14px, 2.8cqw, 22px);
+  height: clamp(14px, 2.8cqw, 22px);
 }
 .score-button.plus {
   @apply bg-green-500 hover:bg-green-600;
@@ -39,21 +58,42 @@
 .remove-button {
   @apply text-gray-400 hover:text-red-600 ml-2;
 }
+.remove-button svg {
+  width: clamp(14px, 2.6cqw, 22px);
+  height: clamp(14px, 2.6cqw, 22px);
+}
 
 .scoreboard-footer {
   @apply flex-shrink-0 p-3 bg-gray-200 border-t border-gray-300 flex items-center gap-2;
+  padding: clamp(10px, 2.5cqw, 18px);
+  gap: clamp(6px, 2cqw, 14px);
 }
 
 .add-player-form {
   @apply flex-grow flex gap-2;
 }
 .add-player-form input {
-  @apply flex-grow bg-white border-2 border-gray-300 rounded p-2 focus:border-accent outline-none text-sm;
+  @apply flex-grow bg-white border-2 border-gray-300 rounded focus:border-accent outline-none;
+  padding: clamp(6px, 1.8cqw, 12px);
+  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 2.2cqw, 1.1rem);
 }
 .add-player-form button {
   @apply flex items-center gap-2 bg-accent text-text-dark font-semibold py-2 px-3 rounded-lg hover:bg-[#8ec9c9] transition-colors;
+  font-size: 0.95rem;
+  font-size: clamp(0.85rem, 2.2cqw, 1.1rem);
+  padding: clamp(6px, 1.8cqw, 12px) clamp(8px, 2.2cqw, 16px);
+}
+.add-player-form button svg {
+  width: clamp(14px, 2.6cqw, 22px);
+  height: clamp(14px, 2.6cqw, 22px);
 }
 
 .reset-button {
   @apply p-2 text-gray-600 hover:bg-gray-300 rounded-lg;
+  padding: clamp(6px, 1.6cqw, 12px);
+}
+.reset-button svg {
+  width: clamp(16px, 2.6cqw, 22px);
+  height: clamp(16px, 2.6cqw, 22px);
 }
