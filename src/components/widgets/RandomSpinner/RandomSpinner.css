@@ -1,5 +1,5 @@
 .random-spinner-widget {
-  @apply w-full h-full flex p-4 gap-4 bg-gray-100 overflow-hidden;
+  @apply w-full h-full flex flex-nowrap p-4 gap-4 bg-gray-100 overflow-hidden;
 }
 
 /* --- Área de la Ruleta --- */
@@ -16,7 +16,7 @@
 
 /* --- Gestor de Opciones --- */
 .options-manager {
-  @apply flex-grow flex flex-col gap-2 min-w-0 transition-all duration-300;
+  @apply flex-grow flex flex-col gap-2 min-w-[260px] transition-all duration-300;
 }
 
 /* --- Modo Pantalla Completa --- */
@@ -80,6 +80,14 @@
   @apply font-bold text-text-dark;
 }
 
+.remove-selected {
+  @apply flex items-center gap-2 text-sm text-text-dark;
+}
+
+.remove-selected input {
+  @apply accent-accent;
+}
+
 .add-option {
   @apply flex gap-2;
 }
@@ -90,6 +98,11 @@
 
 .add-option button {
   @apply p-2 bg-accent rounded hover:bg-[#8ec9c9] transition-colors text-text-dark;
+}
+
+.upload-options-button {
+  @apply w-full p-2 bg-white border-2 border-gray-300 rounded text-sm text-text-dark;
+  @apply hover:bg-gray-100 transition-colors flex items-center justify-center gap-2;
 }
 
 .options-list {

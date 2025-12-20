@@ -325,7 +325,9 @@
       "fullscreen_button_title": "Enlarge spinner",
       "restore_view_button_title": "Restore view",
       "options_header": "Options",
-      "add_option_placeholder": "Add option..."
+      "add_option_placeholder": "Add option...",
+      "load_from_file": "Load from file",
+      "remove_after_select": "Remove option after selection"
     },
     "traffic_light": {
       "title": "Traffic Light",
