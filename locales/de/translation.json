@@ -325,7 +325,9 @@
       "fullscreen_button_title": "Rad vergrößern",
       "restore_view_button_title": "Ansicht wiederherstellen",
       "options_header": "Optionen",
-      "add_option_placeholder": "Option hinzufügen..."
+      "add_option_placeholder": "Option hinzufügen...",
+      "load_from_file": "Aus Datei laden",
+      "remove_after_select": "Option nach Auswahl entfernen"
     },
     "traffic_light": {
       "title": "Ampel",

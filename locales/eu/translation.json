@@ -324,7 +324,9 @@
       "fullscreen_button_title": "Zabaldu erruleta",
       "restore_view_button_title": "Leheneratu ikuspegia",
       "options_header": "Aukerak",
-      "add_option_placeholder": "Gehitu aukera..."
+      "add_option_placeholder": "Gehitu aukera...",
+      "load_from_file": "Kargatu fitxategitik",
+      "remove_after_select": "Kendu aukera ateratzean"
     },
     "traffic_light": {
       "title": "Semaforoa",

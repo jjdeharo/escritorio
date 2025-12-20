@@ -335,7 +335,9 @@
       "fullscreen_button_title": "Agrandir la roue",
       "restore_view_button_title": "Restaurer la vue",
       "options_header": "Options",
-      "add_option_placeholder": "Ajouter une option..."
+      "add_option_placeholder": "Ajouter une option...",
+      "load_from_file": "Charger depuis un fichier",
+      "remove_after_select": "Supprimer l'option après tirage"
     },
     "traffic_light": {
       "title": "Feu de signalisation",

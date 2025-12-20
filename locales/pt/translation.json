@@ -327,7 +327,9 @@
       "fullscreen_button_title": "Ampliar roleta",
       "restore_view_button_title": "Restaurar vista",
       "options_header": "Opções",
-      "add_option_placeholder": "Adicionar opção..."
+      "add_option_placeholder": "Adicionar opção...",
+      "load_from_file": "Carregar de ficheiro",
+      "remove_after_select": "Remover opção após sair"
     },
     "traffic_light": {
       "title": "Semáforo",

@@ -325,7 +325,9 @@
       "fullscreen_button_title": "Ingrandisci ruota",
       "restore_view_button_title": "Ripristina vista",
       "options_header": "Opzioni",
-      "add_option_placeholder": "Aggiungi opzione..."
+      "add_option_placeholder": "Aggiungi opzione...",
+      "load_from_file": "Carica da file",
+      "remove_after_select": "Rimuovi l'opzione dopo l'estrazione"
     },
     "traffic_light": {
       "title": "Semaforo",
@@ -407,4 +409,3 @@
     }
   }
 }
-
