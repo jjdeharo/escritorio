@@ -173,7 +173,7 @@ const DesktopUI: React.FC<{
         setContextMenu(prev => ({ ...prev, isOpen: false }));
     };
 
-    const handleContextMenu = (event: React.MouseEvent<HTMLElement>, widgetId?: string, force = false) => {
+    const handleContextMenu = (event: React.MouseEvent<Element>, widgetId?: string, force = false) => {
         if (!force && !widgetId && event.target !== event.currentTarget) return;
         event.preventDefault();
         setContextMenu({ isOpen: true, x: event.clientX, y: event.clientY, widgetId: widgetId ?? null });
