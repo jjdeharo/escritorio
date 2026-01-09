@@ -77,6 +77,16 @@
     "open_knowledge_adherence": "Ce projet adhère au",
     "open_knowledge_decalogue": "Décalogue de la Connaissance Ouverte"
   },
+  "context_menu": {
+    "new_widget": "Nouveau widget...",
+    "settings": "Paramètres",
+    "manage_profiles": "Gérer les profils",
+    "change_background": "Changer le fond...",
+    "show_toolbar": "Afficher la barre inférieure",
+    "hide_toolbar": "Masquer la barre inférieure",
+    "reset_layout": "Fermer toutes les fenêtres",
+    "reset_layout_confirm": "Voulez-vous fermer toutes les fenêtres du bureau ?"
+  },
   "widgets": {
     "attendance": {
       "title": "Contrôle des présences",
@@ -108,8 +118,42 @@
       "no_students_message": "Aucun étudiant sur la liste pour cette date.",
       "add_students_instruction": "Ajoutez des étudiants ou importez un fichier CSV."
     },
-    "scientific_calculator": { "title": "Calculatrice scientifique" },
-    "calendar": { "title": "Calendrier" },
+    "scientific_calculator": {
+      "title": "Calculatrice scientifique",
+      "basic": "Basique",
+      "standard": "Standard",
+      "scientific": "Scientifique",
+      "history": "Historique",
+      "no_history": "Aucun historique.",
+      "error": "Erreur",
+      "infinity": "Infini"
+    },
+    "calendar": {
+      "title": "Calendrier",
+      "days": [
+        "Lu",
+        "Ma",
+        "Me",
+        "Je",
+        "Ve",
+        "Sa",
+        "Di"
+      ],
+      "months": [
+        "janvier",
+        "février",
+        "mars",
+        "avril",
+        "mai",
+        "juin",
+        "juillet",
+        "août",
+        "septembre",
+        "octobre",
+        "novembre",
+        "décembre"
+      ]
+    },
     "image_carousel": {
       "title": "Carrousel d'images",
       "no_images": "Aucune image chargée.",
@@ -149,7 +193,13 @@
       "lap": "Tour",
       "reset": "Réinitialiser"
     },
-    "dice": { "title": "Dés 3D" },
+    "dice": {
+      "title": "Dés 3D",
+      "num_dice": "Nombre de dés :",
+      "rolling": "Lancement...",
+      "roll_dice": "Lancer les dés",
+      "total": "Total :"
+    },
     "group_generator": {
       "title": "Générateur de groupes",
       "student_list_label": "Liste d'étudiants",
@@ -159,6 +209,8 @@
       "students_per_group": "Étudiants par groupe",
       "generate_groups": "Générer les groupes",
       "generated_groups_label": "Groupes générés",
+      "view_large": "Afficher en grand",
+      "close_large_view": "Fermer la vue agrandie",
       "group_title": "Groupe {{number}}",
       "no_groups_message": "Les groupes apparaîtront ici."
     },
@@ -262,7 +314,9 @@
       "play_again": "Rejouer",
       "icon_alt": "Jeu de mémoire"
     },
-    "metronome": { "title": "Métronome" },
+    "metronome": {
+      "title": "Métronome"
+    },
     "notepad": {
       "title": "Bloc-notes",
       "icon_alt": "Bloc-notes",
@@ -318,15 +372,23 @@
       "title": "Roue aléatoire",
       "icon_alt": "Roue aléatoire",
       "default_options": [
-        { "text": "Option 1" },
-        { "text": "Option 2" },
-        { "text": "Option 3" }
+        {
+          "text": "Option 1"
+        },
+        {
+          "text": "Option 2"
+        },
+        {
+          "text": "Option 3"
+        }
       ],
       "result_overlay_text": "Cliquez pour tourner à nouveau",
       "fullscreen_button_title": "Agrandir la roue",
       "restore_view_button_title": "Restaurer la vue",
       "options_header": "Options",
-      "add_option_placeholder": "Ajouter une option..."
+      "add_option_placeholder": "Ajouter une option...",
+      "load_from_file": "Charger depuis un fichier",
+      "remove_after_select": "Supprimer l'option après tirage"
     },
     "traffic_light": {
       "title": "Feu de signalisation",
@@ -383,18 +445,6 @@
       "pan_mode": "Activer le mode navigation",
       "exit_pan": "Quitter le mode navigation",
       "center_view": "Centrer la vue"
-    },
-    "calendar": {
-      "title": "Calendrier",
-      "days": ["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"],
-      "months": ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
-    },
-    "dice": {
-      "title": "Dés 3D",
-      "num_dice": "Nombre de dés :",
-      "rolling": "Lancement...",
-      "roll_dice": "Lancer les dés",
-      "total": "Total :"
     }
   }
 }
