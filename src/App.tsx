@@ -179,7 +179,7 @@ const DesktopUI: React.FC<{
     return (
         <div className="w-screen h-screen overflow-hidden" onContextMenu={handleContextMenu}>
             {showDateTime && (
-                <div className="fixed top-4 right-4 z-[9999] text-white bg-black/45 backdrop-blur-md rounded-2xl px-6 py-5 shadow-lg">
+                <div className="fixed top-4 right-4 z-[1] pointer-events-none text-white bg-black/45 backdrop-blur-md rounded-2xl px-6 py-5 shadow-lg">
                     <div className="text-lg opacity-90">{formattedDate}</div>
                     <div className="text-4xl font-semibold leading-tight">{formattedTime}</div>
                 </div>
