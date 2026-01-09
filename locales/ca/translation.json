@@ -65,7 +65,8 @@
   },
   "toolbar": {
     "settings": "Configuració",
-    "widgetLibrary": "Biblioteca de Ginys"
+    "widgetLibrary": "Biblioteca de Ginys",
+    "remove_widget": "Treure aquest giny"
   },
   "desktop": {
     "fullscreen_enter": "Pantalla completa",
