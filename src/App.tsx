@@ -10,7 +10,7 @@ import { SettingsModal } from './components/core/SettingsModal';
 import { CreditsModal } from './components/core/CreditsModal';
 import { ThemeProvider, defaultTheme, type Theme } from './context/ThemeContext';
 import type { ActiveWidget, DesktopProfile, ProfileCollection } from './types';
-import { HelpCircle, PlusSquare, Settings, Image, Eye, EyeOff, X, Users, Maximize2, Minimize2 } from 'lucide-react';
+import { HelpCircle, PlusSquare, Settings, Image, Eye, EyeOff, X, Users, Maximize2, Minimize2, PinOff } from 'lucide-react';
 import { defaultWallpaperValue, isWallpaperValueValid } from './utils/wallpapers';
 // --- ¡AQUÍ ESTÁ EL CAMBIO! Importamos el nuevo componente ---
 import { ProfileSwitcher } from './components/core/ProfileSwitcher';
@@ -43,7 +43,12 @@ const DesktopUI: React.FC<{
     const [isCreditsOpen, setIsCreditsOpen] = useState(false);
     const [settingsInitialTab, setSettingsInitialTab] = useState<'general' | 'profiles' | 'widgets' | 'theme'>('general');
     const [isToolbarHidden, setToolbarHidden] = useLocalStorage<boolean>('toolbar-hidden', false);
-    const [contextMenu, setContextMenu] = useState({ isOpen: false, x: 0, y: 0 });
+    const [contextMenu, setContextMenu] = useState<{ isOpen: boolean; x: number; y: number; widgetId: string | null }>({
+        isOpen: false,
+        x: 0,
+        y: 0,
+        widgetId: null,
+    });
     const contextMenuRef = useRef<HTMLDivElement>(null);
     const [showStorageWarning, setShowStorageWarning] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(!!document.fullscreenElement);
@@ -168,10 +173,10 @@ const DesktopUI: React.FC<{
         setContextMenu(prev => ({ ...prev, isOpen: false }));
     };
 
-    const handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
-        if (event.target !== event.currentTarget) return;
+    const handleContextMenu = (event: React.MouseEvent<HTMLElement>, widgetId?: string, force = false) => {
+        if (!force && !widgetId && event.target !== event.currentTarget) return;
         event.preventDefault();
-        setContextMenu({ isOpen: true, x: event.clientX, y: event.clientY });
+        setContextMenu({ isOpen: true, x: event.clientX, y: event.clientY, widgetId: widgetId ?? null });
     };
 
     const resetLayout = () => {
@@ -196,11 +201,13 @@ const DesktopUI: React.FC<{
         hour: '2-digit',
         minute: '2-digit',
     }).format(now);
+    const hasOpenWidgets = activeProfile.activeWidgets.length > 0;
 
     return (
-        <div className="w-screen h-screen overflow-hidden" onContextMenu={handleContextMenu}>
+        <div className="w-screen h-screen overflow-hidden" onContextMenu={(event) => handleContextMenu(event)}>
             <button
                 onClick={toggleFullscreen}
+                onContextMenu={(event) => handleContextMenu(event, undefined, true)}
                 className="fixed top-4 left-4 z-[2] p-2 rounded-full text-white/80 bg-black/15 backdrop-blur-sm hover:bg-black/30 hover:text-white transition-colors"
                 title={isFullscreen ? t('desktop.fullscreen_exit') : t('desktop.fullscreen_enter')}
                 aria-label={isFullscreen ? t('desktop.fullscreen_exit') : t('desktop.fullscreen_enter')}
@@ -235,6 +242,7 @@ const DesktopUI: React.FC<{
                         onFocus={() => focusWidget(widget.instanceId)}
                         onDragStop={(_e, d) => setActiveWidgets(prev => prev.map(w => (w.instanceId === widget.instanceId ? { ...w, position: { x: d.x, y: d.y } } : w)))}
                         onResizeStop={(_e, _direction, ref, _delta, position) => setActiveWidgets(prev => prev.map(w => (w.instanceId === widget.instanceId ? { ...w, size: { width: ref.style.width, height: ref.style.height }, position } : w)))}
+                        onOpenContextMenu={(event) => handleContextMenu(event, undefined, true)}
                     >
                         <Component />
                     </WidgetWindow>
@@ -246,10 +254,12 @@ const DesktopUI: React.FC<{
                     onWidgetClick={addWidget}
                     onWidgetsClick={() => openSettingsTab('widgets')}
                     onSettingsClick={() => openSettingsTab('general')}
+                    onOpenContextMenu={(event, widgetId, force) => handleContextMenu(event, widgetId, force)}
                 />
             )}
             <button
                 onClick={() => setIsCreditsOpen(true)}
+                onContextMenu={(event) => handleContextMenu(event, undefined, true)}
                 className="fixed bottom-4 left-4 z-[9999] p-3 bg-black/20 backdrop-blur-md rounded-full text-white hover:bg-black/40 transition-colors"
                 title={t('credits.tooltip')}
             >
@@ -278,6 +288,7 @@ const DesktopUI: React.FC<{
               activeProfileName={activeProfileName}
               setActiveProfileName={setActiveProfileName}
               onManageProfiles={() => openSettingsTab('profiles')}
+              onOpenContextMenu={(event) => handleContextMenu(event, undefined, true)}
             />
 
             {showStorageWarning && (
@@ -307,6 +318,21 @@ const DesktopUI: React.FC<{
                     className="fixed z-[10000] min-w-[220px] bg-white/95 backdrop-blur-md rounded-lg shadow-xl border border-gray-200 py-2 text-sm text-text-dark"
                     style={{ left: contextMenu.x, top: contextMenu.y }}
                 >
+                    {contextMenu.widgetId && (
+                        <>
+                            <button
+                                className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
+                                onClick={() => {
+                                    setPinnedWidgets(prev => prev.filter(id => id !== contextMenu.widgetId));
+                                    setContextMenu(prev => ({ ...prev, isOpen: false, widgetId: null }));
+                                }}
+                            >
+                                <PinOff size={16} />
+                                {t('toolbar.remove_widget')}
+                            </button>
+                            <div className="my-1 border-t border-gray-200" />
+                        </>
+                    )}
                     <button
                         className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
                         onClick={() => openSettingsTab('widgets')}
@@ -345,14 +371,18 @@ const DesktopUI: React.FC<{
                         {isToolbarHidden ? <Eye size={16} /> : <EyeOff size={16} />}
                         {isToolbarHidden ? t('context_menu.show_toolbar') : t('context_menu.hide_toolbar')}
                     </button>
-                    <div className="my-1 border-t border-gray-200" />
-                    <button
-                        className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-700 flex items-center gap-2"
-                        onClick={resetLayout}
-                    >
-                        <X size={16} />
-                        {t('context_menu.reset_layout')}
-                    </button>
+                    {hasOpenWidgets && (
+                        <>
+                            <div className="my-1 border-t border-gray-200" />
+                            <button
+                                className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-700 flex items-center gap-2"
+                                onClick={resetLayout}
+                            >
+                                <X size={16} />
+                                {t('context_menu.reset_layout')}
+                            </button>
+                        </>
+                    )}
                 </div>
             )}
         </div>

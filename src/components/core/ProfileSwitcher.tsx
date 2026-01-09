@@ -9,6 +9,7 @@ interface ProfileSwitcherProps {
   activeProfileName: string;
   setActiveProfileName: (name: string) => void;
   onManageProfiles: () => void;
+  onOpenContextMenu: (event: React.MouseEvent) => void;
 }
 
 export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
@@ -16,6 +17,7 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
   activeProfileName,
   setActiveProfileName,
   onManageProfiles,
+  onOpenContextMenu,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
@@ -50,7 +52,7 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
 
   return (
     // Contenedor principal en la esquina inferior derecha
-    <div className="fixed bottom-4 right-4 z-[9999]" ref={containerRef}>
+    <div className="fixed bottom-4 right-4 z-[9999]" ref={containerRef} onContextMenu={onOpenContextMenu}>
       <div className="relative">
         {/* Menú desplegable que aparece cuando isOpen es true */}
         {isOpen && (
@@ -85,6 +87,7 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
         {/* El botón principal que siempre está visible */}
         <button
           onClick={() => setIsOpen(!isOpen)}
+          onContextMenu={onOpenContextMenu}
           className="w-56 h-12 px-4 bg-black/20 backdrop-blur-md rounded-full text-white hover:bg-black/40 transition-colors flex items-center justify-between"
           title={t('settings.profiles.switcher_title')}
         >

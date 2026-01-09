@@ -65,7 +65,8 @@
   },
   "toolbar": {
     "settings": "Configuración",
-    "widgetLibrary": "Librería de Widgets"
+    "widgetLibrary": "Librería de Widgets",
+    "remove_widget": "Quitar este widget"
   },
   "desktop": {
     "fullscreen_enter": "Pantalla completa",

@@ -9,13 +9,22 @@ interface ToolbarProps {
   onWidgetClick: (widgetId: string) => void;
   onWidgetsClick: () => void;
   onSettingsClick: () => void;
+  onOpenContextMenu: (event: React.MouseEvent, widgetId?: string, force?: boolean) => void;
 }
 
-export const Toolbar: React.FC<ToolbarProps> = ({ pinnedWidgets, onWidgetClick, onWidgetsClick, onSettingsClick }) => {
+export const Toolbar: React.FC<ToolbarProps> = ({ pinnedWidgets, onWidgetClick, onWidgetsClick, onSettingsClick, onOpenContextMenu }) => {
   const { t } = useTranslation();
+  const handleBarContextMenu = (event: React.MouseEvent) => {
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('[data-widget-button="true"]')) return;
+    onOpenContextMenu(event, undefined, true);
+  };
 
   return (
-    <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-widget-bg p-2 rounded-2xl flex items-center gap-2 shadow-lg z-[10000] border border-custom-border">
+    <div
+      className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-widget-bg p-2 rounded-2xl flex items-center gap-2 shadow-lg z-[10000] border border-custom-border"
+      onContextMenu={handleBarContextMenu}
+    >
       {pinnedWidgets.map(widgetId => {
         const widget = WIDGET_REGISTRY[widgetId];
         if (!widget) return null;
@@ -23,6 +32,8 @@ export const Toolbar: React.FC<ToolbarProps> = ({ pinnedWidgets, onWidgetClick, 
           <button
             key={widget.id}
             onClick={() => onWidgetClick(widget.id)}
+            onContextMenu={(event) => onOpenContextMenu(event, widget.id)}
+            data-widget-button="true"
             className="w-14 h-14 bg-accent text-2xl rounded-lg flex items-center justify-center hover:brightness-110 transition-all duration-200 hover:scale-110"
             title={t(widget.title)}
           >
@@ -33,6 +44,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ pinnedWidgets, onWidgetClick, 
       <div className="h-10 w-px bg-white/30 mx-2"></div>
       <button
         onClick={onWidgetsClick}
+        onContextMenu={(event) => onOpenContextMenu(event, undefined, true)}
         className="w-10 h-10 rounded-full text-text-light bg-black/20 hover:bg-black/30 transition-all duration-200 flex items-center justify-center"
         title={t('toolbar.widgetLibrary')}
         aria-label={t('toolbar.widgetLibrary')}
@@ -41,6 +53,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ pinnedWidgets, onWidgetClick, 
       </button>
       <button
         onClick={onSettingsClick}
+        onContextMenu={(event) => onOpenContextMenu(event, undefined, true)}
         className="w-14 h-14 text-white text-2xl rounded-lg flex items-center justify-center hover:bg-black/20 transition-all duration-200 hover:scale-110"
         title={t('toolbar.settings')}
       >

@@ -67,7 +67,8 @@
   },
   "toolbar": {
     "settings": "Configurações",
-    "widgetLibrary": "Biblioteca de Widgets"
+    "widgetLibrary": "Biblioteca de Widgets",
+    "remove_widget": "Remover este widget"
   },
   "desktop": {
     "fullscreen_enter": "Tela cheia",

@@ -64,7 +64,8 @@
   },
   "toolbar": {
     "settings": "Ezarpenak",
-    "widgetLibrary": "Widget Liburutegia"
+    "widgetLibrary": "Widget Liburutegia",
+    "remove_widget": "Kendu widget hau"
   },
   "desktop": {
     "fullscreen_enter": "Pantaila osoa",
