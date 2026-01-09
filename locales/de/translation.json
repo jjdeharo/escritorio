@@ -94,6 +94,8 @@
     "settings": "Einstellungen",
     "manage_profiles": "Profile verwalten",
     "change_background": "Hintergrund ändern...",
+    "show_datetime": "Datum und Uhrzeit anzeigen",
+    "hide_datetime": "Datum und Uhrzeit ausblenden",
     "show_toolbar": "Untere Leiste anzeigen",
     "hide_toolbar": "Untere Leiste ausblenden",
     "reset_layout": "Alle Fenster schließen",

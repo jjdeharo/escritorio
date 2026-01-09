@@ -94,6 +94,8 @@
     "settings": "Configuración",
     "manage_profiles": "Xestionar perfís",
     "change_background": "Cambiar fondo...",
+    "show_datetime": "Mostrar data e hora",
+    "hide_datetime": "Ocultar data e hora",
     "show_toolbar": "Amosar barra inferior",
     "hide_toolbar": "Agochar barra inferior",
     "reset_layout": "Pechar todas as xanelas",
