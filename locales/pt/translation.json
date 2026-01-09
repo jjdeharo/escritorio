@@ -114,6 +114,13 @@
       "upload_button": "Enviar PDF",
       "empty_state": "Carrega um PDF por URL ou ficheiro."
     },
+    "file_opener": {
+      "title": "Explorador de ficheiros",
+      "description": "Clique para escolher um ficheiro e vê-lo aqui.",
+      "supported_formats": "PDF, imagens, texto, Markdown, vídeo e áudio.",
+      "pdf_fallback": "O seu navegador não consegue mostrar este PDF.",
+      "open_button": "Abrir ficheiro"
+    },
     "attendance": {
       "title": "Controle de Presença",
       "badges": {

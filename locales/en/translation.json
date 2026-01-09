@@ -112,6 +112,13 @@
       "upload_button": "Upload PDF",
       "empty_state": "Load a PDF from URL or file."
     },
+    "file_opener": {
+      "title": "File Explorer",
+      "description": "Click to pick a file and view it here.",
+      "supported_formats": "PDF, images, text, Markdown, video, and audio.",
+      "pdf_fallback": "Your browser cannot display this PDF.",
+      "open_button": "Open file"
+    },
     "attendance": {
       "title": "Attendance Tracker",
       "badges": {
