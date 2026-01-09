@@ -112,6 +112,13 @@
       "upload_button": "Pujar PDF",
       "empty_state": "Carrega un PDF des d'URL o fitxer."
     },
+    "file_opener": {
+      "title": "Explorador de fitxers",
+      "description": "Fes clic per seleccionar un fitxer i veure'l aquí.",
+      "supported_formats": "PDF, imatges, text, Markdown, vídeo i àudio.",
+      "pdf_fallback": "El teu navegador no pot mostrar aquest PDF.",
+      "open_button": "Obrir fitxer"
+    },
     "attendance": {
       "title": "Control d'Assistència",
       "badges": {

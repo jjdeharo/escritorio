@@ -112,6 +112,13 @@
       "upload_button": "PDF hochladen",
       "empty_state": "PDF per URL oder Datei laden."
     },
+    "file_opener": {
+      "title": "Datei-Explorer",
+      "description": "Klicke, um eine Datei auszuwählen und hier anzuzeigen.",
+      "supported_formats": "PDF, Bilder, Text, Markdown, Video und Audio.",
+      "pdf_fallback": "Dein Browser kann dieses PDF nicht anzeigen.",
+      "open_button": "Datei öffnen"
+    },
     "attendance": {
       "title": "Anwesenheitskontrolle",
       "badges": {

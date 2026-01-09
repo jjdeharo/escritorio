@@ -112,6 +112,13 @@
       "upload_button": "Subir PDF",
       "empty_state": "Carga un PDF desde URL ou ficheiro."
     },
+    "file_opener": {
+      "title": "Explorador de ficheiros",
+      "description": "Fai clic para escoller un ficheiro e velo aquí.",
+      "supported_formats": "PDF, imaxes, texto, Markdown, vídeo e audio.",
+      "pdf_fallback": "O teu navegador non pode mostrar este PDF.",
+      "open_button": "Abrir ficheiro"
+    },
     "attendance": {
       "title": "Control de Asistencia",
       "badges": {

@@ -186,6 +186,9 @@ const DesktopUI: React.FC<{
             )}
             {activeProfile.activeWidgets.map(widget => {
                 const config = WIDGET_REGISTRY[widget.widgetId];
+                if (!config) {
+                    return null;
+                }
                 const Component = config.component;
                 return (
                     <WidgetWindow
@@ -334,7 +337,7 @@ function App() {
         'Escritorio Principal': {
             theme: defaultTheme,
             activeWidgets: [],
-            pinnedWidgets: ['work-list', 'timer'],
+            pinnedWidgets: ['work-list', 'timer', 'file-opener'],
         },
     });
     const [activeProfileName, setActiveProfileName] = useLocalStorage<string>(

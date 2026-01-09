@@ -9,6 +9,7 @@ export const PdfViewerWidget: FC = () => {
   const { t } = useTranslation();
   const [urlInput, setUrlInput] = useState('');
   const [pdfUrl, setPdfUrl] = useState('');
+  const [fileName, setFileName] = useState('');
   const objectUrlRef = useRef<string | null>(null);
 
   const cleanupObjectUrl = () => {
@@ -27,6 +28,7 @@ export const PdfViewerWidget: FC = () => {
     if (!nextUrl) return;
     cleanupObjectUrl();
     setPdfUrl(nextUrl);
+    setFileName('');
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,10 +38,16 @@ export const PdfViewerWidget: FC = () => {
     const objectUrl = URL.createObjectURL(file);
     objectUrlRef.current = objectUrl;
     setPdfUrl(objectUrl);
+    setFileName(file.name);
   };
+
 
   return (
     <div className="pdf-viewer-widget">
+      <div className="pdf-viewer-header">
+        <FileText size={18} />
+        <span>{fileName || t('widgets.pdf_viewer.title')}</span>
+      </div>
       <div className="pdf-controls">
         <Link size={18} className="pdf-icon" />
         <input

@@ -113,6 +113,13 @@
       "upload_button": "Importer un PDF",
       "empty_state": "Chargez un PDF depuis une URL ou un fichier."
     },
+    "file_opener": {
+      "title": "Explorateur de fichiers",
+      "description": "Cliquez pour choisir un fichier et l’afficher ici.",
+      "supported_formats": "PDF, images, texte, Markdown, vidéo et audio.",
+      "pdf_fallback": "Votre navigateur ne peut pas afficher ce PDF.",
+      "open_button": "Ouvrir un fichier"
+    },
     "attendance": {
       "title": "Contrôle des présences",
       "badges": {

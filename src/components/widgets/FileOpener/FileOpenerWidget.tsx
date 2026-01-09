@@ -1,0 +1,163 @@
+import { useEffect, useMemo, useRef, useState } from 'react';
+import type { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { WidgetConfig } from '../../../types';
+import { FolderOpen, FileText } from 'lucide-react';
+import { withBaseUrl } from '../../../utils/assetPaths';
+import { marked } from 'marked';
+import './FileOpenerWidget.css';
+
+type DisplayType = 'none' | 'image' | 'pdf' | 'text' | 'markdown' | 'video' | 'audio';
+
+export const FileOpenerWidget: FC = () => {
+  const { t } = useTranslation();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [displayType, setDisplayType] = useState<DisplayType>('none');
+  const [fileName, setFileName] = useState('');
+  const [fileUrl, setFileUrl] = useState('');
+  const [fileContent, setFileContent] = useState('');
+
+  useEffect(() => {
+    return () => {
+      if (fileUrl) {
+        URL.revokeObjectURL(fileUrl);
+      }
+    };
+  }, [fileUrl]);
+
+  const handlePick = () => {
+    inputRef.current?.click();
+  };
+
+  const handleFiles = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (fileUrl) URL.revokeObjectURL(fileUrl);
+    setFileUrl('');
+    setFileContent('');
+    const name = file.name;
+    const lower = name.toLowerCase();
+    const isImage = file.type.startsWith('image/') || lower.match(/\.(png|jpe?g|gif|webp|bmp|svg)$/);
+    const isPdf = file.type === 'application/pdf' || lower.endsWith('.pdf');
+    const isMarkdown = lower.endsWith('.md') || lower.endsWith('.markdown');
+    const isText = file.type.startsWith('text/') || lower.endsWith('.txt');
+    const isVideo = file.type.startsWith('video/') || lower.match(/\.(mp4|webm|ogg|mov)$/);
+    const isAudio = file.type.startsWith('audio/') || lower.match(/\.(mp3|wav|ogg|m4a|aac|flac)$/);
+
+    setFileName(name);
+
+    if (isImage) {
+      const url = URL.createObjectURL(file);
+      setFileUrl(url);
+      setDisplayType('image');
+      event.target.value = '';
+      return;
+    }
+    if (isPdf) {
+      const url = URL.createObjectURL(file);
+      setFileUrl(url);
+      setDisplayType('pdf');
+      event.target.value = '';
+      return;
+    }
+    if (isMarkdown) {
+      const content = await file.text();
+      setDisplayType('markdown');
+      setFileContent(content);
+      setFileUrl('');
+      event.target.value = '';
+      return;
+    }
+    if (isText) {
+      const content = await file.text();
+      setDisplayType('text');
+      setFileContent(content);
+      setFileUrl('');
+      event.target.value = '';
+      return;
+    }
+    if (isVideo) {
+      const url = URL.createObjectURL(file);
+      setFileUrl(url);
+      setDisplayType('video');
+      event.target.value = '';
+      return;
+    }
+    if (isAudio) {
+      const url = URL.createObjectURL(file);
+      setFileUrl(url);
+      setDisplayType('audio');
+      event.target.value = '';
+      return;
+    }
+
+    const url = URL.createObjectURL(file);
+    window.open(url, '_blank');
+    window.setTimeout(() => URL.revokeObjectURL(url), 60000);
+    event.target.value = '';
+  };
+
+  const markdownHtml = useMemo(() => {
+    if (displayType !== 'markdown' || !fileContent) return '';
+    return marked.parse(fileContent) as string;
+  }, [displayType, fileContent]);
+
+  return (
+    <div className="file-opener-widget">
+      <div className="file-opener-header">
+        <FolderOpen size={18} />
+        <span>{fileName || t('widgets.file_opener.title')}</span>
+        <div className="file-opener-spacer" />
+        <button onClick={handlePick} className="file-opener-button">
+          {t('widgets.file_opener.open_button')}
+        </button>
+      </div>
+      <div className="file-opener-body" onClick={displayType === 'none' ? handlePick : undefined}>
+        {displayType === 'none' && (
+          <div className="file-opener-placeholder">
+            <FolderOpen size={32} />
+            <p>{t('widgets.file_opener.description')}</p>
+            <p className="file-opener-hint">{t('widgets.file_opener.supported_formats')}</p>
+          </div>
+        )}
+        {displayType === 'image' && fileUrl && (
+          <img src={fileUrl} alt={fileName} className="file-opener-image" />
+        )}
+        {displayType === 'pdf' && fileUrl && (
+          <object data={fileUrl} type="application/pdf" className="file-opener-embed">
+            <div className="file-opener-placeholder">
+              <FileText size={24} />
+              <p>{t('widgets.file_opener.pdf_fallback')}</p>
+            </div>
+          </object>
+        )}
+        {displayType === 'video' && fileUrl && (
+          <video className="file-opener-video" controls src={fileUrl} />
+        )}
+        {displayType === 'audio' && fileUrl && (
+          <audio className="file-opener-audio" controls src={fileUrl} />
+        )}
+        {displayType === 'text' && (
+          <pre className="file-opener-text">{fileContent}</pre>
+        )}
+        {displayType === 'markdown' && (
+          <div className="file-opener-markdown prose" dangerouslySetInnerHTML={{ __html: markdownHtml }} />
+        )}
+      </div>
+      <input ref={inputRef} type="file" onChange={handleFiles} className="hidden" />
+    </div>
+  );
+};
+
+export const widgetConfig: Omit<WidgetConfig, 'component'> = {
+  id: 'file-opener',
+  title: 'widgets.file_opener.title',
+  icon: (() => {
+    const WidgetIcon: FC = () => {
+      const { t } = useTranslation();
+      return <img src={withBaseUrl('icons/FileExplorer.png')} alt={t('widgets.file_opener.title')} width={52} height={52} />;
+    };
+    return <WidgetIcon />;
+  })(),
+  defaultSize: { width: 720, height: 520 },
+};

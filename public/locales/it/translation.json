@@ -112,6 +112,13 @@
       "upload_button": "Carica PDF",
       "empty_state": "Carica un PDF da URL o file."
     },
+    "file_opener": {
+      "title": "Esplora file",
+      "description": "Fai clic per scegliere un file e vederlo qui.",
+      "supported_formats": "PDF, immagini, testo, Markdown, video e audio.",
+      "pdf_fallback": "Il tuo browser non può visualizzare questo PDF.",
+      "open_button": "Apri file"
+    },
     "attendance": {
       "title": "Registro presenze",
       "badges": {

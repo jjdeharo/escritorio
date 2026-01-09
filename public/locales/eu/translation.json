@@ -111,6 +111,13 @@
       "upload_button": "Igo PDFa",
       "empty_state": "Kargatu PDFa URLtik edo fitxategitik."
     },
+    "file_opener": {
+      "title": "Fitxategi arakatzailea",
+      "description": "Egin klik fitxategi bat aukeratzeko eta hemen ikusteko.",
+      "supported_formats": "PDF, irudiak, testua, Markdown, bideoa eta audioa.",
+      "pdf_fallback": "Zure nabigatzaileak ezin du PDF hau erakutsi.",
+      "open_button": "Fitxategia ireki"
+    },
     "attendance": {
       "title": "Asistentzia Kontrola",
       "badges": {
