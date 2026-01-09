@@ -10,7 +10,7 @@ import { SettingsModal } from './components/core/SettingsModal';
 import { CreditsModal } from './components/core/CreditsModal';
 import { ThemeProvider, defaultTheme, type Theme } from './context/ThemeContext';
 import type { ActiveWidget, DesktopProfile, ProfileCollection } from './types';
-import { HelpCircle, PlusSquare, Settings, Image, Eye, EyeOff, X, Users } from 'lucide-react';
+import { HelpCircle, PlusSquare, Settings, Image, Eye, EyeOff, X, Users, Maximize2, Minimize2 } from 'lucide-react';
 import { defaultWallpaperValue, isWallpaperValueValid } from './utils/wallpapers';
 // --- ¡AQUÍ ESTÁ EL CAMBIO! Importamos el nuevo componente ---
 import { ProfileSwitcher } from './components/core/ProfileSwitcher';
@@ -46,6 +46,7 @@ const DesktopUI: React.FC<{
     const [contextMenu, setContextMenu] = useState({ isOpen: false, x: 0, y: 0 });
     const contextMenuRef = useRef<HTMLDivElement>(null);
     const [showStorageWarning, setShowStorageWarning] = useState(false);
+    const [isFullscreen, setIsFullscreen] = useState(!!document.fullscreenElement);
 
     const addWidget = (widgetId: string) => {
         const widgetConfig = WIDGET_REGISTRY[widgetId];
@@ -141,6 +142,26 @@ const DesktopUI: React.FC<{
         return () => window.removeEventListener('storage-quota-exceeded', handleStorageWarning);
     }, []);
 
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    }, []);
+
+    const toggleFullscreen = async () => {
+        try {
+            if (!document.fullscreenElement) {
+                await document.documentElement.requestFullscreen();
+            } else {
+                await document.exitFullscreen();
+            }
+        } catch (error) {
+            console.warn('No se pudo cambiar a pantalla completa.', error);
+        }
+    };
+
     const openSettingsTab = (tab: 'general' | 'profiles' | 'widgets' | 'theme') => {
         setSettingsInitialTab(tab);
         setSettingsOpen(true);
@@ -178,6 +199,14 @@ const DesktopUI: React.FC<{
 
     return (
         <div className="w-screen h-screen overflow-hidden" onContextMenu={handleContextMenu}>
+            <button
+                onClick={toggleFullscreen}
+                className="fixed top-4 left-4 z-[2] p-2 rounded-full text-white/80 bg-black/15 backdrop-blur-sm hover:bg-black/30 hover:text-white transition-colors"
+                title={isFullscreen ? t('desktop.fullscreen_exit') : t('desktop.fullscreen_enter')}
+                aria-label={isFullscreen ? t('desktop.fullscreen_exit') : t('desktop.fullscreen_enter')}
+            >
+                {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+            </button>
             {showDateTime && (
                 <div className="fixed top-4 right-4 z-[1] pointer-events-none text-white bg-black/45 backdrop-blur-md rounded-2xl px-6 py-5 shadow-lg">
                     <div className="text-lg opacity-90">{formattedDate}</div>
