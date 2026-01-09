@@ -2,6 +2,10 @@
 
 Este proyecto es un entorno de escritorio virtual construido con React, que permite a los usuarios añadir, mover y redimensionar "widgets" interactivos. El sistema está diseñado para que la creación de nuevos widgets sea un proceso sencillo y modular.
 
+## Novedades de la interfaz
+
+- Fecha y hora visibles en la esquina superior derecha (se puede desactivar en Herramientas → Apariencia).
+
 ## Widgets del Escritorio Interactivo
 
 1.  **Control de Asistencia:** Herramienta para llevar un registro diario de la asistencia de los estudiantes, además de asignar insignias y alertas.

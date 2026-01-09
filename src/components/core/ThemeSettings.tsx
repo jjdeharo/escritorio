@@ -25,6 +25,11 @@ export const ThemeSettings: React.FC = () => {
     }
   };
 
+  const handleDateTimeToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { checked } = e.target;
+    setTheme((prevTheme) => ({ ...prevTheme, showDateTime: checked }));
+  };
+
   const colorOptions = [
     { id: '--color-bg', labelKey: 'desktop_bg' },
     { id: '--color-widget-bg', labelKey: 'widget_bg' },
@@ -100,6 +105,19 @@ export const ThemeSettings: React.FC = () => {
           onChange={handleWallpaperUpload}
           accept="image/*"
           className="hidden"
+        />
+      </div>
+
+      <div className="flex items-center justify-between p-3 bg-white/70 border border-gray-200 rounded-lg">
+        <div>
+          <p className="font-semibold text-sm">{t('settings.theme.show_datetime_label')}</p>
+          <p className="text-xs text-gray-500">{t('settings.theme.show_datetime_help')}</p>
+        </div>
+        <input
+          type="checkbox"
+          checked={theme.showDateTime ?? true}
+          onChange={handleDateTimeToggle}
+          className="h-5 w-5"
         />
       </div>
       

@@ -22,8 +22,9 @@ const DesktopUI: React.FC<{
     activeProfileName: string;
     setActiveProfileName: (name: string) => void;
 }> = ({ profiles, setProfiles, activeProfileName, setActiveProfileName }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const activeProfile = profiles[activeProfileName] || Object.values(profiles)[0];
+    const showDateTime = activeProfile.theme?.showDateTime ?? true;
 
     const setActiveWidgets = (updater: React.SetStateAction<ActiveWidget[]>) => {
         const updatedWidgets = typeof updater === 'function' ? updater(activeProfile.activeWidgets) : updater;
@@ -158,8 +159,31 @@ const DesktopUI: React.FC<{
         setContextMenu(prev => ({ ...prev, isOpen: false }));
     };
 
+    const [now, setNow] = useState(new Date());
+
+    useEffect(() => {
+        const intervalId = window.setInterval(() => setNow(new Date()), 1000);
+        return () => window.clearInterval(intervalId);
+    }, []);
+
+    const formattedDate = new Intl.DateTimeFormat(i18n.language, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+    }).format(now);
+    const formattedTime = new Intl.DateTimeFormat(i18n.language, {
+        hour: '2-digit',
+        minute: '2-digit',
+    }).format(now);
+
     return (
         <div className="w-screen h-screen overflow-hidden" onContextMenu={handleContextMenu}>
+            {showDateTime && (
+                <div className="fixed top-4 right-4 z-[9999] text-white bg-black/45 backdrop-blur-md rounded-2xl px-6 py-5 shadow-lg">
+                    <div className="text-lg opacity-90">{formattedDate}</div>
+                    <div className="text-4xl font-semibold leading-tight">{formattedTime}</div>
+                </div>
+            )}
             {activeProfile.activeWidgets.map(widget => {
                 const config = WIDGET_REGISTRY[widget.widgetId];
                 const Component = config.component;
@@ -340,7 +364,7 @@ function App() {
         document.body.style.backgroundImage = theme['--wallpaper'];
         const root = document.documentElement;
         for (const [key, value] of Object.entries(theme)) {
-            if (key !== '--wallpaper') {
+            if (key.startsWith('--') && key !== '--wallpaper') {
                 root.style.setProperty(key, value as string);
             }
         }
