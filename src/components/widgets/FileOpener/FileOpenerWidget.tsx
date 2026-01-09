@@ -144,7 +144,13 @@ export const FileOpenerWidget: FC = () => {
           <div className="file-opener-markdown prose" dangerouslySetInnerHTML={{ __html: markdownHtml }} />
         )}
       </div>
-      <input ref={inputRef} type="file" onChange={handleFiles} className="hidden" />
+      <input
+        ref={inputRef}
+        type="file"
+        onChange={handleFiles}
+        accept="image/*,application/pdf,text/plain,text/markdown,video/*,audio/*,.md,.markdown,.txt"
+        className="hidden"
+      />
     </div>
   );
 };
