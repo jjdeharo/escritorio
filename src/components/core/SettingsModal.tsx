@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { X, Search } from 'lucide-react';
@@ -10,6 +10,7 @@ import type { ProfileCollection } from '../../types';
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialTab?: 'general' | 'profiles' | 'widgets' | 'theme';
   pinnedWidgets: string[];
   setPinnedWidgets: React.Dispatch<React.SetStateAction<string[]>>;
   profiles: ProfileCollection;
@@ -21,6 +22,7 @@ interface SettingsModalProps {
 export const SettingsModal: React.FC<SettingsModalProps> = ({
   isOpen,
   onClose,
+  initialTab = 'general',
   pinnedWidgets,
   setPinnedWidgets,
   profiles,
@@ -31,6 +33,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState('general');
   const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    if (isOpen) setActiveTab(initialTab);
+  }, [isOpen, initialTab]);
 
   const filteredWidgets = useMemo(() => {
     if (!searchTerm) {
@@ -147,7 +153,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onChange={handleLanguageChange}
                       className="p-2 border rounded-lg bg-white/80 focus:ring-2 focus:ring-accent focus:outline-none"
                     >
-                      {/* Orden lógico: ES + cooficiales, luego románicas vecinas, y EN al final */}
+                      {/* Orden lógico: ES + cooficiales, luego románicas vecinas, alemán y EN al final */}
                       <option value="es">Español</option>
                       <option value="ca">Català</option>
                       <option value="eu">Euskara</option>
@@ -155,6 +161,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       <option value="pt">Português</option>
                       <option value="fr">Français</option>
                       <option value="it">Italiano</option>
+                      <option value="de">Deutsch</option>
                       <option value="en">English</option>
                     </select>
                   </div>

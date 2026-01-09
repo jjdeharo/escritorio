@@ -4,6 +4,8 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import Backend from 'i18next-http-backend';
 
+const baseUrl = import.meta.env.BASE_URL ?? '/';
+
 i18n
   // Carga las traducciones desde una API/backend (en este caso, la carpeta `public/locales`)
   .use(Backend)
@@ -15,7 +17,7 @@ i18n
   .init({
     // Idioma por defecto si no se detecta ninguno
     fallbackLng: 'es',
-    supportedLngs: ['es', 'ca', 'eu', 'gl', 'pt', 'fr', 'it', 'en'],
+    supportedLngs: ['es', 'ca', 'eu', 'gl', 'pt', 'fr', 'it', 'de', 'en'],
     // Activa el modo debug en desarrollo
     debug: false,
     // Forzar recarga
@@ -26,7 +28,7 @@ i18n
     // Configuración para el backend de carga
     backend: {
       // Ruta donde se encuentran los archivos de traducción  
-      loadPath: '/locales/{{lng}}/{{ns}}.json',
+      loadPath: `${baseUrl}locales/{{lng}}/{{ns}}.json`,
       // Añadir opciones para debug
       requestOptions: {
         cache: 'no-cache'
@@ -62,6 +64,8 @@ i18n
         if (lng.startsWith('pt')) return 'pt';
         // Si es it-IT, it, etc., devolver solo 'it'
         if (lng.startsWith('it')) return 'it';
+        // Si es de-DE, de, etc., devolver solo 'de'
+        if (lng.startsWith('de')) return 'de';
         // Si es en-US, en-GB, etc., devolver solo 'en'
         if (lng.startsWith('en')) return 'en';
         // Si es fr-FR, fr-CA, etc., devolver solo 'fr'

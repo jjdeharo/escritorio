@@ -1,10 +1,12 @@
 .work-gestures-widget {
   @apply w-full h-full p-4 bg-gray-100;
+  container-type: size;
 }
 
 /* --- Rejilla de Tarjetas --- */
 .card-grid {
-  @apply grid grid-cols-2 gap-4 w-full h-full;
+  @apply grid grid-cols-2 w-full h-full;
+  gap: clamp(8px, 3cqw, 20px);
 }
 
 .gesture-card {
@@ -20,9 +22,14 @@
 .card-icon {
   @apply mb-2;
 }
+.card-icon svg {
+  width: clamp(32px, 10cqw, 96px);
+  height: clamp(32px, 10cqw, 96px);
+}
 
 .card-label {
-  @apply text-xl;
+  font-size: 1.25rem;
+  font-size: clamp(1rem, 3cqw, 2rem);
 }
 
 /* --- Vista de Tarjeta Seleccionada --- */
@@ -35,21 +42,28 @@
 }
 
 .selected-icon svg {
-  width: 96px;
-  height: 96px;
+  width: clamp(64px, 18cqw, 220px);
+  height: clamp(64px, 18cqw, 220px);
 }
 
 .selected-label {
-  @apply text-5xl font-extrabold my-4;
+  @apply font-extrabold my-4;
+  font-size: 2.5rem;
+  font-size: clamp(1.6rem, 6cqw, 4.5rem);
   text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
 }
 
 .selected-description {
-  @apply text-lg;
+  font-size: 1.125rem;
+  font-size: clamp(1rem, 3.2cqw, 2.2rem);
 }
 
 .back-button {
-  @apply absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/20 text-white text-xs font-semibold py-1 px-3 rounded-full;
+  @apply absolute left-1/2 -translate-x-1/2 bg-black/20 text-white font-semibold rounded-full;
+  bottom: clamp(8px, 2.5cqw, 16px);
+  font-size: 0.8rem;
+  font-size: clamp(0.7rem, 1.8cqw, 1rem);
+  padding: clamp(4px, 1.2cqw, 8px) clamp(10px, 2.5cqw, 18px);
 }
 
 

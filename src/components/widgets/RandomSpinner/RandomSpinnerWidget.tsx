@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import type { FC } from 'react';
 import type { WidgetConfig } from '../../../types';
-import { Trash2, Plus, Play, Expand, Minimize } from 'lucide-react';
+import { Trash2, Plus, Play, Expand, Minimize, Upload } from 'lucide-react';
 import { useLocalStorage } from '../../../hooks/useLocalStorage';
 import { useTranslation } from 'react-i18next';
 import './RandomSpinner.css';
+import { withBaseUrl } from '../../../utils/assetPaths';
 
 interface SpinnerOption {
   text: string;
@@ -34,9 +35,17 @@ export const RandomSpinnerWidget: FC = () => {
   const [editingText, setEditingText] = useState('');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [size, setSize] = useState(300);
+  const [removeAfterSelect, setRemoveAfterSelect] = useState(false);
+  const [pendingRemovalText, setPendingRemovalText] = useState<string | null>(null);
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const optionsRef = useRef(options);
+
+  useEffect(() => {
+    optionsRef.current = options;
+  }, [options]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -103,6 +112,26 @@ export const RandomSpinnerWidget: FC = () => {
     }
   };
 
+  const handleFileLoad = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = (e.target?.result ?? '') as string;
+      const lines = text
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .slice(0, 20);
+      setOptions(lines.map((line) => ({ text: line, color: getRandomColor() })));
+      setResult(null);
+      setEditingIndex(null);
+      setEditingText('');
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  };
+
   const removeOption = (index: number) => {
     setOptions(options.filter((_, i) => i !== index));
   };
@@ -123,7 +152,18 @@ export const RandomSpinnerWidget: FC = () => {
   };
 
   const spin = () => {
-    if (isSpinning || options.length < 2) return;
+    if (isSpinning) return;
+    let activeOptions = optionsRef.current;
+    if (removeAfterSelect && pendingRemovalText) {
+      const removalIndex = activeOptions.findIndex((option) => option.text === pendingRemovalText);
+      if (removalIndex !== -1) {
+        const nextOptions = activeOptions.filter((_, index) => index !== removalIndex);
+        setOptions(nextOptions);
+        activeOptions = nextOptions;
+      }
+      setPendingRemovalText(null);
+    }
+    if (activeOptions.length < 2) return;
     setIsSpinning(true);
     setResult(null);
     const spinAngleStart = Math.random() * 20 + 20;
@@ -143,9 +183,15 @@ export const RandomSpinnerWidget: FC = () => {
         requestAnimationFrame(animate);
       } else {
         const finalAngle = angle % (2 * Math.PI);
-        const arcSize = (2 * Math.PI) / options.length;
-        const winnerIndex = Math.floor(((2 * Math.PI) - finalAngle) / arcSize) % options.length;
-        setResult(options[winnerIndex].text);
+        const arcSize = (2 * Math.PI) / activeOptions.length;
+        const pointerAngle = -Math.PI / 2;
+        const normalizedAngle = ((pointerAngle - finalAngle) % (2 * Math.PI) + (2 * Math.PI)) % (2 * Math.PI);
+        const winnerIndex = Math.floor(normalizedAngle / arcSize) % activeOptions.length;
+        const winnerText = activeOptions[winnerIndex]?.text ?? null;
+        setResult(winnerText);
+        if (removeAfterSelect && winnerText) {
+          setPendingRemovalText(winnerText);
+        }
         setIsSpinning(false);
       }
     };
@@ -178,6 +224,18 @@ export const RandomSpinnerWidget: FC = () => {
         <div className="options-header">
             <h3>{t('widgets.random_spinner.options_header')}</h3>
         </div>
+        <label className="remove-selected">
+          <input
+            type="checkbox"
+            checked={removeAfterSelect}
+            onChange={(e) => {
+              const isChecked = e.target.checked;
+              setRemoveAfterSelect(isChecked);
+              if (!isChecked) setPendingRemovalText(null);
+            }}
+          />
+          {t('widgets.random_spinner.remove_after_select')}
+        </label>
         <div className="add-option">
           <input
             type="text"
@@ -189,6 +247,10 @@ export const RandomSpinnerWidget: FC = () => {
           />
           <button onClick={addOption}><Plus size={18} /></button>
         </div>
+        <button onClick={() => fileInputRef.current?.click()} className="upload-options-button">
+          <Upload size={16} /> {t('widgets.random_spinner.load_from_file')}
+        </button>
+        <input type="file" ref={fileInputRef} onChange={handleFileLoad} accept=".txt" className="hidden" />
         <ul className="options-list">
           {options.map((option, index) => (
             <li key={index} onDoubleClick={() => startEditing(index)}>
@@ -217,12 +279,12 @@ export const RandomSpinnerWidget: FC = () => {
 
 const WidgetIcon: FC = () => {
     const { t } = useTranslation();
-    return <img src="/icons/RandomSpinner.png" alt={t('widgets.random_spinner.icon_alt')} width="52" height="52" />;
+    return <img src={withBaseUrl('icons/RandomSpinner.png')} alt={t('widgets.random_spinner.icon_alt')} width="52" height="52" />;
 }
 
 export const widgetConfig: Omit<WidgetConfig, 'component'> = {
   id: 'random-spinner',
   title: 'widgets.random_spinner.title',
   icon: <WidgetIcon />,
-  defaultSize: { width: 550, height: 420 },
+  defaultSize: { width: 720, height: 420 },
 };

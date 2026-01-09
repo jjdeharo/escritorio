@@ -1,18 +1,32 @@
 .sound-meter-widget {
   @apply w-full h-full flex items-center justify-center p-4 bg-gray-200 text-white overflow-hidden;
+  container-type: size;
 }
 
 /* --- Pantalla de Permisos (sin cambios) --- */
 .permission-screen {
   @apply flex flex-col items-center justify-center text-center gap-4 text-text-dark;
 }
+.permission-screen svg {
+  width: clamp(36px, 10cqw, 80px);
+  height: clamp(36px, 10cqw, 80px);
+}
+.permission-screen p {
+  font-size: 1.1rem;
+  font-size: clamp(1rem, 3cqw, 1.6rem);
+}
 
 .permission-button {
   @apply bg-accent text-text-dark font-semibold py-2 px-4 rounded-lg hover:bg-[#8ec9c9] transition-colors;
+  font-size: 0.95rem;
+  font-size: clamp(0.9rem, 2.5cqw, 1.2rem);
+  padding: clamp(8px, 2cqw, 14px) clamp(12px, 3cqw, 20px);
 }
 
 .permission-screen small {
-    @apply text-xs text-gray-500 max-w-xs;
+    @apply text-gray-500 max-w-xs;
+    font-size: 0.75rem;
+    font-size: clamp(0.7rem, 1.8cqw, 0.95rem);
 }
 
 /* --- Tarjetas de Nivel de Ruido --- */
@@ -23,12 +37,15 @@
 }
 
 .level-card .emoji {
-  @apply text-8xl;
+  font-size: 5rem;
+  font-size: clamp(3.5rem, 16cqw, 8rem);
   filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
 }
 
 .level-card .label {
-  @apply text-4xl font-extrabold;
+  @apply font-extrabold;
+  font-size: 2rem;
+  font-size: clamp(1.6rem, 6cqw, 3.5rem);
   text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
 }
 

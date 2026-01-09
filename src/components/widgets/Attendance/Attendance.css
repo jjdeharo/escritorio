@@ -1,5 +1,6 @@
 .attendance-widget {
   @apply w-full h-full flex flex-col bg-gray-100;
+  container-type: size;
 }
 
 .main-content {
@@ -9,12 +10,19 @@
 
 .date-controls {
   @apply flex-shrink-0 p-2 flex items-center gap-2 border-b border-gray-200;
+  padding: clamp(8px, 2.2cqw, 14px);
+  gap: clamp(6px, 2cqw, 12px);
 }
 .date-controls label {
   @apply font-semibold text-sm text-gray-700;
+  font-size: 0.85rem;
+  font-size: clamp(0.8rem, 2.2cqw, 1rem);
 }
 .date-controls input {
   @apply bg-white border border-gray-300 rounded px-2 py-1 text-sm;
+  padding: clamp(4px, 1.4cqw, 8px) clamp(6px, 2cqw, 12px);
+  font-size: 0.85rem;
+  font-size: clamp(0.8rem, 2.2cqw, 1rem);
 }
 
 .tabs {
@@ -22,6 +30,10 @@
 }
 .tabs button {
   @apply w-1/3 p-3 font-semibold text-gray-500 bg-gray-200 flex items-center justify-center gap-2;
+  padding: clamp(8px, 2.4cqw, 14px);
+  gap: clamp(6px, 1.8cqw, 10px);
+  font-size: 0.85rem;
+  font-size: clamp(0.8rem, 2.2cqw, 1rem);
 }
 .tabs button.active {
   @apply bg-gray-100 text-accent;
@@ -29,10 +41,12 @@
 
 .content-area {
   @apply flex-grow p-2 overflow-y-auto;
+  padding: clamp(8px, 2.2cqw, 14px);
 }
 
 .empty-state {
   @apply h-full flex flex-col items-center justify-center text-center text-gray-500;
+  font-size: clamp(0.9rem, 2.4cqw, 1.2rem);
 }
 
 .student-list {
@@ -40,9 +54,12 @@
 }
 .student-item {
   @apply flex items-center justify-between p-3 bg-white rounded-lg shadow-sm;
+  padding: clamp(8px, 2.2cqw, 14px);
 }
 .student-name {
   @apply font-bold text-text-dark;
+  font-size: 0.95rem;
+  font-size: clamp(0.9rem, 2.4cqw, 1.2rem);
 }
 
 /* --- ESTA ES LA SECCIÓN CORREGIDA CON CSS PURO --- */
@@ -55,6 +72,9 @@
 
 .status-btn {
   @apply px-2 py-1 text-xs font-bold rounded-full transition-colors border-2;
+  padding: clamp(4px, 1.2cqw, 8px) clamp(8px, 2cqw, 12px);
+  font-size: 0.75rem;
+  font-size: clamp(0.7rem, 1.8cqw, 0.95rem);
 }
 .status-btn.present { @apply border-green-500 text-green-600; }
 .status-btn.absent { @apply border-red-500 text-red-600; }
@@ -66,6 +86,9 @@
 
 .badge-btn, .alert-btn {
   @apply text-2xl rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200;
+  width: clamp(28px, 6cqw, 44px);
+  height: clamp(28px, 6cqw, 44px);
+  font-size: clamp(1rem, 3.2cqw, 1.8rem);
   opacity: 0.3;
 }
 .badge-btn.active, .alert-btn.active {
@@ -79,6 +102,8 @@
 
 .footer {
   @apply flex-shrink-0 p-2 bg-gray-200 border-t border-gray-300 flex items-center gap-2;
+  padding: clamp(8px, 2.2cqw, 14px);
+  gap: clamp(6px, 2cqw, 12px);
 }
 
 .add-student-form {
@@ -86,16 +111,22 @@
 }
 .add-student-form input {
   @apply flex-grow bg-white border-2 border-r-0 border-gray-300 rounded-l-lg p-2 focus:border-accent outline-none text-sm;
+  padding: clamp(6px, 1.8cqw, 12px);
+  font-size: 0.85rem;
+  font-size: clamp(0.8rem, 2.2cqw, 1rem);
 }
 .add-student-form button {
   @apply p-2 bg-accent text-text-dark rounded-r-lg hover:bg-[#8ec9c9];
+  padding: clamp(6px, 1.8cqw, 12px);
 }
 
 .actions-group {
   @apply flex items-center gap-1;
+  gap: clamp(4px, 1.6cqw, 8px);
 }
 .action-btn {
   @apply p-2 rounded-lg text-gray-600 hover:bg-gray-300;
+  padding: clamp(6px, 1.8cqw, 12px);
 }
 .action-btn.danger:hover {
   @apply bg-red-500 text-white;

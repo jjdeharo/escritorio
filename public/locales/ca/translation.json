@@ -76,6 +76,16 @@
     "open_knowledge_adherence": "Aquest projecte s'adhereix al",
     "open_knowledge_decalogue": "Decàleg del Coneixement Obert"
   },
+  "context_menu": {
+    "new_widget": "Nou widget...",
+    "settings": "Configuració",
+    "manage_profiles": "Gestionar perfils",
+    "change_background": "Canvia fons...",
+    "show_toolbar": "Mostra la barra inferior",
+    "hide_toolbar": "Amaga la barra inferior",
+    "reset_layout": "Tancar totes les finestres",
+    "reset_layout_confirm": "Vols tancar totes les finestres de l'escriptori?"
+  },
   "widgets": {
     "attendance": {
       "title": "Control d'Assistència",
@@ -107,8 +117,42 @@
       "no_students_message": "No hi ha estudiants a la llista per a aquesta data.",
       "add_students_instruction": "Afegeix estudiants o importa un fitxer CSV."
     },
-    "scientific_calculator": { "title": "Calculadora Científica" },
-    "calendar": { "title": "Calendari" },
+    "scientific_calculator": {
+      "title": "Calculadora Científica",
+      "basic": "Bàsica",
+      "standard": "Est",
+      "scientific": "Científica",
+      "history": "Historial",
+      "no_history": "No hi ha historial.",
+      "error": "Error",
+      "infinity": "Infinit"
+    },
+    "calendar": {
+      "title": "Calendari",
+      "days": [
+        "Dl",
+        "Dt",
+        "Dc",
+        "Dj",
+        "Dv",
+        "Ds",
+        "Dg"
+      ],
+      "months": [
+        "gener",
+        "febrer",
+        "març",
+        "abril",
+        "maig",
+        "juny",
+        "juliol",
+        "agost",
+        "setembre",
+        "octubre",
+        "novembre",
+        "desembre"
+      ]
+    },
     "image_carousel": {
       "title": "Carrusel d'Imatges",
       "no_images": "No hi ha imatges carregades.",
@@ -148,7 +192,13 @@
       "lap": "Volta",
       "reset": "Reiniciar"
     },
-    "dice": { "title": "Daus 3D" },
+    "dice": {
+      "title": "Daus 3D",
+      "num_dice": "Nombre de Daus:",
+      "rolling": "Llançant...",
+      "roll_dice": "Llançar Daus",
+      "total": "Total:"
+    },
     "group_generator": {
       "title": "Generador de Grups",
       "student_list_label": "Llista d'Estudiants",
@@ -158,6 +208,8 @@
       "students_per_group": "Estudiants per Grup",
       "generate_groups": "Generar Grups",
       "generated_groups_label": "Grups Generats",
+      "view_large": "Veure en gran",
+      "close_large_view": "Tancar vista gran",
       "group_title": "Grup {{number}}",
       "no_groups_message": "Els grups apareixeran aquí."
     },
@@ -261,7 +313,9 @@
       "play_again": "Jugar de Nou",
       "icon_alt": "Memorama"
     },
-    "metronome": { "title": "Metrònom" },
+    "metronome": {
+      "title": "Metrònom"
+    },
     "notepad": {
       "title": "Bloc de Notes",
       "icon_alt": "Bloc de notes",
@@ -317,15 +371,23 @@
       "title": "Ruleta Aleatòria",
       "icon_alt": "Ruleta Aleatòria",
       "default_options": [
-        { "text": "Opció 1" },
-        { "text": "Opció 2" },
-        { "text": "Opció 3" }
+        {
+          "text": "Opció 1"
+        },
+        {
+          "text": "Opció 2"
+        },
+        {
+          "text": "Opció 3"
+        }
       ],
       "result_overlay_text": "Fes clic per tornar a girar",
       "fullscreen_button_title": "Ampliar ruleta",
       "restore_view_button_title": "Restaurar vista",
       "options_header": "Opcions",
-      "add_option_placeholder": "Afegir opció..."
+      "add_option_placeholder": "Afegir opció...",
+      "load_from_file": "Carrega des d'un fitxer",
+      "remove_after_select": "Elimina l'opció en sortir"
     },
     "traffic_light": {
       "title": "Semàfor",
@@ -382,18 +444,6 @@
       "pan_mode": "Activar mode navegació",
       "exit_pan": "Sortir del mode navegació",
       "center_view": "Centrar vista"
-    },
-    "calendar": {
-      "title": "Calendari",
-      "days": ["Dl", "Dt", "Dc", "Dj", "Dv", "Ds", "Dg"],
-      "months": ["gener", "febrer", "març", "abril", "maig", "juny", "juliol", "agost", "setembre", "octubre", "novembre", "desembre"]
-    },
-    "dice": {
-      "title": "Daus 3D",
-      "num_dice": "Nombre de Daus:",
-      "rolling": "Llançant...",
-      "roll_dice": "Llançar Daus",
-      "total": "Total:"
     }
   }
 }

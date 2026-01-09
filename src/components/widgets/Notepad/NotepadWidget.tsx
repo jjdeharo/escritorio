@@ -7,6 +7,7 @@ import TurndownService from 'turndown';
 import { useLocalStorage } from '../../../hooks/useLocalStorage';
 import type { WidgetConfig } from '../../../types';
 import { useTranslation } from 'react-i18next';
+import { withBaseUrl } from '../../../utils/assetPaths';
 import './Notepad.css';
 import {
   Bold,
@@ -133,7 +134,7 @@ export const NotepadWidget: React.FC = () => {
 
 const WidgetIcon: React.FC = () => {
     const { t } = useTranslation();
-    return <img src="/icons/Notepad.png" alt={t('widgets.notepad.icon_alt')} width="52" height="52" />;
+    return <img src={withBaseUrl('icons/Notepad.png')} alt={t('widgets.notepad.icon_alt')} width="52" height="52" />;
 }
 
 export const widgetConfig: Omit<WidgetConfig, 'component'> = {
