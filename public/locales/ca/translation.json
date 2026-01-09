@@ -94,6 +94,8 @@
     "settings": "Configuració",
     "manage_profiles": "Gestionar perfils",
     "change_background": "Canvia fons...",
+    "show_datetime": "Mostrar data i hora",
+    "hide_datetime": "Amagar data i hora",
     "show_toolbar": "Mostra la barra inferior",
     "hide_toolbar": "Amaga la barra inferior",
     "reset_layout": "Tancar totes les finestres",

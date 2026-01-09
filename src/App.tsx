@@ -37,6 +37,14 @@ const DesktopUI: React.FC<{
         const newProfileData: DesktopProfile = { ...activeProfile, pinnedWidgets: updatedPinned };
         setProfiles(prev => ({ ...prev, [activeProfileName]: newProfileData }));
     };
+    const toggleDateTime = () => {
+        const nextShowDateTime = !showDateTime;
+        const newProfileData: DesktopProfile = {
+            ...activeProfile,
+            theme: { ...activeProfile.theme, showDateTime: nextShowDateTime },
+        };
+        setProfiles(prev => ({ ...prev, [activeProfileName]: newProfileData }));
+    };
 
     const [highestZ, setHighestZ] = useState(100);
     const [isSettingsOpen, setSettingsOpen] = useState(false);
@@ -360,6 +368,16 @@ const DesktopUI: React.FC<{
                     >
                         <Image size={16} />
                         {t('context_menu.change_background')}
+                    </button>
+                    <button
+                        className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
+                        onClick={() => {
+                            toggleDateTime();
+                            setContextMenu(prev => ({ ...prev, isOpen: false }));
+                        }}
+                    >
+                        {showDateTime ? <EyeOff size={16} /> : <Eye size={16} />}
+                        {showDateTime ? t('context_menu.hide_datetime') : t('context_menu.show_datetime')}
                     </button>
                     <button
                         className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"

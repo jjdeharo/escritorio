@@ -96,6 +96,8 @@
     "settings": "Definições",
     "manage_profiles": "Gerir perfis",
     "change_background": "Mudar fundo...",
+    "show_datetime": "Mostrar data e hora",
+    "hide_datetime": "Ocultar data e hora",
     "show_toolbar": "Mostrar barra inferior",
     "hide_toolbar": "Ocultar barra inferior",
     "reset_layout": "Fechar todas as janelas",

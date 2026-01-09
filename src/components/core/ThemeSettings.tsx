@@ -42,6 +42,19 @@ export const ThemeSettings: React.FC = () => {
 
   return (
     <div className="p-4 space-y-6">
+      <div className="flex items-center justify-between p-3 bg-white/70 border border-gray-200 rounded-lg">
+        <div>
+          <p className="font-semibold text-sm">{t('settings.theme.show_datetime_label')}</p>
+          <p className="text-xs text-gray-500">{t('settings.theme.show_datetime_help')}</p>
+        </div>
+        <input
+          type="checkbox"
+          checked={Boolean(theme.showDateTime ?? true)}
+          onChange={handleDateTimeToggle}
+          className="h-5 w-5"
+        />
+      </div>
+
       <div>
         <h3 className="text-lg font-semibold mb-2">{t('settings.theme.theme_colors_title')}</h3>
         <div className="grid grid-cols-2 gap-4">
@@ -105,19 +118,6 @@ export const ThemeSettings: React.FC = () => {
           onChange={handleWallpaperUpload}
           accept="image/*"
           className="hidden"
-        />
-      </div>
-
-      <div className="flex items-center justify-between p-3 bg-white/70 border border-gray-200 rounded-lg">
-        <div>
-          <p className="font-semibold text-sm">{t('settings.theme.show_datetime_label')}</p>
-          <p className="text-xs text-gray-500">{t('settings.theme.show_datetime_help')}</p>
-        </div>
-        <input
-          type="checkbox"
-          checked={Boolean(theme.showDateTime ?? true)}
-          onChange={handleDateTimeToggle}
-          className="h-5 w-5"
         />
       </div>
       

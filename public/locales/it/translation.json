@@ -94,6 +94,8 @@
     "settings": "Impostazioni",
     "manage_profiles": "Gestisci profili",
     "change_background": "Cambia sfondo...",
+    "show_datetime": "Mostra data e ora",
+    "hide_datetime": "Nascondi data e ora",
     "show_toolbar": "Mostra barra inferiore",
     "hide_toolbar": "Nascondi barra inferiore",
     "reset_layout": "Chiudi tutte le finestre",

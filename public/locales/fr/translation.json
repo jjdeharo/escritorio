@@ -95,6 +95,8 @@
     "settings": "Paramètres",
     "manage_profiles": "Gérer les profils",
     "change_background": "Changer le fond...",
+    "show_datetime": "Afficher la date et l'heure",
+    "hide_datetime": "Masquer la date et l'heure",
     "show_toolbar": "Afficher la barre inférieure",
     "hide_toolbar": "Masquer la barre inférieure",
     "reset_layout": "Fermer toutes les fenêtres",

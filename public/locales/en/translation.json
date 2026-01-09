@@ -94,6 +94,8 @@
     "settings": "Settings",
     "manage_profiles": "Manage profiles",
     "change_background": "Change background...",
+    "show_datetime": "Show date and time",
+    "hide_datetime": "Hide date and time",
     "show_toolbar": "Show bottom bar",
     "hide_toolbar": "Hide bottom bar",
     "reset_layout": "Close all windows",
