@@ -52,7 +52,7 @@ export const ThemeSettings: React.FC = () => {
                 type="color"
                 id={id}
                 name={id}
-                value={theme[id as keyof typeof theme]}
+                value={theme[id as keyof typeof theme] as string}
                 onChange={handleColorChange}
                 className="w-10 h-10 rounded-full border-none cursor-pointer"
               />
@@ -115,7 +115,7 @@ export const ThemeSettings: React.FC = () => {
         </div>
         <input
           type="checkbox"
-          checked={theme.showDateTime ?? true}
+          checked={Boolean(theme.showDateTime ?? true)}
           onChange={handleDateTimeToggle}
           className="h-5 w-5"
         />
