@@ -8,7 +8,6 @@ import { WidgetWindow } from './components/core/WidgetWindow';
 import { Toolbar } from './components/core/Toolbar';
 import { SettingsModal } from './components/core/SettingsModal';
 import { CreditsModal } from './components/core/CreditsModal';
-import { HelpModal } from './components/core/HelpModal';
 import { AboutModal } from './components/core/AboutModal';
 import { ThemeProvider, defaultTheme, type Theme } from './context/ThemeContext';
 import type { ActiveWidget, DesktopProfile, ProfileCollection } from './types';
@@ -53,6 +52,7 @@ const DesktopUI: React.FC<{
     const [isHelpOpen, setIsHelpOpen] = useState(false);
     const [isCreditsOpen, setIsCreditsOpen] = useState(false);
     const [isAboutOpen, setIsAboutOpen] = useState(false);
+    const helpMenuRef = useRef<HTMLDivElement>(null);
     const [settingsInitialTab, setSettingsInitialTab] = useState<'general' | 'profiles' | 'widgets' | 'theme'>('general');
     const [isToolbarHidden, setToolbarHidden] = useLocalStorage<boolean>('toolbar-hidden', false);
     const [contextMenu, setContextMenu] = useState<{ isOpen: boolean; x: number; y: number; widgetId: string | null }>({
@@ -194,6 +194,25 @@ const DesktopUI: React.FC<{
     }, []);
 
     useEffect(() => {
+        if (!isHelpOpen) return;
+        const handlePointerDown = (event: MouseEvent) => {
+            if (helpMenuRef.current && helpMenuRef.current.contains(event.target as Node)) return;
+            setIsHelpOpen(false);
+        };
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setIsHelpOpen(false);
+            }
+        };
+        window.addEventListener('mousedown', handlePointerDown);
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('mousedown', handlePointerDown);
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isHelpOpen]);
+
+    useEffect(() => {
         const handleResize = () => {
             setActiveWidgets(prev => prev.map(clampWidgetToViewport));
         };
@@ -316,33 +335,47 @@ const DesktopUI: React.FC<{
                 />
             )}
             <button
-                onClick={() => setIsHelpOpen(true)}
+                onClick={() => setIsHelpOpen((prev) => !prev)}
                 onContextMenu={(event) => handleContextMenu(event, undefined, true)}
                 className="fixed bottom-4 left-4 z-[9999] p-3 bg-black/20 backdrop-blur-md rounded-full text-white hover:bg-black/40 transition-colors"
                 title={t('help.tooltip')}
             >
                 <HelpCircle size={24} />
             </button>
-            <HelpModal
-                isOpen={isHelpOpen}
-                onClose={() => setIsHelpOpen(false)}
-                onOpenGuide={() => {
-                    addWidget('program-guide');
-                    setIsHelpOpen(false);
-                }}
-                onOpenCatalog={() => {
-                    openSettingsTab('widgets');
-                    setIsHelpOpen(false);
-                }}
-                onOpenAbout={() => {
-                    setIsAboutOpen(true);
-                    setIsHelpOpen(false);
-                }}
-                onOpenLicenses={() => {
-                    setIsCreditsOpen(true);
-                    setIsHelpOpen(false);
-                }}
-            />
+            {isHelpOpen && (
+                <div
+                    ref={helpMenuRef}
+                    className="fixed bottom-20 left-4 z-[10001] w-64 bg-white/95 backdrop-blur-md rounded-lg shadow-xl border border-gray-200 py-2 text-sm text-text-dark"
+                >
+                    <button
+                        className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                        onClick={() => {
+                            addWidget('program-guide');
+                            setIsHelpOpen(false);
+                        }}
+                    >
+                        {t('help.guide')}
+                    </button>
+                    <button
+                        className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                        onClick={() => {
+                            setIsAboutOpen(true);
+                            setIsHelpOpen(false);
+                        }}
+                    >
+                        {t('help.about')}
+                    </button>
+                    <button
+                        className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                        onClick={() => {
+                            setIsCreditsOpen(true);
+                            setIsHelpOpen(false);
+                        }}
+                    >
+                        {t('help.licenses')}
+                    </button>
+                </div>
+            )}
             <AboutModal
                 isOpen={isAboutOpen}
                 onClose={() => setIsAboutOpen(false)}

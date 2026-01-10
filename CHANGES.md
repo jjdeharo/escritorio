@@ -1,5 +1,8 @@
 # Cambios realizados
 
+## Nota de mantenimiento
+- Actualiza `about.version_value` (i18n) con el número de versión y la fecha del último deploy.
+
 ## Ruleta (Random Spinner)
 - Corrección del nombre ganador para que coincida con la flecha del puntero.
 - Carga de opciones desde archivo .txt (una línea por opción), con botón de subida.
