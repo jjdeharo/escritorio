@@ -68,6 +68,52 @@
     "widgetLibrary": "Widget-Bibliothek",
     "remove_widget": "Dieses Widget entfernen"
   },
+  "help": {
+    "tooltip": "Hilfe",
+    "title": "Hilfe",
+    "guide": "Benutzerhandbuch",
+    "catalog": "Widget-Katalog",
+    "about": "Über das Projekt",
+    "licenses": "Credits und Lizenzen"
+  },
+  "about": {
+    "title": "Über das Projekt",
+    "app_name_label": "Name der Anwendung",
+    "app_name_value": "Digitaler Desktop für den Unterricht",
+    "version_label": "Version",
+    "version_value": "v1.0.9 — Januar 2026",
+    "history_title": "Projektverlauf",
+    "initial_title": "Ursprüngliches Projekt",
+    "initial_text": "Idee und erste Version: María Teresa González. Grundversion des interaktiven Klassenraum-Desktops.",
+    "original_app_label": "Originalanwendung:",
+    "development_title": "Funktionale Weiterentwicklung",
+    "development_text": "Transformation des ersten Prototyps in eine einsatzfähige Anwendung: Pablo G. Guízar.",
+    "continuity_title": "Aktualisierung und Kontinuität",
+    "continuity_text": "Wartung und Weiterentwicklung der aktuellen Version: Juan José de Haro und Pablo G. Guízar.",
+    "community_title": "Community",
+    "community_text": "Dieses Projekt ist Teil des Repositoriums für Bildungsanwendungen der Community Vibe Coding Educativo.",
+    "community_repo_label": "Anwendungs-Repository:",
+    "community_telegram_label": "Telegram-Community:"
+  },
+  "licenses": {
+    "title": "Credits und Lizenzen",
+    "code_title": "Code-Lizenz",
+    "code_text": "Dieses Programm wird unter folgender Lizenz verbreitet:",
+    "code_license_name": "GNU Affero General Public License v3 (AGPL-3.0)",
+    "code_license_desc": "Erlaubt Nutzung, Änderung und Weitergabe der Software unter derselben Lizenz.",
+    "code_link_label": "Offizieller Lizenztext",
+    "content_title": "Inhaltslizenz",
+    "content_text": "Die in der Anwendung enthaltenen Inhalte (Texte, Materialien und didaktische Ressourcen) werden veröffentlicht unter:",
+    "content_license_name": "Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0)",
+    "content_link_label": "Offizieller Lizenztext",
+    "external_title": "Externe Ressourcen",
+    "external_text": "Diese Anwendung kann Bibliotheken, Icons oder Schriften von Drittanbietern enthalten, jeweils mit eigener Lizenz, verfügbar im Projekt-Repository.",
+    "repo_link_label": "Projekt-Repository",
+    "principles_title": "Prinzipien",
+    "principles_text": "Dieses Projekt bekennt sich zum:",
+    "principles_name": "Dekalog des Offenen Wissens",
+    "principles_link_label": "Dekalog ansehen"
+  },
   "desktop": {
     "fullscreen_enter": "Vollbildmodus",
     "fullscreen_exit": "Vollbild verlassen"

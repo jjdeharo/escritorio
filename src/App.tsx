@@ -8,6 +8,8 @@ import { WidgetWindow } from './components/core/WidgetWindow';
 import { Toolbar } from './components/core/Toolbar';
 import { SettingsModal } from './components/core/SettingsModal';
 import { CreditsModal } from './components/core/CreditsModal';
+import { HelpModal } from './components/core/HelpModal';
+import { AboutModal } from './components/core/AboutModal';
 import { ThemeProvider, defaultTheme, type Theme } from './context/ThemeContext';
 import type { ActiveWidget, DesktopProfile, ProfileCollection } from './types';
 import { HelpCircle, PlusSquare, Settings, Image, Eye, EyeOff, X, Users, Maximize2, Minimize2, PinOff } from 'lucide-react';
@@ -48,7 +50,9 @@ const DesktopUI: React.FC<{
 
     const [highestZ, setHighestZ] = useState(100);
     const [isSettingsOpen, setSettingsOpen] = useState(false);
+    const [isHelpOpen, setIsHelpOpen] = useState(false);
     const [isCreditsOpen, setIsCreditsOpen] = useState(false);
+    const [isAboutOpen, setIsAboutOpen] = useState(false);
     const [settingsInitialTab, setSettingsInitialTab] = useState<'general' | 'profiles' | 'widgets' | 'theme'>('general');
     const [isToolbarHidden, setToolbarHidden] = useLocalStorage<boolean>('toolbar-hidden', false);
     const [contextMenu, setContextMenu] = useState<{ isOpen: boolean; x: number; y: number; widgetId: string | null }>({
@@ -312,13 +316,37 @@ const DesktopUI: React.FC<{
                 />
             )}
             <button
-                onClick={() => setIsCreditsOpen(true)}
+                onClick={() => setIsHelpOpen(true)}
                 onContextMenu={(event) => handleContextMenu(event, undefined, true)}
                 className="fixed bottom-4 left-4 z-[9999] p-3 bg-black/20 backdrop-blur-md rounded-full text-white hover:bg-black/40 transition-colors"
-                title={t('credits.tooltip')}
+                title={t('help.tooltip')}
             >
                 <HelpCircle size={24} />
             </button>
+            <HelpModal
+                isOpen={isHelpOpen}
+                onClose={() => setIsHelpOpen(false)}
+                onOpenGuide={() => {
+                    addWidget('program-guide');
+                    setIsHelpOpen(false);
+                }}
+                onOpenCatalog={() => {
+                    openSettingsTab('widgets');
+                    setIsHelpOpen(false);
+                }}
+                onOpenAbout={() => {
+                    setIsAboutOpen(true);
+                    setIsHelpOpen(false);
+                }}
+                onOpenLicenses={() => {
+                    setIsCreditsOpen(true);
+                    setIsHelpOpen(false);
+                }}
+            />
+            <AboutModal
+                isOpen={isAboutOpen}
+                onClose={() => setIsAboutOpen(false)}
+            />
             <SettingsModal
                 isOpen={isSettingsOpen}
                 onClose={() => setSettingsOpen(false)}
@@ -333,7 +361,6 @@ const DesktopUI: React.FC<{
             <CreditsModal
                 isOpen={isCreditsOpen}
                 onClose={() => setIsCreditsOpen(false)}
-                onOpenGuide={() => addWidget('program-guide')}
             />
             
             {/* --- ¡AQUÍ ESTÁ EL CAMBIO! Añadimos el nuevo componente a la interfaz --- */}

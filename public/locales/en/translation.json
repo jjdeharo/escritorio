@@ -68,6 +68,52 @@
     "widgetLibrary": "Widget Library",
     "remove_widget": "Remove this widget"
   },
+  "help": {
+    "tooltip": "Help",
+    "title": "Help",
+    "guide": "User guide",
+    "catalog": "Widget catalog",
+    "about": "About the project",
+    "licenses": "Credits and licenses"
+  },
+  "about": {
+    "title": "About the project",
+    "app_name_label": "Application name",
+    "app_name_value": "Digital desktop for the classroom",
+    "version_label": "Version",
+    "version_value": "v1.0.9 — January 2026",
+    "history_title": "Project history",
+    "initial_title": "Initial project",
+    "initial_text": "Idea and first version: María Teresa González. Basic version of the interactive classroom desktop.",
+    "original_app_label": "Original application:",
+    "development_title": "Functional development",
+    "development_text": "Transformation of the initial prototype into an operational application: Pablo G. Guízar.",
+    "continuity_title": "Update and continuity",
+    "continuity_text": "Maintenance and development of the current version: Juan José de Haro and Pablo G. Guízar.",
+    "community_title": "Community",
+    "community_text": "This project is part of the Educational Apps Repository of the Vibe Coding Educativo community.",
+    "community_repo_label": "Applications repository:",
+    "community_telegram_label": "Telegram community:"
+  },
+  "licenses": {
+    "title": "Credits and licenses",
+    "code_title": "Code license",
+    "code_text": "This program is distributed under the license:",
+    "code_license_name": "GNU Affero General Public License v3 (AGPL-3.0)",
+    "code_license_desc": "It allows using, modifying, and redistributing the software under the same license.",
+    "code_link_label": "Official license text",
+    "content_title": "Content license",
+    "content_text": "The contents included in the application (texts, materials, and educational resources) are published under:",
+    "content_license_name": "Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0)",
+    "content_link_label": "Official license text",
+    "external_title": "External resources",
+    "external_text": "This application may include third-party libraries, icons, or fonts, each with its own license, available in the project repository.",
+    "repo_link_label": "Project repository",
+    "principles_title": "Principles",
+    "principles_text": "This project adheres to:",
+    "principles_name": "Open Knowledge Decalogue",
+    "principles_link_label": "View the decalogue"
+  },
   "desktop": {
     "fullscreen_enter": "Enter fullscreen",
     "fullscreen_exit": "Exit fullscreen"
