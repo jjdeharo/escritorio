@@ -22,7 +22,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ pinnedWidgets, onWidgetClick, 
 
   return (
     <div
-      className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-widget-bg p-2 rounded-2xl flex items-center gap-2 shadow-lg z-[10000] border border-custom-border"
+      className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-widget-bg p-2 rounded-2xl flex items-center gap-2 shadow-lg z-[10000] border border-custom-border max-w-[calc(100vw-1rem)] overflow-x-auto"
       onContextMenu={handleBarContextMenu}
     >
       {pinnedWidgets.map(widgetId => {
@@ -34,7 +34,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ pinnedWidgets, onWidgetClick, 
             onClick={() => onWidgetClick(widget.id)}
             onContextMenu={(event) => onOpenContextMenu(event, widget.id)}
             data-widget-button="true"
-            className="w-14 h-14 bg-accent text-2xl rounded-lg flex items-center justify-center hover:brightness-110 transition-all duration-200 hover:scale-110"
+            className="w-14 h-14 bg-accent text-2xl rounded-lg flex items-center justify-center hover:brightness-110 transition-all duration-200 hover:scale-110 flex-shrink-0"
             title={t(widget.title)}
           >
             {widget.icon}
@@ -45,7 +45,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ pinnedWidgets, onWidgetClick, 
       <button
         onClick={onWidgetsClick}
         onContextMenu={(event) => onOpenContextMenu(event, undefined, true)}
-        className="w-10 h-10 rounded-full text-text-light bg-black/20 hover:bg-black/30 transition-all duration-200 flex items-center justify-center"
+        className="w-10 h-10 rounded-full text-text-light bg-black/20 hover:bg-black/30 transition-all duration-200 flex items-center justify-center flex-shrink-0"
         title={t('toolbar.widgetLibrary')}
         aria-label={t('toolbar.widgetLibrary')}
       >
@@ -54,7 +54,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ pinnedWidgets, onWidgetClick, 
       <button
         onClick={onSettingsClick}
         onContextMenu={(event) => onOpenContextMenu(event, undefined, true)}
-        className="w-14 h-14 text-white text-2xl rounded-lg flex items-center justify-center hover:bg-black/20 transition-all duration-200 hover:scale-110"
+        className="w-14 h-14 text-white text-2xl rounded-lg flex items-center justify-center hover:bg-black/20 transition-all duration-200 hover:scale-110 flex-shrink-0"
         title={t('toolbar.settings')}
       >
         <img src={withBaseUrl('icons/Settings.png')} alt={t('toolbar.settings')} width="52" height="52" />

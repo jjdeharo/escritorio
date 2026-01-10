@@ -61,22 +61,56 @@ const DesktopUI: React.FC<{
     const [showStorageWarning, setShowStorageWarning] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(!!document.fullscreenElement);
 
+    const getViewportBounds = () => {
+        const margin = 16;
+        const maxWidth = Math.max(200, window.innerWidth - margin * 2);
+        const maxHeight = Math.max(150, window.innerHeight - margin * 2);
+        return { margin, maxWidth, maxHeight };
+    };
+
+    const clampWidgetToViewport = (widget: ActiveWidget): ActiveWidget => {
+        if (widget.isMaximized) return widget;
+        const { margin, maxWidth, maxHeight } = getViewportBounds();
+        const widthValue = typeof widget.size.width === 'number' ? Math.min(widget.size.width, maxWidth) : widget.size.width;
+        const heightValue = typeof widget.size.height === 'number' ? Math.min(widget.size.height, maxHeight) : widget.size.height;
+        const numericWidth = typeof widthValue === 'number' ? widthValue : maxWidth;
+        const numericHeight = typeof heightValue === 'number' ? heightValue : maxHeight;
+        const maxX = Math.max(margin, window.innerWidth - numericWidth - margin);
+        const maxY = Math.max(margin, window.innerHeight - numericHeight - margin);
+        const x = Math.min(Math.max(widget.position.x, margin), maxX);
+        const y = Math.min(Math.max(widget.position.y, margin), maxY);
+        return {
+            ...widget,
+            size: { width: widthValue, height: heightValue },
+            position: { x, y },
+        };
+    };
+
     const addWidget = (widgetId: string) => {
         const widgetConfig = WIDGET_REGISTRY[widgetId];
         if (!widgetConfig) return;
         const newZ = highestZ + 1;
         setHighestZ(newZ);
-        const maxX = window.innerWidth - (widgetConfig.defaultSize.width as number);
-        const maxY = window.innerHeight - (widgetConfig.defaultSize.height as number) - 80;
+        const { margin, maxWidth, maxHeight } = getViewportBounds();
+        const widthValue = typeof widgetConfig.defaultSize.width === 'number'
+            ? Math.min(widgetConfig.defaultSize.width, maxWidth)
+            : widgetConfig.defaultSize.width;
+        const heightValue = typeof widgetConfig.defaultSize.height === 'number'
+            ? Math.min(widgetConfig.defaultSize.height, maxHeight)
+            : widgetConfig.defaultSize.height;
+        const numericWidth = typeof widthValue === 'number' ? widthValue : maxWidth;
+        const numericHeight = typeof heightValue === 'number' ? heightValue : maxHeight;
+        const maxX = Math.max(margin, window.innerWidth - numericWidth - margin);
+        const maxY = Math.max(margin, window.innerHeight - numericHeight - margin);
 
         const newWidget: ActiveWidget = {
             instanceId: `${widgetId}-${Date.now()}`,
             widgetId: widgetId,
             position: { 
-                x: Math.max(0, Math.random() * maxX), 
-                y: Math.max(0, Math.random() * maxY) 
+                x: Math.max(margin, Math.random() * maxX), 
+                y: Math.max(margin, Math.random() * maxY) 
             },
-            size: widgetConfig.defaultSize,
+            size: { width: widthValue, height: heightValue },
             zIndex: newZ,
         };
         setActiveWidgets(prev => [...prev, newWidget]);
@@ -154,6 +188,18 @@ const DesktopUI: React.FC<{
         window.addEventListener('storage-quota-exceeded', handleStorageWarning);
         return () => window.removeEventListener('storage-quota-exceeded', handleStorageWarning);
     }, []);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setActiveWidgets(prev => prev.map(clampWidgetToViewport));
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    useEffect(() => {
+        setActiveWidgets(prev => prev.map(clampWidgetToViewport));
+    }, [activeProfileName]);
 
     useEffect(() => {
         const handleFullscreenChange = () => {
