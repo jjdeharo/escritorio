@@ -1,6 +1,6 @@
 // src/App.tsx
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { WIDGET_REGISTRY } from './components/widgets';
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -27,25 +27,26 @@ const DesktopUI: React.FC<{
     const activeProfile = profiles[activeProfileName] || Object.values(profiles)[0];
     const showDateTime = activeProfile.theme?.showDateTime ?? true;
 
-    const setActiveWidgets = (updater: React.SetStateAction<ActiveWidget[]>) => {
+    const setActiveWidgets = useCallback((updater: React.SetStateAction<ActiveWidget[]>) => {
         const updatedWidgets = typeof updater === 'function' ? updater(activeProfile.activeWidgets) : updater;
         const newProfileData: DesktopProfile = { ...activeProfile, activeWidgets: updatedWidgets };
         setProfiles(prev => ({ ...prev, [activeProfileName]: newProfileData }));
-    };
+    }, [activeProfile, activeProfileName, setProfiles]);
 
-    const setPinnedWidgets = (updater: React.SetStateAction<string[]>) => {
+    const setPinnedWidgets = useCallback((updater: React.SetStateAction<string[]>) => {
         const updatedPinned = typeof updater === 'function' ? updater(activeProfile.pinnedWidgets) : updater;
         const newProfileData: DesktopProfile = { ...activeProfile, pinnedWidgets: updatedPinned };
         setProfiles(prev => ({ ...prev, [activeProfileName]: newProfileData }));
-    };
-    const toggleDateTime = () => {
+    }, [activeProfile, activeProfileName, setProfiles]);
+
+    const toggleDateTime = useCallback(() => {
         const nextShowDateTime = !showDateTime;
         const newProfileData: DesktopProfile = {
             ...activeProfile,
             theme: { ...activeProfile.theme, showDateTime: nextShowDateTime },
         };
         setProfiles(prev => ({ ...prev, [activeProfileName]: newProfileData }));
-    };
+    }, [activeProfile, activeProfileName, setProfiles, showDateTime]);
 
     const [highestZ, setHighestZ] = useState(100);
     const [isSettingsOpen, setSettingsOpen] = useState(false);
@@ -218,7 +219,7 @@ const DesktopUI: React.FC<{
         };
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    }, [setActiveWidgets]);
 
     useEffect(() => {
         setActiveWidgets(prev => prev.map(clampWidgetToViewport));
