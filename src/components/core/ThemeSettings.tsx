@@ -30,6 +30,11 @@ export const ThemeSettings: React.FC = () => {
     setTheme((prevTheme) => ({ ...prevTheme, showDateTime: checked }));
   };
 
+  const handleSystemStatsToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { checked } = e.target;
+    setTheme((prevTheme) => ({ ...prevTheme, showSystemStats: checked }));
+  };
+
   const colorOptions = [
     { id: '--color-bg', labelKey: 'desktop_bg' },
     { id: '--color-widget-bg', labelKey: 'widget_bg' },
@@ -51,6 +56,18 @@ export const ThemeSettings: React.FC = () => {
           type="checkbox"
           checked={Boolean(theme.showDateTime ?? true)}
           onChange={handleDateTimeToggle}
+          className="h-5 w-5"
+        />
+      </div>
+      <div className="flex items-center justify-between p-3 bg-white/70 border border-gray-200 rounded-lg">
+        <div>
+          <p className="font-semibold text-sm">{t('settings.theme.show_system_stats_label')}</p>
+          <p className="text-xs text-gray-500">{t('settings.theme.show_system_stats_help')}</p>
+        </div>
+        <input
+          type="checkbox"
+          checked={Boolean(theme.showSystemStats ?? true)}
+          onChange={handleSystemStatsToggle}
           className="h-5 w-5"
         />
       </div>

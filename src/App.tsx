@@ -26,6 +26,7 @@ const DesktopUI: React.FC<{
     const { t, i18n } = useTranslation();
     const activeProfile = profiles[activeProfileName] || Object.values(profiles)[0];
     const showDateTime = activeProfile.theme?.showDateTime ?? true;
+    const showSystemStats = activeProfile.theme?.showSystemStats ?? true;
 
     const setActiveWidgets = useCallback((updater: React.SetStateAction<ActiveWidget[]>) => {
         const updatedWidgets = typeof updater === 'function' ? updater(activeProfile.activeWidgets) : updater;
@@ -47,6 +48,15 @@ const DesktopUI: React.FC<{
         };
         setProfiles(prev => ({ ...prev, [activeProfileName]: newProfileData }));
     }, [activeProfile, activeProfileName, setProfiles, showDateTime]);
+
+    const toggleSystemStats = useCallback(() => {
+        const nextShowSystemStats = !showSystemStats;
+        const newProfileData: DesktopProfile = {
+            ...activeProfile,
+            theme: { ...activeProfile.theme, showSystemStats: nextShowSystemStats },
+        };
+        setProfiles(prev => ({ ...prev, [activeProfileName]: newProfileData }));
+    }, [activeProfile, activeProfileName, setProfiles, showSystemStats]);
 
     const [highestZ, setHighestZ] = useState(100);
     const [isSettingsOpen, setSettingsOpen] = useState(false);
@@ -264,11 +274,13 @@ const DesktopUI: React.FC<{
     };
 
     const [now, setNow] = useState(new Date());
-
-    useEffect(() => {
-        const intervalId = window.setInterval(() => setNow(new Date()), 1000);
-        return () => window.clearInterval(intervalId);
-    }, []);
+    const [storageEstimate, setStorageEstimate] = useState<{ usage: number | null; quota: number | null }>({
+        usage: null,
+        quota: null,
+    });
+    const [screenSize, setScreenSize] = useState({ width: window.screen.width, height: window.screen.height });
+    const clockRef = useRef<HTMLDivElement>(null);
+    const [clockBottom, setClockBottom] = useState<number | null>(null);
 
     const formattedDate = new Intl.DateTimeFormat(i18n.language, {
         year: 'numeric',
@@ -279,7 +291,113 @@ const DesktopUI: React.FC<{
         hour: '2-digit',
         minute: '2-digit',
     }).format(now);
+
+    useEffect(() => {
+        const intervalId = window.setInterval(() => setNow(new Date()), 1000);
+        return () => window.clearInterval(intervalId);
+    }, []);
+
+    useEffect(() => {
+        if (!showDateTime) {
+            setClockBottom(null);
+            return;
+        }
+        const updateClockBottom = () => {
+            const node = clockRef.current;
+            if (!node) return;
+            const rect = node.getBoundingClientRect();
+            setClockBottom(rect.bottom);
+        };
+        const rafId = window.requestAnimationFrame(updateClockBottom);
+        window.addEventListener('resize', updateClockBottom);
+        return () => {
+            window.cancelAnimationFrame(rafId);
+            window.removeEventListener('resize', updateClockBottom);
+        };
+    }, [showDateTime, formattedDate, formattedTime, i18n.language]);
+
+    useEffect(() => {
+        const updateStorage = async () => {
+            if (!navigator.storage?.estimate) {
+                setStorageEstimate({ usage: null, quota: null });
+                return;
+            }
+            const estimate = await navigator.storage.estimate();
+            setStorageEstimate({
+                usage: typeof estimate.usage === 'number' ? estimate.usage : null,
+                quota: typeof estimate.quota === 'number' ? estimate.quota : null,
+            });
+        };
+        updateStorage();
+        const intervalId = window.setInterval(updateStorage, 30000);
+        return () => window.clearInterval(intervalId);
+    }, []);
+
+    useEffect(() => {
+        const updateScreenSize = () => {
+            setScreenSize({ width: window.screen.width, height: window.screen.height });
+        };
+        updateScreenSize();
+        window.addEventListener('resize', updateScreenSize);
+        return () => window.removeEventListener('resize', updateScreenSize);
+    }, []);
+
+    const formatBytes = (value: number | null, gbDecimals = 2) => {
+        if (value == null || !Number.isFinite(value)) return t('system_stats.not_available');
+        if (value < 1024) return `${value} B`;
+        const kb = value / 1024;
+        if (kb < 1024) return `${kb.toFixed(1)} KB`;
+        const mb = kb / 1024;
+        if (mb < 1024) return `${mb.toFixed(1)} MB`;
+        const gb = mb / 1024;
+        return `${gb.toFixed(gbDecimals)} GB`;
+    };
+
+    const getGbRounded = (value: number | null) => {
+        if (value == null || !Number.isFinite(value)) return null;
+        const gb = value / (1024 ** 3);
+        return gb.toFixed(2);
+    };
+
     const hasOpenWidgets = activeProfile.activeWidgets.length > 0;
+    const storageUsed = storageEstimate.usage;
+    const storageQuota = storageEstimate.quota;
+    const storageFree = storageUsed != null && storageQuota != null ? Math.max(0, storageQuota - storageUsed) : null;
+    const memoryGb = typeof navigator.deviceMemory === 'number' ? navigator.deviceMemory : null;
+    const cpuCores = typeof navigator.hardwareConcurrency === 'number' ? navigator.hardwareConcurrency : null;
+    const storageQuotaRounded = getGbRounded(storageQuota);
+    const storageFreeRounded = getGbRounded(storageFree);
+    const showStorageRows = storageUsed != null && storageQuota != null;
+    const showStorageFree = showStorageRows && storageQuotaRounded !== storageFreeRounded;
+    const statsRows: Array<{ label: string; value: string }> = [];
+    if (showStorageRows) {
+        statsRows.push({
+            label: t('system_stats.storage_used'),
+            value: `${formatBytes(storageUsed, 2)} / ${formatBytes(storageQuota, 2)}`,
+        });
+        if (showStorageFree) {
+            statsRows.push({
+                label: t('system_stats.storage_free'),
+                value: formatBytes(storageFree, 2),
+            });
+        }
+    }
+    if (memoryGb != null) {
+        statsRows.push({
+            label: t('system_stats.memory'),
+            value: t('system_stats.memory_value', { value: memoryGb }),
+        });
+    }
+    if (cpuCores != null) {
+        statsRows.push({
+            label: t('system_stats.cpu'),
+            value: t('system_stats.cpu_value', { value: cpuCores }),
+        });
+    }
+    statsRows.push({
+        label: t('system_stats.screen'),
+        value: t('system_stats.screen_value', { width: screenSize.width, height: screenSize.height }),
+    });
 
     return (
         <div className="w-screen h-screen overflow-hidden" onContextMenu={(event) => handleContextMenu(event)}>
@@ -293,9 +411,27 @@ const DesktopUI: React.FC<{
                 {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
             </button>
             {showDateTime && (
-                <div className="fixed top-4 right-4 z-[1] pointer-events-none text-white bg-black/45 backdrop-blur-md rounded-2xl px-6 py-5 shadow-lg">
+                <div
+                    ref={clockRef}
+                    className="fixed top-4 right-4 z-[1] pointer-events-none select-none text-white bg-black/45 backdrop-blur-md rounded-2xl px-6 py-5 shadow-lg"
+                >
                     <div className="text-lg opacity-90">{formattedDate}</div>
                     <div className="text-4xl font-semibold leading-tight">{formattedTime}</div>
+                </div>
+            )}
+            {showSystemStats && statsRows.length > 0 && (
+                <div
+                    className="fixed right-4 z-[1] pointer-events-none select-none text-white bg-black/45 backdrop-blur-md rounded-2xl px-5 py-4 shadow-lg min-w-[220px]"
+                    style={{ top: showDateTime && clockBottom != null ? `${Math.round(clockBottom + 5)}px` : '1rem' }}
+                >
+                    <div className="space-y-1 text-sm">
+                        {statsRows.map((row) => (
+                            <div key={row.label} className="flex justify-between gap-4">
+                                <span className="text-white/70">{row.label}</span>
+                                <span className="text-white">{row.value}</span>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             )}
             {activeProfile.activeWidgets.map(widget => {
@@ -486,6 +622,16 @@ const DesktopUI: React.FC<{
                     >
                         {showDateTime ? <EyeOff size={16} /> : <Eye size={16} />}
                         {showDateTime ? t('context_menu.hide_datetime') : t('context_menu.show_datetime')}
+                    </button>
+                    <button
+                        className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
+                        onClick={() => {
+                            toggleSystemStats();
+                            setContextMenu(prev => ({ ...prev, isOpen: false }));
+                        }}
+                    >
+                        {showSystemStats ? <EyeOff size={16} /> : <Eye size={16} />}
+                        {showSystemStats ? t('context_menu.hide_system_stats') : t('context_menu.show_system_stats')}
                     </button>
                     <button
                         className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"

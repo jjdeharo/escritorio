@@ -5,6 +5,7 @@ Este proyecto es un entorno de escritorio virtual construido con React, que perm
 ## Novedades de la interfaz
 
 - Fecha y hora visibles en la esquina superior derecha (se puede desactivar en Herramientas → Apariencia).
+- Panel de estadísticas del sistema junto al reloj (se puede ocultar en Herramientas → Apariencia o con clic derecho).
 
 ## Widgets del Escritorio Interactivo
 
