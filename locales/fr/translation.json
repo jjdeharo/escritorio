@@ -69,6 +69,52 @@
     "widgetLibrary": "Bibliothèque de widgets",
     "remove_widget": "Retirer ce widget"
   },
+  "help": {
+    "tooltip": "Aide",
+    "title": "Aide",
+    "guide": "Guide d'utilisation",
+    "catalog": "Catalogue de widgets",
+    "about": "À propos du projet",
+    "licenses": "Crédits et licences"
+  },
+  "about": {
+    "title": "À propos du projet",
+    "app_name_label": "Nom de l'application",
+    "app_name_value": "Bureau numérique pour la classe",
+    "version_label": "Version",
+    "version_value": "v1.0.9 — janvier 2026",
+    "history_title": "Historique du projet",
+    "initial_title": "Projet initial",
+    "initial_text": "Idée et première version : María Teresa González. Version de base du bureau interactif pour la classe.",
+    "original_app_label": "Application originale :",
+    "development_title": "Développement fonctionnel",
+    "development_text": "Transformation du prototype initial en application opérationnelle : Pablo G. Guízar.",
+    "continuity_title": "Mise à jour et continuité",
+    "continuity_text": "Maintenance et développement de la version actuelle : Juan José de Haro et Pablo G. Guízar.",
+    "community_title": "Communauté",
+    "community_text": "Ce projet fait partie du Répertoire des applications éducatives de la communauté Vibe Coding Educativo.",
+    "community_repo_label": "Répertoire des applications :",
+    "community_telegram_label": "Communauté Telegram :"
+  },
+  "licenses": {
+    "title": "Crédits et licences",
+    "code_title": "Licence du code",
+    "code_text": "Ce programme est distribué sous la licence :",
+    "code_license_name": "GNU Affero General Public License v3 (AGPL-3.0)",
+    "code_license_desc": "Permet d'utiliser, modifier et redistribuer le logiciel en conservant la même licence.",
+    "code_link_label": "Texte officiel de la licence",
+    "content_title": "Licence des contenus",
+    "content_text": "Les contenus inclus dans l'application (textes, matériaux et ressources pédagogiques) sont publiés sous :",
+    "content_license_name": "Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0)",
+    "content_link_label": "Texte officiel de la licence",
+    "external_title": "Ressources externes",
+    "external_text": "Cette application peut inclure des bibliothèques, icônes ou polices tierces, chacune avec sa propre licence, disponible dans le dépôt du projet.",
+    "repo_link_label": "Dépôt du projet",
+    "principles_title": "Principes",
+    "principles_text": "Ce projet adhère au :",
+    "principles_name": "Décalogue de la Connaissance Ouverte",
+    "principles_link_label": "Voir le décalogue"
+  },
   "desktop": {
     "fullscreen_enter": "Plein écran",
     "fullscreen_exit": "Quitter le plein écran"

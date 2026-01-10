@@ -68,6 +68,52 @@
     "widgetLibrary": "Biblioteca de Ginys",
     "remove_widget": "Treure aquest giny"
   },
+  "help": {
+    "tooltip": "Ajuda",
+    "title": "Ajuda",
+    "guide": "Guia d'ús",
+    "catalog": "Catàleg de ginys",
+    "about": "Sobre el projecte",
+    "licenses": "Crèdits i llicències"
+  },
+  "about": {
+    "title": "Sobre el projecte",
+    "app_name_label": "Nom de l'aplicació",
+    "app_name_value": "Escriptori digital per a l'aula",
+    "version_label": "Versió",
+    "version_value": "v1.0.9 — gener de 2026",
+    "history_title": "Historial del projecte",
+    "initial_title": "Projecte inicial",
+    "initial_text": "Idea i primera versió: María Teresa González. Versió bàsica de l'escriptori interactiu per a l'aula.",
+    "original_app_label": "Aplicació original:",
+    "development_title": "Desenvolupament funcional del projecte",
+    "development_text": "Transformació del prototip inicial en una aplicació operativa: Pablo G. Guízar.",
+    "continuity_title": "Actualització i continuïtat del projecte",
+    "continuity_text": "Manteniment i desenvolupament de la versió actual: Juan José de Haro i Pablo G. Guízar.",
+    "community_title": "Comunitat",
+    "community_text": "Aquest projecte forma part del Repositori d'aplicacions educatives de la comunitat Vibe Coding Educativo.",
+    "community_repo_label": "Repositori d'aplicacions:",
+    "community_telegram_label": "Comunitat a Telegram:"
+  },
+  "licenses": {
+    "title": "Crèdits i llicències",
+    "code_title": "Llicència del codi",
+    "code_text": "Aquest programa es distribueix sota la llicència:",
+    "code_license_name": "GNU Affero General Public License v3 (AGPL-3.0)",
+    "code_license_desc": "Permet usar, modificar i redistribuir el programari, mantenint la mateixa llicència.",
+    "code_link_label": "Text oficial de la llicència",
+    "content_title": "Llicència dels continguts",
+    "content_text": "Els continguts inclosos a l'aplicació (textos, materials i recursos didàctics) es publiquen sota:",
+    "content_license_name": "Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0)",
+    "content_link_label": "Text oficial de la llicència",
+    "external_title": "Recursos externs",
+    "external_text": "Aquesta aplicació pot incloure llibreries, icones o tipografies de tercers, cadascun amb la seva pròpia llicència, disponible al repositori del projecte.",
+    "repo_link_label": "Repositori del projecte",
+    "principles_title": "Principis",
+    "principles_text": "Aquest projecte s'adhereix al:",
+    "principles_name": "Decàleg del Coneixement Obert",
+    "principles_link_label": "Veure el decàleg"
+  },
   "desktop": {
     "fullscreen_enter": "Pantalla completa",
     "fullscreen_exit": "Sortir de pantalla completa"

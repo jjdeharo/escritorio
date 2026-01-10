@@ -67,6 +67,52 @@
     "widgetLibrary": "Widget Liburutegia",
     "remove_widget": "Kendu widget hau"
   },
+  "help": {
+    "tooltip": "Laguntza",
+    "title": "Laguntza",
+    "guide": "Erabilera-gida",
+    "catalog": "Widget katalogoa",
+    "about": "Proiektuari buruz",
+    "licenses": "Kredituak eta lizentziak"
+  },
+  "about": {
+    "title": "Proiektuari buruz",
+    "app_name_label": "Aplikazioaren izena",
+    "app_name_value": "Ikasgelarako mahaigain digitala",
+    "version_label": "Bertsioa",
+    "version_value": "v1.0.9 — 2026ko urtarrila",
+    "history_title": "Proiektuaren historia",
+    "initial_title": "Hasierako proiektua",
+    "initial_text": "Ideia eta lehen bertsioa: María Teresa González. Ikasgelarako mahaigain interaktiboaren oinarrizko bertsioa.",
+    "original_app_label": "Jatorrizko aplikazioa:",
+    "development_title": "Garapen funtzionala",
+    "development_text": "Hasierako prototipoa aplikazio operatibo bihurtzea: Pablo G. Guízar.",
+    "continuity_title": "Eguneratzea eta jarraipena",
+    "continuity_text": "Uneko bertsioaren mantentzea eta garapena: Juan José de Haro eta Pablo G. Guízar.",
+    "community_title": "Komunitatea",
+    "community_text": "Proiektu hau Vibe Coding Educativo komunitateko hezkuntza-aplikazioen biltegiaren parte da.",
+    "community_repo_label": "Aplikazioen biltegia:",
+    "community_telegram_label": "Telegram komunitatea:"
+  },
+  "licenses": {
+    "title": "Kredituak eta lizentziak",
+    "code_title": "Kodearen lizentzia",
+    "code_text": "Programa hau honako lizentziapean banatzen da:",
+    "code_license_name": "GNU Affero General Public License v3 (AGPL-3.0)",
+    "code_license_desc": "Softwarea erabiltzea, aldatzea eta birbanatzea ahalbidetzen du, lizentzia bera mantenduz.",
+    "code_link_label": "Lizentziaren testu ofiziala",
+    "content_title": "Edukien lizentzia",
+    "content_text": "Aplikazioan dauden edukiak (testuak, materialak eta baliabide didaktikoak) honen pean argitaratzen dira:",
+    "content_license_name": "Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0)",
+    "content_link_label": "Lizentziaren testu ofiziala",
+    "external_title": "Kanpoko baliabideak",
+    "external_text": "Aplikazio honek hirugarrenen liburutegiak, ikonoak edo tipografiak izan ditzake, bakoitza bere lizentziarekin, proiektuaren biltegian eskuragarri.",
+    "repo_link_label": "Proiektuaren biltegia",
+    "principles_title": "Printzipioak",
+    "principles_text": "Proiektu hau honi atxikitzen zaio:",
+    "principles_name": "Ezagutza Irekiaren Dekalogoa",
+    "principles_link_label": "Ikusi dekalogoa"
+  },
   "desktop": {
     "fullscreen_enter": "Pantaila osoa",
     "fullscreen_exit": "Pantaila osoa itxi"

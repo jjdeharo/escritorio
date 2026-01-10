@@ -68,6 +68,52 @@
     "widgetLibrary": "Libraría de Widgets",
     "remove_widget": "Quitar este widget"
   },
+  "help": {
+    "tooltip": "Axuda",
+    "title": "Axuda",
+    "guide": "Guía de uso",
+    "catalog": "Catálogo de widgets",
+    "about": "Sobre o proxecto",
+    "licenses": "Créditos e licenzas"
+  },
+  "about": {
+    "title": "Sobre o proxecto",
+    "app_name_label": "Nome da aplicación",
+    "app_name_value": "Escritorio dixital para a aula",
+    "version_label": "Versión",
+    "version_value": "v1.0.9 — xaneiro de 2026",
+    "history_title": "Historial do proxecto",
+    "initial_title": "Proxecto inicial",
+    "initial_text": "Idea e primeira versión: María Teresa González. Versión básica do escritorio interactivo para a aula.",
+    "original_app_label": "Aplicación orixinal:",
+    "development_title": "Desenvolvemento funcional do proxecto",
+    "development_text": "Transformación do prototipo inicial nunha aplicación operativa: Pablo G. Guízar.",
+    "continuity_title": "Actualización e continuidade do proxecto",
+    "continuity_text": "Mantemento e desenvolvemento da versión actual: Juan José de Haro e Pablo G. Guízar.",
+    "community_title": "Comunidade",
+    "community_text": "Este proxecto forma parte do Repositorio de aplicacións educativas da comunidade Vibe Coding Educativo.",
+    "community_repo_label": "Repositorio de aplicacións:",
+    "community_telegram_label": "Comunidade en Telegram:"
+  },
+  "licenses": {
+    "title": "Créditos e licenzas",
+    "code_title": "Licenza do código",
+    "code_text": "Este programa distribúese baixo a licenza:",
+    "code_license_name": "GNU Affero General Public License v3 (AGPL-3.0)",
+    "code_license_desc": "Permite usar, modificar e redistribuír o software mantendo esta mesma licenza.",
+    "code_link_label": "Texto oficial da licenza",
+    "content_title": "Licenza dos contidos",
+    "content_text": "Os contidos incluídos na aplicación (textos, materiais e recursos didácticos) publícanse baixo:",
+    "content_license_name": "Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0)",
+    "content_link_label": "Texto oficial da licenza",
+    "external_title": "Recursos externos",
+    "external_text": "Esta aplicación pode incluír librarías, iconas ou tipografías de terceiros, cada unha coa súa propia licenza, dispoñible no repositorio do proxecto.",
+    "repo_link_label": "Repositorio do proxecto",
+    "principles_title": "Principios",
+    "principles_text": "Este proxecto adhírese ao:",
+    "principles_name": "Decálogo do Coñecemento Aberto",
+    "principles_link_label": "Ver o decálogo"
+  },
   "desktop": {
     "fullscreen_enter": "Pantalla completa",
     "fullscreen_exit": "Saír da pantalla completa"
