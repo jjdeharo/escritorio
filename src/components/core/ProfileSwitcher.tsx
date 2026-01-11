@@ -377,11 +377,6 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
         closeTransfer();
         return;
       }
-      if (!window.confirm(t('backup.import_confirm'))) {
-        setBackupStatus('');
-        closeTransfer();
-        return;
-      }
       if (controller.signal.aborted) return;
       if (payload.data.profiles) {
         if (importMode === 'replace') {
@@ -408,33 +403,31 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
       if (payload.data.widgetData) {
         await importWidgetData(payload.data.widgetData);
       }
-      if ((payload.data.localWeb || localWebRecords) && importMode === 'replace') {
-        if (!window.confirm(t('backup.import_local_web_confirm'))) {
-          setBackupStatus('');
-        } else {
+      if (payload.data.localWeb || localWebRecords) {
+        if (importMode === 'replace') {
           await clearLocalWebData();
-          if (localWebRecords) {
-            let lastUpdate = 0;
-            let processed = 0;
-            await importLocalWebRecords(localWebRecords, {
-              signal: controller.signal,
-              onProgress: (current, total) => {
-                const now = performance.now();
-                if (now - lastUpdate > 200) {
-                  setTransferProgress(`${current}/${total}`);
-                  lastUpdate = now;
-                }
-              },
-              yieldControl: async () => {
-                processed += 1;
-                if (processed % 5 === 0) {
-                  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-                }
-              },
-            });
-          } else if (payload.data.localWeb) {
-            await importLocalWebData(payload.data.localWeb);
-          }
+        }
+        if (localWebRecords) {
+          let lastUpdate = 0;
+          let processed = 0;
+          await importLocalWebRecords(localWebRecords, {
+            signal: controller.signal,
+            onProgress: (current, total) => {
+              const now = performance.now();
+              if (now - lastUpdate > 200) {
+                setTransferProgress(`${current}/${total}`);
+                lastUpdate = now;
+              }
+            },
+            yieldControl: async () => {
+              processed += 1;
+              if (processed % 5 === 0) {
+                await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+              }
+            },
+          });
+        } else if (payload.data.localWeb) {
+          await importLocalWebData(payload.data.localWeb);
         }
       }
       setBackupStatus(t('backup.import_done'));
