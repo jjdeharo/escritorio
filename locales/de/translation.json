@@ -38,7 +38,12 @@
       "delete_button": "Löschen",
       "switcher_title": "Desktop wechseln",
       "move_up": "Nach oben",
-      "move_down": "Nach unten"
+      "move_down": "Nach unten",
+      "rename_button": "Umbenennen",
+      "rename_placeholder": "Neuer Profilname",
+      "rename_save_button": "Speichern",
+      "rename_cancel_button": "Abbrechen",
+      "rename_hint": "Doppelklick, um den Profilnamen zu ändern"
     },
     "widgets": {
       "search": "Widget suchen...",
@@ -573,7 +578,9 @@
       "open_fullscreen_button": "Vollbild",
       "close_window_button": "Fenster schließen",
       "collapse_list": "Liste ausblenden",
-      "expand_list": "Liste anzeigen"
+      "expand_list": "Liste anzeigen",
+      "rename_placeholder": "Neuer Website-Name",
+      "rename_invalid": "Der Website-Name ist ungültig."
     }
   },
   "backup": {

@@ -37,7 +37,12 @@
       "delete_button": "Ezabatu",
       "switcher_title": "Idazmahaiz aldatu",
       "move_up": "Gora",
-      "move_down": "Behera"
+      "move_down": "Behera",
+      "rename_button": "Berrizendatu",
+      "rename_placeholder": "Profil izen berria",
+      "rename_save_button": "Gorde",
+      "rename_cancel_button": "Utzi",
+      "rename_hint": "Egin klik bikoitza profilaren izena aldatzeko"
     },
     "widgets": {
       "search": "Bilatu widget-a...",
@@ -572,7 +577,9 @@
       "open_fullscreen_button": "Pantaila osoa",
       "close_window_button": "Leihoa itxi",
       "collapse_list": "Ezkutatu zerrenda",
-      "expand_list": "Erakutsi zerrenda"
+      "expand_list": "Erakutsi zerrenda",
+      "rename_placeholder": "Webgunearen izen berria",
+      "rename_invalid": "Webgunearen izena ez da baliozkoa."
     }
   },
   "backup": {

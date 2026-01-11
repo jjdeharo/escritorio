@@ -38,7 +38,12 @@
       "delete_button": "Eliminar",
       "switcher_title": "Canviar d'Escriptori",
       "move_up": "Pujar",
-      "move_down": "Baixar"
+      "move_down": "Baixar",
+      "rename_button": "Reanomena",
+      "rename_placeholder": "Nom nou del perfil",
+      "rename_save_button": "Desa",
+      "rename_cancel_button": "Cancel·la",
+      "rename_hint": "Fes doble clic per canviar el nom del perfil"
     },
     "widgets": {
       "search": "Cercar giny...",
@@ -573,7 +578,9 @@
       "open_fullscreen_button": "Pantalla completa",
       "close_window_button": "Tanca finestra",
       "collapse_list": "Amaga la llista",
-      "expand_list": "Mostra la llista"
+      "expand_list": "Mostra la llista",
+      "rename_placeholder": "Nou nom del lloc web",
+      "rename_invalid": "El nom del lloc web no és vàlid."
     }
   },
   "backup": {
