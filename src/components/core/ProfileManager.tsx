@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useTheme } from '../../context/ThemeContext';
+import { defaultTheme, useTheme } from '../../context/ThemeContext';
+import { cloneLocalWebData } from '../../utils/backup';
 import type { ProfileCollection } from '../../types';
 import { useTranslation } from 'react-i18next';
 
@@ -24,9 +25,11 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
 }) => {
   const { t } = useTranslation();
   const [newProfileName, setNewProfileName] = useState('');
+  const [createMode, setCreateMode] = useState<'empty' | 'clone'>('empty');
   const [editingProfile, setEditingProfile] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
   const { theme } = useTheme();
+  const defaultPinnedWidgets = ['work-list', 'timer', 'file-opener'];
   const defaultProfileKey = 'Escritorio Principal';
   const orderedProfileNames = profileOrder.filter((name) => profiles[name]);
   Object.keys(profiles).forEach((name) => {
@@ -36,18 +39,34 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   const getDisplayName = (name: string) =>
     name === defaultProfileKey ? t('settings.profiles.default_name') : name;
 
-  const handleSaveCurrent = () => {
+  const handleSaveCurrent = async () => {
     const trimmedName = newProfileName.trim();
     if (trimmedName && !profiles[trimmedName]) {
       const currentProfile = profiles[activeProfileName];
+      const profileData = createMode === 'clone'
+        ? {
+            ...currentProfile,
+            theme: theme,
+          }
+        : {
+            theme: defaultTheme,
+            activeWidgets: [],
+            pinnedWidgets: defaultPinnedWidgets,
+          };
       setProfiles(prev => ({
         ...prev,
         [trimmedName]: {
-            ...currentProfile,
-            theme: theme,
+            ...profileData,
         }
       }));
       setProfileOrder((prev) => [...prev, trimmedName]);
+      if (createMode === 'clone') {
+        try {
+          await cloneLocalWebData(activeProfileName, trimmedName);
+        } catch (error) {
+          console.error(error);
+        }
+      }
       setActiveProfileName(trimmedName);
       setNewProfileName('');
     } else {
@@ -124,6 +143,31 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
     <div className="p-4 space-y-6">
       <div>
         <h3 className="text-lg font-semibold mb-2">{t('settings.profiles.save_current_title')}</h3>
+        <div className="mb-3">
+          <div className="text-sm font-semibold text-gray-700">{t('settings.profiles.create_mode_label')}</div>
+          <div className="mt-2 flex items-center gap-4 text-sm">
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="profile-create-mode"
+                value="empty"
+                checked={createMode === 'empty'}
+                onChange={() => setCreateMode('empty')}
+              />
+              <span>{t('settings.profiles.create_mode_empty')}</span>
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="profile-create-mode"
+                value="clone"
+                checked={createMode === 'clone'}
+                onChange={() => setCreateMode('clone')}
+              />
+              <span>{t('settings.profiles.create_mode_clone')}</span>
+            </label>
+          </div>
+        </div>
         <div className="flex gap-2">
           <input
             type="text"

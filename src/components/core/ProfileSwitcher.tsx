@@ -133,7 +133,7 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
     });
     setHasWidgetData(widgetDataAvailable);
     setIncludeWidgetData(widgetDataAvailable);
-    getLocalWebStats()
+    getLocalWebStats(profileNames, activeProfileName)
       .then((stats) => {
         const available = stats.siteCount > 0;
         setHasLocalWeb(available);
@@ -143,7 +143,26 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
         setHasLocalWeb(false);
         setIncludeLocalWeb(false);
       });
-  }, [isBackupOpen, profileNames]);
+  }, [isBackupOpen, profileNames, activeProfileName]);
+
+  useEffect(() => {
+    if (!isBackupOpen) return;
+    if (selectedProfiles.length === 0) {
+      setHasLocalWeb(false);
+      setIncludeLocalWeb(false);
+      return;
+    }
+    getLocalWebStats(selectedProfiles, activeProfileName)
+      .then((stats) => {
+        const available = stats.siteCount > 0;
+        setHasLocalWeb(available);
+        if (!available) setIncludeLocalWeb(false);
+      })
+      .catch(() => {
+        setHasLocalWeb(false);
+        setIncludeLocalWeb(false);
+      });
+  }, [isBackupOpen, selectedProfiles, activeProfileName]);
 
   useEffect(() => {
     if (!isPartialProfileSelection) return;
@@ -257,7 +276,7 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
       total += await estimateWidgetDataSize();
     }
     if (includeLocalWeb && hasLocalWeb) {
-      const stats = await getLocalWebStats();
+      const stats = await getLocalWebStats(selectedProfiles, activeProfileName);
       total += Math.ceil(stats.totalBytes * 1.1);
     }
     return total;
@@ -303,7 +322,7 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
     try {
       const payload = await buildDataForExport();
       const localWebRecords = includeLocalWeb && hasLocalWeb
-        ? await exportLocalWebRecords()
+        ? await exportLocalWebRecords(selectedProfiles, activeProfileName)
         : undefined;
       let lastUpdate = 0;
       let processed = 0;
@@ -378,6 +397,8 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
         return;
       }
       if (controller.signal.aborted) return;
+      let profileNameMap: Map<string, string> | undefined;
+      let fallbackProfileName = payload.data.activeProfileName || activeProfileName;
       if (payload.data.profiles) {
         if (importMode === 'replace') {
           const incoming = payload.data.profiles;
@@ -385,16 +406,24 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
           if (names.length > 0) {
             setProfiles(incoming);
             const desired = payload.data.activeProfileName;
-            setActiveProfileName(desired && incoming[desired] ? desired : names[0]);
+            const resolved = desired && incoming[desired] ? desired : names[0];
+            setActiveProfileName(resolved);
+            fallbackProfileName = resolved;
           }
         } else {
           setProfiles((prev) => {
             const merged = mergeProfiles(prev, payload.data.profiles || {});
+            profileNameMap = merged.nameMap;
             const desired = payload.data.activeProfileName;
             if (desired) {
               const mapped = merged.nameMap.get(desired);
-              if (mapped) setActiveProfileName(mapped);
-              else if (merged.updated[desired]) setActiveProfileName(desired);
+              if (mapped) {
+                setActiveProfileName(mapped);
+                fallbackProfileName = mapped;
+              } else if (merged.updated[desired]) {
+                setActiveProfileName(desired);
+                fallbackProfileName = desired;
+              }
             }
             return merged.updated;
           });
@@ -425,9 +454,11 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
                 await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
               }
             },
+            profileNameMap,
+            fallbackProfileName,
           });
         } else if (payload.data.localWeb) {
-          await importLocalWebData(payload.data.localWeb);
+          await importLocalWebData(payload.data.localWeb, { profileNameMap, fallbackProfileName });
         }
       }
       setBackupStatus(t('backup.import_done'));

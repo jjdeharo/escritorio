@@ -733,6 +733,10 @@ function App() {
         }
     }, [theme['--wallpaper']]);
 
+    useEffect(() => {
+        window.dispatchEvent(new CustomEvent('active-profile-change', { detail: { name: activeProfileName } }));
+    }, [activeProfileName]);
+
     const themeContextValue = {
         theme,
         setTheme: handleThemeChange,

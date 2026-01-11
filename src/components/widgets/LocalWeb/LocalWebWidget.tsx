@@ -10,6 +10,7 @@ import './LocalWebWidget.css';
 type SiteMeta = {
     id: string;
     name: string;
+    profileName?: string;
     createdAt: number;
     updatedAt: number;
     fileCount: number;
@@ -34,6 +35,9 @@ const DB_NAME = 'escritorio-digital-sites';
 const DB_VERSION = 1;
 const STORE_SITES = 'sites';
 const STORE_FILES = 'files';
+const ACTIVE_PROFILE_STORAGE_KEY = 'active-profile-name';
+const ACTIVE_PROFILE_EVENT = 'active-profile-change';
+const defaultProfileKey = 'Escritorio Principal';
 
 let dbPromise: Promise<IDBDatabase> | null = null;
 
@@ -73,9 +77,26 @@ const withStore = async <T,>(
     });
 };
 
-const getAllSites = async (): Promise<SiteMeta[]> => {
+const assignProfileToSites = async (profileName: string, sites: SiteMeta[]) => {
+    const sitesToUpdate = sites.filter((site) => !site.profileName);
+    if (sitesToUpdate.length === 0) return;
+    await withStore(STORE_SITES, 'readwrite', (store) => {
+        sitesToUpdate.forEach((site) => {
+            store.put({ ...site, profileName });
+        });
+        return store.getAll();
+    });
+};
+
+const getAllSites = async (profileName: string): Promise<SiteMeta[]> => {
     const result = await withStore<SiteMeta[]>(STORE_SITES, 'readonly', (store) => store.getAll());
-    return result ?? [];
+    const sites = result ?? [];
+    if (sites.some((site) => !site.profileName)) {
+        await assignProfileToSites(profileName, sites);
+        return sites.map((site) => ({ ...site, profileName: site.profileName ?? profileName }))
+            .filter((site) => site.profileName === profileName);
+    }
+    return sites.filter((site) => site.profileName === profileName);
 };
 
 const saveSite = async (site: SiteMeta): Promise<void> => {
@@ -292,6 +313,9 @@ export const LocalWebWidget: FC = () => {
     const { t } = useTranslation();
     const [sites, setSites] = useState<SiteMeta[]>([]);
     const [activeSiteId, setActiveSiteId] = useState<string | null>(null);
+    const [activeProfileName, setActiveProfileName] = useState(() => (
+        window.localStorage.getItem(ACTIVE_PROFILE_STORAGE_KEY) || defaultProfileKey
+    ));
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [previewName, setPreviewName] = useState('');
     const [editingSiteId, setEditingSiteId] = useState<string | null>(null);
@@ -305,8 +329,8 @@ export const LocalWebWidget: FC = () => {
     const objectUrlsRef = useRef<string[]>([]);
     const skipRenameBlurRef = useRef(false);
 
-    const refreshSites = async () => {
-        const allSites = await getAllSites();
+    const refreshSites = async (profileName: string) => {
+        const allSites = await getAllSites(profileName);
         allSites.sort((a, b) => b.updatedAt - a.updatedAt);
         setSites(allSites);
         setLocalUsage(allSites.reduce((sum, site) => sum + site.totalBytes, 0));
@@ -318,11 +342,6 @@ export const LocalWebWidget: FC = () => {
     };
 
     useEffect(() => {
-        refreshSites();
-        refreshStorage();
-    }, []);
-
-    useEffect(() => {
         const node = folderInputRef.current as HTMLInputElement & { webkitdirectory?: boolean };
         if (node) {
             node.webkitdirectory = true;
@@ -330,6 +349,29 @@ export const LocalWebWidget: FC = () => {
             node.setAttribute('directory', '');
         }
     }, []);
+
+    useEffect(() => {
+        const handleProfileChange = (event: Event) => {
+            const detail = (event as CustomEvent<{ name?: string }>).detail;
+            setActiveProfileName(detail?.name || window.localStorage.getItem(ACTIVE_PROFILE_STORAGE_KEY) || defaultProfileKey);
+        };
+        const handleStorage = (event: StorageEvent) => {
+            if (event.key !== ACTIVE_PROFILE_STORAGE_KEY) return;
+            setActiveProfileName(event.newValue || defaultProfileKey);
+        };
+        window.addEventListener(ACTIVE_PROFILE_EVENT, handleProfileChange as EventListener);
+        window.addEventListener('storage', handleStorage);
+        return () => {
+            window.removeEventListener(ACTIVE_PROFILE_EVENT, handleProfileChange as EventListener);
+            window.removeEventListener('storage', handleStorage);
+        };
+    }, []);
+
+    useEffect(() => {
+        refreshSites(activeProfileName);
+        refreshStorage();
+        resetPreview();
+    }, [activeProfileName]);
 
     useEffect(() => {
         return () => {
@@ -458,6 +500,7 @@ export const LocalWebWidget: FC = () => {
         const site: SiteMeta = {
             id: siteId,
             name: file.name.replace(/\.zip$/i, ''),
+            profileName: activeProfileName,
             createdAt: now,
             updatedAt: now,
             fileCount: files.length,
@@ -472,7 +515,7 @@ export const LocalWebWidget: FC = () => {
         await saveSite(site);
         await saveFiles(files);
         setStatusMessage(t('widgets.local_web.import_done'));
-        await refreshSites();
+        await refreshSites(activeProfileName);
         await refreshStorage();
     };
 
@@ -499,6 +542,7 @@ export const LocalWebWidget: FC = () => {
         const site: SiteMeta = {
             id: siteId,
             name: folderName,
+            profileName: activeProfileName,
             createdAt: now,
             updatedAt: now,
             fileCount: storedFiles.length,
@@ -508,7 +552,7 @@ export const LocalWebWidget: FC = () => {
         await saveSite(site);
         await saveFiles(storedFiles);
         setStatusMessage(t('widgets.local_web.import_done'));
-        await refreshSites();
+        await refreshSites(activeProfileName);
         await refreshStorage();
     };
 
@@ -618,7 +662,7 @@ export const LocalWebWidget: FC = () => {
             resetPreview();
         }
         await deleteSite(siteId);
-        await refreshSites();
+        await refreshSites(activeProfileName);
         await refreshStorage();
     };
 
