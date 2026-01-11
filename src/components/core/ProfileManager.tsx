@@ -24,6 +24,8 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
 }) => {
   const { t } = useTranslation();
   const [newProfileName, setNewProfileName] = useState('');
+  const [editingProfile, setEditingProfile] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState('');
   const { theme } = useTheme();
   const defaultProfileKey = 'Escritorio Principal';
   const orderedProfileNames = profileOrder.filter((name) => profiles[name]);
@@ -68,6 +70,40 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
         setActiveProfileName(Object.keys(newProfiles)[0]);
       }
     }
+  };
+
+  const cancelRename = () => {
+    setEditingProfile(null);
+    setEditingName('');
+  };
+
+  const handleRename = (originalName: string) => {
+    const trimmedName = editingName.trim();
+    if (!trimmedName) {
+      alert(t('settings.profiles.invalid_name_alert'));
+      return;
+    }
+    if (trimmedName === originalName) {
+      cancelRename();
+      return;
+    }
+    if (profiles[trimmedName]) {
+      alert(t('settings.profiles.invalid_name_alert'));
+      return;
+    }
+    setProfiles((prev) => {
+      const updated = { ...prev };
+      const profileData = updated[originalName];
+      if (!profileData) return prev;
+      delete updated[originalName];
+      updated[trimmedName] = profileData;
+      return updated;
+    });
+    setProfileOrder((prev) => prev.map((item) => (item === originalName ? trimmedName : item)));
+    if (activeProfileName === originalName) {
+      setActiveProfileName(trimmedName);
+    }
+    cancelRename();
   };
 
   const moveProfile = (name: string, direction: 'up' | 'down') => {
@@ -117,7 +153,31 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
         <ul className="space-y-2">
           {orderedProfileNames.map((name, index) => (
             <li key={name} className="flex items-center justify-between p-3 bg-white/50 rounded-lg">
-              <span className="font-semibold">{getDisplayName(name)}</span>
+              {editingProfile === name ? (
+                <input
+                  type="text"
+                  value={editingName}
+                  onChange={(e) => setEditingName(e.target.value)}
+                  onBlur={() => handleRename(name)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') handleRename(name);
+                    if (event.key === 'Escape') cancelRename();
+                  }}
+                  placeholder={t('settings.profiles.rename_placeholder')}
+                  className="flex-grow bg-white border-2 border-gray-300 rounded p-2 focus:border-accent outline-none text-sm"
+                />
+              ) : (
+                <div
+                  onDoubleClick={() => {
+                    setEditingProfile(name);
+                    setEditingName(name);
+                  }}
+                  className="flex-grow font-semibold cursor-text rounded px-2 py-1 hover:bg-white/60"
+                  title={t('settings.profiles.rename_hint')}
+                >
+                  {getDisplayName(name)}
+                </div>
+              )}
               <div className="flex gap-2">
                 <button
                   onClick={() => moveProfile(name, 'up')}

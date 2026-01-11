@@ -87,6 +87,14 @@
   @apply text-sm font-semibold;
 }
 
+.local-web-site-name-editable {
+  @apply cursor-text;
+}
+
+.local-web-site-name-input {
+  @apply text-sm font-semibold bg-white border border-gray-300 rounded px-2 py-1 focus:border-accent outline-none;
+}
+
 .local-web-site-meta {
   @apply text-xs text-gray-500;
 }

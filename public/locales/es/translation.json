@@ -38,7 +38,12 @@
       "delete_button": "Eliminar",
       "switcher_title": "Cambiar de Escritorio",
       "move_up": "Subir",
-      "move_down": "Bajar"
+      "move_down": "Bajar",
+      "rename_button": "Renombrar",
+      "rename_placeholder": "Nuevo nombre del perfil",
+      "rename_save_button": "Guardar",
+      "rename_cancel_button": "Cancelar",
+      "rename_hint": "Doble clic para cambiar el nombre del perfil"
     },
     "widgets": {
       "search": "Buscar widget...",
@@ -573,7 +578,9 @@
       "open_fullscreen_button": "Pantalla completa",
       "close_window_button": "Cerrar ventana",
       "collapse_list": "Ocultar lista",
-      "expand_list": "Mostrar lista"
+      "expand_list": "Mostrar lista",
+      "rename_placeholder": "Nuevo nombre de la web",
+      "rename_invalid": "El nombre de la web no es válido."
     }
   },
   "backup": {

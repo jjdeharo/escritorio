@@ -38,7 +38,12 @@
       "delete_button": "Elimina",
       "switcher_title": "Cambia desktop",
       "move_up": "Sposta su",
-      "move_down": "Sposta giù"
+      "move_down": "Sposta giù",
+      "rename_button": "Rinomina",
+      "rename_placeholder": "Nuovo nome del profilo",
+      "rename_save_button": "Salva",
+      "rename_cancel_button": "Annulla",
+      "rename_hint": "Doppio clic per rinominare il profilo"
     },
     "widgets": {
       "search": "Cerca widget...",
@@ -573,7 +578,9 @@
       "open_fullscreen_button": "Schermo intero",
       "close_window_button": "Chiudi finestra",
       "collapse_list": "Nascondi elenco",
-      "expand_list": "Mostra elenco"
+      "expand_list": "Mostra elenco",
+      "rename_placeholder": "Nuovo nome del sito",
+      "rename_invalid": "Il nome del sito non e valido."
     }
   },
   "backup": {

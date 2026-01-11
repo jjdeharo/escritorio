@@ -38,7 +38,12 @@
       "delete_button": "Delete",
       "switcher_title": "Switch Desktop",
       "move_up": "Move up",
-      "move_down": "Move down"
+      "move_down": "Move down",
+      "rename_button": "Rename",
+      "rename_placeholder": "New profile name",
+      "rename_save_button": "Save",
+      "rename_cancel_button": "Cancel",
+      "rename_hint": "Double-click to rename the profile"
     },
     "widgets": {
       "search": "Search widget...",
@@ -573,7 +578,9 @@
       "open_fullscreen_button": "Fullscreen",
       "close_window_button": "Close window",
       "collapse_list": "Hide list",
-      "expand_list": "Show list"
+      "expand_list": "Show list",
+      "rename_placeholder": "New site name",
+      "rename_invalid": "The site name is not valid."
     }
   },
   "backup": {

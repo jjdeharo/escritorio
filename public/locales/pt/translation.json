@@ -40,7 +40,12 @@
       "delete_button": "Excluir",
       "switcher_title": "Trocar de Área de Trabalho",
       "move_up": "Subir",
-      "move_down": "Descer"
+      "move_down": "Descer",
+      "rename_button": "Renomear",
+      "rename_placeholder": "Novo nome do perfil",
+      "rename_save_button": "Guardar",
+      "rename_cancel_button": "Cancelar",
+      "rename_hint": "Duplo clique para alterar o nome do perfil"
     },
     "widgets": {
       "search": "Buscar widget...",
@@ -575,7 +580,9 @@
       "open_fullscreen_button": "Ecrã inteiro",
       "close_window_button": "Fechar janela",
       "collapse_list": "Ocultar lista",
-      "expand_list": "Mostrar lista"
+      "expand_list": "Mostrar lista",
+      "rename_placeholder": "Novo nome do site",
+      "rename_invalid": "O nome do site não é válido."
     }
   },
   "backup": {

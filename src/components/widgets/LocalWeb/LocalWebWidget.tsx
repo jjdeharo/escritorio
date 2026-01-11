@@ -294,6 +294,8 @@ export const LocalWebWidget: FC = () => {
     const [activeSiteId, setActiveSiteId] = useState<string | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [previewName, setPreviewName] = useState('');
+    const [editingSiteId, setEditingSiteId] = useState<string | null>(null);
+    const [editingSiteName, setEditingSiteName] = useState('');
     const [statusMessage, setStatusMessage] = useState('');
     const [storageEstimate, setStorageEstimate] = useState<StorageEstimate>({ usage: null, quota: null });
     const [localUsage, setLocalUsage] = useState(0);
@@ -301,6 +303,7 @@ export const LocalWebWidget: FC = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const folderInputRef = useRef<HTMLInputElement>(null);
     const objectUrlsRef = useRef<string[]>([]);
+    const skipRenameBlurRef = useRef(false);
 
     const refreshSites = async () => {
         const allSites = await getAllSites();
@@ -562,6 +565,38 @@ export const LocalWebWidget: FC = () => {
         setStatusMessage('');
     };
 
+    const cancelRenameSite = () => {
+        setEditingSiteId(null);
+        setEditingSiteName('');
+    };
+
+    const handleRenameSite = async (site: SiteMeta) => {
+        const trimmedName = editingSiteName.trim();
+        if (!trimmedName) {
+            alert(t('widgets.local_web.rename_invalid'));
+            return;
+        }
+        if (trimmedName === site.name) {
+            cancelRenameSite();
+            return;
+        }
+        const updatedSite: SiteMeta = {
+            ...site,
+            name: trimmedName,
+            updatedAt: Date.now(),
+        };
+        await saveSite(updatedSite);
+        setSites((prev) => {
+            const next = prev.map((item) => (item.id === site.id ? updatedSite : item));
+            next.sort((a, b) => b.updatedAt - a.updatedAt);
+            return next;
+        });
+        if (activeSiteId === site.id) {
+            setPreviewName(trimmedName);
+        }
+        cancelRenameSite();
+    };
+
     const handleZipInput = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
@@ -638,7 +673,43 @@ export const LocalWebWidget: FC = () => {
                         {sites.map((site) => (
                             <div key={site.id} className="local-web-site">
                                 <div className="local-web-site-info">
-                                    <div className="local-web-site-name">{site.name}</div>
+                                    {editingSiteId === site.id ? (
+                                        <input
+                                            type="text"
+                                            value={editingSiteName}
+                                            onChange={(event) => setEditingSiteName(event.target.value)}
+                                            onBlur={() => {
+                                                if (skipRenameBlurRef.current) {
+                                                    skipRenameBlurRef.current = false;
+                                                    return;
+                                                }
+                                                handleRenameSite(site);
+                                            }}
+                                            onKeyDown={(event) => {
+                                                if (event.key === 'Enter') {
+                                                    skipRenameBlurRef.current = true;
+                                                    handleRenameSite(site);
+                                                }
+                                                if (event.key === 'Escape') {
+                                                    skipRenameBlurRef.current = true;
+                                                    cancelRenameSite();
+                                                }
+                                            }}
+                                            placeholder={t('widgets.local_web.rename_placeholder')}
+                                            className="local-web-site-name-input"
+                                            autoFocus
+                                        />
+                                    ) : (
+                                        <div
+                                            className="local-web-site-name local-web-site-name-editable"
+                                            onDoubleClick={() => {
+                                                setEditingSiteId(site.id);
+                                                setEditingSiteName(site.name);
+                                            }}
+                                        >
+                                            {site.name}
+                                        </div>
+                                    )}
                                     <div className="local-web-site-meta">
                                         {t('widgets.local_web.site_meta', {
                                             files: site.fileCount,
