@@ -241,7 +241,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   </div>
                 </div>
               )}
-              {activeTab === 'profiles' && <ProfileManager profiles={profiles} setProfiles={setProfiles} activeProfileName={activeProfileName} setActiveProfileName={setActiveProfileName} />}
+              {activeTab === 'profiles' && (
+                <ProfileManager
+                  profiles={profiles}
+                  setProfiles={setProfiles}
+                  activeProfileName={activeProfileName}
+                  setActiveProfileName={setActiveProfileName}
+                  onCloseSettings={onClose}
+                />
+              )}
               {activeTab === 'widgets' && (
                 <div>
                   <div className="relative mb-4">

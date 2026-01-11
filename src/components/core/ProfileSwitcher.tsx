@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { ChevronUp, ChevronsUpDown, Download, Upload } from 'lucide-react';
+import { ChevronUp, ChevronsUpDown, Download, Upload, Users } from 'lucide-react';
 import type { ProfileCollection } from '../../types';
 import { useTranslation } from 'react-i18next';
 import type { LocalWebArchive } from '../../utils/backup';
@@ -61,6 +61,17 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
   const estimateCounterRef = useRef(0);
   const abortControllerRef = useRef<AbortController | null>(null);
   const defaultProfileKey = 'Escritorio Principal';
+
+  useEffect(() => {
+    const handleOpenBackup = (event: Event) => {
+      const detail = (event as CustomEvent<{ tab?: 'export' | 'import' }>).detail;
+      setBackupTab(detail?.tab ?? 'export');
+      setIsBackupOpen(true);
+      setIsOpen(false);
+    };
+    window.addEventListener('open-profile-backup', handleOpenBackup as EventListener);
+    return () => window.removeEventListener('open-profile-backup', handleOpenBackup as EventListener);
+  }, []);
 
   const getDisplayName = (name: string) =>
     name === defaultProfileKey ? t('settings.profiles.default_name') : name;
@@ -428,7 +439,7 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
       <div className="relative">
         {/* Menú desplegable que aparece cuando isOpen es true */}
         {isOpen && (
-          <div className="absolute bottom-full mb-2 w-56 bg-white/80 backdrop-blur-md rounded-lg shadow-lg border border-black/10">
+          <div className="absolute bottom-full mb-2 w-56 bg-white/80 backdrop-blur-md rounded-lg shadow-lg border border-black/10 text-sm">
             <ul className="p-1">
               {profileNames.map(name => (
                 <li key={name}>
@@ -448,8 +459,9 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
             <div className="border-t border-black/10 p-1 space-y-1">
               <button
                 onClick={handleManageProfiles}
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-accent hover:text-text-dark transition-colors font-semibold"
+                className="w-full text-left px-3 py-2 rounded-md hover:bg-accent hover:text-text-dark transition-colors flex items-center gap-2"
               >
+                <Users size={16} />
                 {t('settings.profiles.manage_button')}
               </button>
               <button
@@ -457,10 +469,10 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
                   setIsBackupOpen(true);
                   setIsOpen(false);
                 }}
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-accent hover:text-text-dark transition-colors font-semibold flex items-center gap-2"
+                className="w-full text-left px-3 py-2 rounded-md hover:bg-accent hover:text-text-dark transition-colors flex items-center gap-2"
               >
                 <Download size={16} />
-                {t('backup.export_profiles')}
+                {t('backup.manage_profiles')}
               </button>
             </div>
           </div>

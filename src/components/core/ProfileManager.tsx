@@ -8,6 +8,7 @@ interface ProfileManagerProps {
   setProfiles: React.Dispatch<React.SetStateAction<ProfileCollection>>;
   activeProfileName: string;
   setActiveProfileName: (name: string) => void;
+  onCloseSettings: () => void;
 }
 
 export const ProfileManager: React.FC<ProfileManagerProps> = ({
@@ -15,6 +16,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   setProfiles,
   activeProfileName,
   setActiveProfileName,
+  onCloseSettings,
 }) => {
   const { t } = useTranslation();
   const [newProfileName, setNewProfileName] = useState('');
@@ -74,6 +76,17 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
             {t('settings.profiles.save_button')}
           </button>
         </div>
+      </div>
+      <div>
+        <button
+          onClick={() => {
+            onCloseSettings();
+            window.dispatchEvent(new CustomEvent('open-profile-backup', { detail: { tab: 'export' } }));
+          }}
+          className="w-full text-left px-3 py-2 rounded-lg bg-white/70 border border-gray-200 text-sm text-text-dark hover:bg-gray-100 transition-colors"
+        >
+          {t('backup.manage_profiles')}
+        </button>
       </div>
       <div>
         <h3 className="text-lg font-semibold mb-2">{t('settings.profiles.saved_profiles_title')}</h3>
