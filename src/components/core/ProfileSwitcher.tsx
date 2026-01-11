@@ -28,6 +28,7 @@ interface ProfileSwitcherProps {
   onManageProfiles: () => void;
   onOpenContextMenu: (event: React.MouseEvent) => void;
   setProfiles: React.Dispatch<React.SetStateAction<ProfileCollection>>;
+  profileOrder: string[];
 }
 
 export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
@@ -37,6 +38,7 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
   onManageProfiles,
   onOpenContextMenu,
   setProfiles,
+  profileOrder,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isBackupOpen, setIsBackupOpen] = useState(false);
@@ -55,7 +57,22 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
   const [transferLabel, setTransferLabel] = useState('');
   const [transferProgress, setTransferProgress] = useState('');
   const { t } = useTranslation();
-  const profileNames = useMemo(() => Object.keys(profiles), [profiles]);
+  const profileNames = useMemo(() => {
+    const names = Object.keys(profiles);
+    const ordered = profileOrder.filter((name) => names.includes(name));
+    names.forEach((name) => {
+      if (!ordered.includes(name)) ordered.push(name);
+    });
+    return ordered;
+  }, [profiles, profileOrder]);
+  const isPartialProfileSelection =
+    includeProfiles &&
+    selectedProfiles.length > 0 &&
+    selectedProfiles.length < profileNames.length;
+  const canIncludeLocalWeb =
+    hasLocalWeb &&
+    selectedProfiles.length > 0 &&
+    !isPartialProfileSelection;
   const containerRef = useRef<HTMLDivElement>(null);
   const importInputRef = useRef<HTMLInputElement>(null);
   const estimateCounterRef = useRef(0);
@@ -129,6 +146,17 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
       });
   }, [isBackupOpen, profileNames]);
 
+  useEffect(() => {
+    if (!isPartialProfileSelection) return;
+    if (includeWidgetData) setIncludeWidgetData(false);
+    if (includeLocalWeb) setIncludeLocalWeb(false);
+  }, [isPartialProfileSelection, includeWidgetData, includeLocalWeb]);
+
+  useEffect(() => {
+    if (canIncludeLocalWeb) return;
+    if (includeLocalWeb) setIncludeLocalWeb(false);
+  }, [canIncludeLocalWeb, includeLocalWeb]);
+
   const toggleProfileSelection = (name: string) => {
     setSelectedProfiles(prev => {
       if (prev.includes(name)) return prev.filter(item => item !== name);
@@ -175,7 +203,7 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
       data.profiles = selected;
       data.activeProfileName = selected[activeProfileName] ? activeProfileName : selectedProfiles[0];
     }
-    if (includeWidgetData && hasWidgetData) {
+    if (includeWidgetData && hasWidgetData && !isPartialProfileSelection) {
       data.widgetData = await exportWidgetData(WIDGET_DATA_KEYS);
     }
     return buildBackupPayload(data);
@@ -227,10 +255,10 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
       };
       total += new Blob([JSON.stringify(profileData)]).size;
     }
-    if (includeWidgetData && hasWidgetData) {
+    if (includeWidgetData && hasWidgetData && !isPartialProfileSelection) {
       total += await estimateWidgetDataSize();
     }
-    if (includeLocalWeb && hasLocalWeb) {
+    if (includeLocalWeb && hasLocalWeb && !isPartialProfileSelection) {
       const stats = await getLocalWebStats();
       total += Math.ceil(stats.totalBytes * 1.1);
     }
@@ -276,7 +304,9 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
     abortControllerRef.current = controller;
     try {
       const payload = await buildDataForExport();
-      const localWebRecords = includeLocalWeb && hasLocalWeb ? await exportLocalWebRecords() : undefined;
+      const localWebRecords = includeLocalWeb && hasLocalWeb && !isPartialProfileSelection
+        ? await exportLocalWebRecords()
+        : undefined;
       let lastUpdate = 0;
       let processed = 0;
       const archive = await buildBackupArchive(
@@ -493,7 +523,7 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
           <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/40">
             <div className="w-full max-w-xl bg-white/90 backdrop-blur-md rounded-xl shadow-2xl border border-black/10 p-5 text-sm">
               <div className="flex items-center justify-between mb-4">
-                <div className="font-semibold text-lg">{t('backup.title')}</div>
+                <div className="font-semibold text-lg">{t('backup.manage_profiles')}</div>
                 <button
                   onClick={() => setIsBackupOpen(false)}
                   className="text-gray-600 hover:text-gray-800"
@@ -502,23 +532,23 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
                 </button>
               </div>
 
-              <div className="flex gap-2 mb-4">
+              <div className="flex border-b border-gray-300 mb-5">
                 <button
                   onClick={() => setBackupTab('export')}
-                  className={`flex-1 py-2 rounded-md border text-sm font-semibold transition-colors ${
+                  className={`-mb-px px-4 py-2 text-sm font-semibold rounded-t-md border transition-colors ${
                     backupTab === 'export'
-                      ? 'bg-accent text-text-dark border-transparent'
-                      : 'bg-white hover:bg-gray-100 border-gray-200'
+                      ? 'bg-accent text-text-dark border-accent border-b-white shadow-sm'
+                      : 'bg-gray-100 text-gray-600 border-transparent hover:text-text-dark'
                   }`}
                 >
                   {t('backup.tab_export')}
                 </button>
                 <button
                   onClick={() => setBackupTab('import')}
-                  className={`flex-1 py-2 rounded-md border text-sm font-semibold transition-colors ${
+                  className={`-mb-px ml-1 px-4 py-2 text-sm font-semibold rounded-t-md border transition-colors ${
                     backupTab === 'import'
-                      ? 'bg-accent text-text-dark border-transparent'
-                      : 'bg-white hover:bg-gray-100 border-gray-200'
+                      ? 'bg-accent text-text-dark border-accent border-b-white shadow-sm'
+                      : 'bg-gray-100 text-gray-600 border-transparent hover:text-text-dark'
                   }`}
                 >
                   {t('backup.tab_import')}
@@ -528,36 +558,40 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
               {backupTab === 'export' && (
                 <>
                   <div className="space-y-3">
-                    <label className="flex items-center gap-2">
-                      <input type="checkbox" checked={includeProfiles} onChange={(e) => setIncludeProfiles(e.target.checked)} />
-                      <span>{t('backup.include_profiles')}</span>
-                    </label>
-                    {includeProfiles && (
-                      <div className="pl-6 space-y-1 max-h-32 overflow-auto border border-gray-200 rounded-lg p-2 bg-white/60">
-                        {profileNames.map((name) => (
-                          <label key={name} className="flex items-center gap-2">
-                            <input
-                              type="checkbox"
-                              checked={selectedProfiles.includes(name)}
-                              onChange={() => toggleProfileSelection(name)}
-                            />
-                            <span>{getDisplayName(name)}</span>
-                          </label>
-                        ))}
-                      </div>
-                    )}
+                    <div className="text-sm font-semibold text-gray-700">{t('backup.choose_profiles')}</div>
+                    <div className="space-y-1 max-h-32 overflow-auto border border-gray-200 rounded-lg p-2 bg-white/60">
+                      {profileNames.map((name) => (
+                        <label key={name} className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            checked={selectedProfiles.includes(name)}
+                            onChange={() => toggleProfileSelection(name)}
+                          />
+                          <span>{getDisplayName(name)}</span>
+                        </label>
+                      ))}
+                    </div>
+                    <div className="text-xs text-gray-500">{t('backup.include_profiles')}</div>
                     {hasWidgetData && (
-                      <label className="flex items-center gap-2">
-                        <input type="checkbox" checked={includeWidgetData} onChange={(e) => setIncludeWidgetData(e.target.checked)} />
+                      <label className={`flex items-center gap-2 ${isPartialProfileSelection ? 'opacity-50' : ''}`}>
+                        <input
+                          type="checkbox"
+                          checked={includeWidgetData}
+                          onChange={(e) => setIncludeWidgetData(e.target.checked)}
+                          disabled={isPartialProfileSelection}
+                        />
                         <span>{t('backup.include_widgets')}</span>
                       </label>
                     )}
-                    {hasLocalWeb && (
-                      <label className="flex items-center gap-2">
-                        <input type="checkbox" checked={includeLocalWeb} onChange={(e) => setIncludeLocalWeb(e.target.checked)} />
-                        <span>{t('backup.include_local_web')}</span>
-                      </label>
-                    )}
+                    <label className={`flex items-center gap-2 ${canIncludeLocalWeb ? '' : 'opacity-50'}`}>
+                      <input
+                        type="checkbox"
+                        checked={includeLocalWeb}
+                        onChange={(e) => setIncludeLocalWeb(e.target.checked)}
+                        disabled={!canIncludeLocalWeb}
+                      />
+                      <span>{t('backup.include_local_web')}</span>
+                    </label>
                   </div>
 
                   <div className="mt-3 text-sm text-gray-700 font-semibold">

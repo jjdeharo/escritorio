@@ -9,6 +9,8 @@ interface ProfileManagerProps {
   activeProfileName: string;
   setActiveProfileName: (name: string) => void;
   onCloseSettings: () => void;
+  profileOrder: string[];
+  setProfileOrder: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export const ProfileManager: React.FC<ProfileManagerProps> = ({
@@ -17,11 +19,17 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   activeProfileName,
   setActiveProfileName,
   onCloseSettings,
+  profileOrder,
+  setProfileOrder,
 }) => {
   const { t } = useTranslation();
   const [newProfileName, setNewProfileName] = useState('');
   const { theme } = useTheme();
   const defaultProfileKey = 'Escritorio Principal';
+  const orderedProfileNames = profileOrder.filter((name) => profiles[name]);
+  Object.keys(profiles).forEach((name) => {
+    if (!orderedProfileNames.includes(name)) orderedProfileNames.push(name);
+  });
 
   const getDisplayName = (name: string) =>
     name === defaultProfileKey ? t('settings.profiles.default_name') : name;
@@ -37,6 +45,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
             theme: theme,
         }
       }));
+      setProfileOrder((prev) => [...prev, trimmedName]);
       setActiveProfileName(trimmedName);
       setNewProfileName('');
     } else {
@@ -54,10 +63,25 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
       const newProfiles = { ...profiles };
       delete newProfiles[name];
       setProfiles(newProfiles);
+      setProfileOrder((prev) => prev.filter((item) => item !== name));
       if (activeProfileName === name) {
         setActiveProfileName(Object.keys(newProfiles)[0]);
       }
     }
+  };
+
+  const moveProfile = (name: string, direction: 'up' | 'down') => {
+    setProfileOrder((prev) => {
+      const order = prev.filter((item) => profiles[item]);
+      const index = order.indexOf(name);
+      if (index === -1) return prev;
+      const nextIndex = direction === 'up' ? index - 1 : index + 1;
+      if (nextIndex < 0 || nextIndex >= order.length) return prev;
+      const updated = [...order];
+      const [item] = updated.splice(index, 1);
+      updated.splice(nextIndex, 0, item);
+      return updated;
+    });
   };
 
   return (
@@ -83,7 +107,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
             onCloseSettings();
             window.dispatchEvent(new CustomEvent('open-profile-backup', { detail: { tab: 'export' } }));
           }}
-          className="w-full text-left px-3 py-2 rounded-lg bg-white/70 border border-gray-200 text-sm text-text-dark hover:bg-gray-100 transition-colors"
+          className="w-full text-left px-3 py-2 rounded-lg bg-white border border-gray-300 text-sm text-text-dark hover:bg-gray-100 transition-colors shadow-sm"
         >
           {t('backup.manage_profiles')}
         </button>
@@ -91,10 +115,28 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
       <div>
         <h3 className="text-lg font-semibold mb-2">{t('settings.profiles.saved_profiles_title')}</h3>
         <ul className="space-y-2">
-          {Object.keys(profiles).map(name => (
+          {orderedProfileNames.map((name, index) => (
             <li key={name} className="flex items-center justify-between p-3 bg-white/50 rounded-lg">
               <span className="font-semibold">{getDisplayName(name)}</span>
               <div className="flex gap-2">
+                <button
+                  onClick={() => moveProfile(name, 'up')}
+                  disabled={index === 0}
+                  className="py-1 px-2 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
+                  title={t('settings.profiles.move_up')}
+                  aria-label={t('settings.profiles.move_up')}
+                >
+                  ↑
+                </button>
+                <button
+                  onClick={() => moveProfile(name, 'down')}
+                  disabled={index === orderedProfileNames.length - 1}
+                  className="py-1 px-2 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
+                  title={t('settings.profiles.move_down')}
+                  aria-label={t('settings.profiles.move_down')}
+                >
+                  ↓
+                </button>
                 <button
                   onClick={() => setActiveProfileName(name)}
                   disabled={name === activeProfileName}

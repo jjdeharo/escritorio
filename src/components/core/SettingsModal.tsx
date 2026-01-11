@@ -64,6 +64,8 @@ interface SettingsModalProps {
   setProfiles: React.Dispatch<React.SetStateAction<ProfileCollection>>;
   activeProfileName: string;
   setActiveProfileName: (name: string) => void;
+  profileOrder: string[];
+  setProfileOrder: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -76,6 +78,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   setProfiles,
   activeProfileName,
   setActiveProfileName,
+  profileOrder,
+  setProfileOrder,
 }) => {
   const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState('general');
@@ -248,6 +252,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   activeProfileName={activeProfileName}
                   setActiveProfileName={setActiveProfileName}
                   onCloseSettings={onClose}
+                  profileOrder={profileOrder}
+                  setProfileOrder={setProfileOrder}
                 />
               )}
               {activeTab === 'widgets' && (

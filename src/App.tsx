@@ -11,7 +11,7 @@ import { CreditsModal } from './components/core/CreditsModal';
 import { AboutModal } from './components/core/AboutModal';
 import { ThemeProvider, defaultTheme, type Theme } from './context/ThemeContext';
 import type { ActiveWidget, DesktopProfile, ProfileCollection } from './types';
-import { HelpCircle, PlusSquare, Image, X, Users, Maximize2, Minimize2, PinOff, BookOpen, Info, FileText } from 'lucide-react';
+import { HelpCircle, PlusSquare, Image, Settings, X, Users, Maximize2, Minimize2, PinOff, BookOpen, Info, FileText } from 'lucide-react';
 import { defaultWallpaperValue, isWallpaperValueValid } from './utils/wallpapers';
 // --- ¡AQUÍ ESTÁ EL CAMBIO! Importamos el nuevo componente ---
 import { ProfileSwitcher } from './components/core/ProfileSwitcher';
@@ -22,7 +22,9 @@ const DesktopUI: React.FC<{
     setProfiles: React.Dispatch<React.SetStateAction<ProfileCollection>>;
     activeProfileName: string;
     setActiveProfileName: (name: string) => void;
-}> = ({ profiles, setProfiles, activeProfileName, setActiveProfileName }) => {
+    profileOrder: string[];
+    setProfileOrder: React.Dispatch<React.SetStateAction<string[]>>;
+}> = ({ profiles, setProfiles, activeProfileName, setActiveProfileName, profileOrder, setProfileOrder }) => {
     const { t, i18n } = useTranslation();
     const activeProfile = profiles[activeProfileName] || Object.values(profiles)[0];
     const showDateTime = activeProfile.theme?.showDateTime ?? true;
@@ -76,6 +78,19 @@ const DesktopUI: React.FC<{
     const [showStorageWarning, setShowStorageWarning] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(!!document.fullscreenElement);
 
+    useEffect(() => {
+        const names = Object.keys(profiles);
+        setProfileOrder((prev) => {
+            const ordered = prev.filter((name) => names.includes(name));
+            names.forEach((name) => {
+                if (!ordered.includes(name)) ordered.push(name);
+            });
+            if (ordered.length === prev.length && ordered.every((name, idx) => name === prev[idx])) {
+                return prev;
+            }
+            return ordered;
+        });
+    }, [profiles, setProfileOrder]);
     const getViewportBounds = () => {
         const margin = 16;
         const maxWidth = Math.max(200, window.innerWidth - margin * 2);
@@ -268,7 +283,6 @@ const DesktopUI: React.FC<{
     };
 
     const resetLayout = () => {
-        if (!window.confirm(t('context_menu.reset_layout_confirm'))) return;
         setActiveWidgets([]);
         setContextMenu(prev => ({ ...prev, isOpen: false }));
     };
@@ -530,6 +544,8 @@ const DesktopUI: React.FC<{
                 setProfiles={setProfiles}
                 activeProfileName={activeProfileName}
                 setActiveProfileName={setActiveProfileName}
+                profileOrder={profileOrder}
+                setProfileOrder={setProfileOrder}
             />
             <CreditsModal
                 isOpen={isCreditsOpen}
@@ -544,6 +560,7 @@ const DesktopUI: React.FC<{
               setProfiles={setProfiles}
               onManageProfiles={() => openSettingsTab('profiles')}
               onOpenContextMenu={(event) => handleContextMenu(event, undefined, true)}
+              profileOrder={profileOrder}
             />
 
             {showStorageWarning && (
@@ -602,6 +619,13 @@ const DesktopUI: React.FC<{
                     >
                         <Users size={16} />
                         {t('context_menu.manage_profiles')}
+                    </button>
+                    <button
+                        className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
+                        onClick={() => openSettingsTab('general')}
+                    >
+                        <Settings size={16} />
+                        {t('context_menu.settings')}
                     </button>
                     <button
                         className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
@@ -669,6 +693,7 @@ function App() {
             pinnedWidgets: ['work-list', 'timer', 'file-opener'],
         },
     });
+    const [profileOrder, setProfileOrder] = useLocalStorage<string[]>('profile-order', []);
     const [activeProfileName, setActiveProfileName] = useLocalStorage<string>(
         'active-profile-name',
         'Escritorio Principal'
@@ -723,6 +748,8 @@ function App() {
                 setProfiles={setProfiles}
                 activeProfileName={activeProfileName}
                 setActiveProfileName={setActiveProfileName}
+                profileOrder={profileOrder}
+                setProfileOrder={setProfileOrder}
             />
         </ThemeProvider>
     );
