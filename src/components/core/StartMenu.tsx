@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { LucideIcon } from 'lucide-react';
@@ -256,8 +256,8 @@ export const StartMenu: React.FC<StartMenuProps> = ({
         }
     }, [isOpen, menuPosition]);
 
-    useEffect(() => {
-        if (!isOpen) return;
+    useLayoutEffect(() => {
+        if (!isOpen || !menuPosition) return;
         const update = () => {
             const header = menuRef.current?.querySelector('[data-start-menu-header="true"]') as HTMLElement | null;
             const search = menuRef.current?.querySelector('[data-start-menu-search="true"]') as HTMLElement | null;
@@ -274,13 +274,12 @@ export const StartMenu: React.FC<StartMenuProps> = ({
             setNeedsCategoryScroll(leftContentHeight > availableColumnsHeight + 1);
             setMenuHeight(headerHeight + searchHeight + paddingTopBottom + columnsHeight);
         };
-        const frame = requestAnimationFrame(update);
+        update();
         window.addEventListener('resize', update);
         return () => {
-            cancelAnimationFrame(frame);
             window.removeEventListener('resize', update);
         };
-    }, [isOpen, visibleCategories, i18n.language]);
+    }, [i18n.language, isOpen, menuPosition, visibleCategories]);
 
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
