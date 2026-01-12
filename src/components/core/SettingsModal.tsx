@@ -211,9 +211,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </button>
             </div>
 
-            <div className="overflow-y-auto p-4">
+            <div className="overflow-y-auto px-4 pb-4 pt-0">
               {activeTab === 'general' && (
-                <div>
+                <div className="pt-4">
                   <h3 className="text-lg font-semibold mb-4">{t('settings.tabs.general')}</h3>
                   <div className="flex items-center justify-between">
                     <label htmlFor="language-select" className="font-medium">{t('settings.general.language')}:</label>
@@ -246,39 +246,49 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </div>
               )}
               {activeTab === 'profiles' && (
-                <ProfileManager
-                  profiles={profiles}
-                  setProfiles={setProfiles}
-                  activeProfileName={activeProfileName}
-                  setActiveProfileName={setActiveProfileName}
-                  onCloseSettings={onClose}
-                  profileOrder={profileOrder}
-                  setProfileOrder={setProfileOrder}
-                />
+                <div className="pt-4">
+                  <ProfileManager
+                    profiles={profiles}
+                    setProfiles={setProfiles}
+                    activeProfileName={activeProfileName}
+                    setActiveProfileName={setActiveProfileName}
+                    onCloseSettings={onClose}
+                    profileOrder={profileOrder}
+                    setProfileOrder={setProfileOrder}
+                  />
+                </div>
               )}
               {activeTab === 'widgets' && (
                 <div>
-                  <div className="relative mb-4">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                    <input type="text" placeholder={t('settings.widgets.search')} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-10 pr-4 py-2 border rounded-lg bg-white/80 focus:ring-2 focus:ring-accent focus:outline-none" />
-                  </div>
-                  <div className="flex items-center justify-between gap-3 mb-4">
-                    <span className="text-sm text-gray-600">{t('settings.widgets.view_label')}</span>
-                    <div className="flex rounded-lg border border-gray-200 overflow-hidden bg-white/70">
-                      <button
-                        type="button"
-                        onClick={() => setWidgetsViewMode('theme')}
-                        className={`px-3 py-1.5 text-sm font-semibold transition-colors ${widgetsViewMode === 'theme' ? 'bg-accent text-text-dark' : 'text-gray-600 hover:bg-gray-100'}`}
-                      >
-                        {t('settings.widgets.view_by_theme')}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setWidgetsViewMode('alphabetical')}
-                        className={`px-3 py-1.5 text-sm font-semibold transition-colors ${widgetsViewMode === 'alphabetical' ? 'bg-accent text-text-dark' : 'text-gray-600 hover:bg-gray-100'}`}
-                      >
-                        {t('settings.widgets.view_alphabetical')}
-                      </button>
+                  <div className="sticky top-0 z-10 -mx-4 px-4 pt-4 pb-4 bg-white/90 backdrop-blur border-b border-black/5 mb-4">
+                    <div className="relative mb-3">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                      <input
+                        type="text"
+                        placeholder={t('settings.widgets.search')}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 border rounded-lg bg-white/80 focus:ring-2 focus:ring-accent focus:outline-none"
+                      />
+                    </div>
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-sm text-gray-600">{t('settings.widgets.view_label')}</span>
+                      <div className="flex rounded-lg border border-gray-200 overflow-hidden bg-white/70">
+                        <button
+                          type="button"
+                          onClick={() => setWidgetsViewMode('theme')}
+                          className={`px-3 py-1.5 text-sm font-semibold transition-colors ${widgetsViewMode === 'theme' ? 'bg-accent text-text-dark' : 'text-gray-600 hover:bg-gray-100'}`}
+                        >
+                          {t('settings.widgets.view_by_theme')}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setWidgetsViewMode('alphabetical')}
+                          className={`px-3 py-1.5 text-sm font-semibold transition-colors ${widgetsViewMode === 'alphabetical' ? 'bg-accent text-text-dark' : 'text-gray-600 hover:bg-gray-100'}`}
+                        >
+                          {t('settings.widgets.view_alphabetical')}
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <p className="mb-4 text-sm text-gray-600">{t('settings.widgets.pinned_info', { count: pinnedWidgets.length, max: MAX_WIDGETS })}</p>
@@ -322,7 +332,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   )}
                 </div>
               )}
-              {activeTab === 'theme' && <ThemeSettings />}
+              {activeTab === 'theme' && (
+                <div className="pt-4">
+                  <ThemeSettings />
+                </div>
+              )}
             </div>
           </motion.div>
         </motion.div>
