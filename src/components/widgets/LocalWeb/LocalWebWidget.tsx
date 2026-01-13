@@ -60,6 +60,17 @@ const openDb = (): Promise<IDBDatabase> => {
     return dbPromise;
 };
 
+const readActiveProfileName = (): string => {
+    const stored = window.localStorage.getItem(ACTIVE_PROFILE_STORAGE_KEY);
+    if (!stored) return defaultProfileKey;
+    try {
+        const parsed = JSON.parse(stored);
+        return typeof parsed === 'string' && parsed.trim() ? parsed : stored;
+    } catch {
+        return stored;
+    }
+};
+
 const withStore = async <T,>(
     storeName: string,
     mode: IDBTransactionMode,
@@ -312,7 +323,7 @@ export const LocalWebWidget: FC = () => {
     const [sites, setSites] = useState<SiteMeta[]>([]);
     const [activeSiteId, setActiveSiteId] = useState<string | null>(null);
     const [activeProfileName, setActiveProfileName] = useState(() => (
-        window.localStorage.getItem(ACTIVE_PROFILE_STORAGE_KEY) || defaultProfileKey
+        readActiveProfileName()
     ));
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [previewName, setPreviewName] = useState('');
@@ -339,6 +350,10 @@ export const LocalWebWidget: FC = () => {
         setStorageEstimate(estimate);
     };
 
+    const notifyStorageChange = () => {
+        window.dispatchEvent(new Event('storage-usage-changed'));
+    };
+
     useEffect(() => {
         const node = folderInputRef.current as HTMLInputElement & { webkitdirectory?: boolean };
         if (node) {
@@ -351,11 +366,20 @@ export const LocalWebWidget: FC = () => {
     useEffect(() => {
         const handleProfileChange = (event: Event) => {
             const detail = (event as CustomEvent<{ name?: string }>).detail;
-            setActiveProfileName(detail?.name || window.localStorage.getItem(ACTIVE_PROFILE_STORAGE_KEY) || defaultProfileKey);
+            setActiveProfileName(detail?.name || readActiveProfileName());
         };
         const handleStorage = (event: StorageEvent) => {
             if (event.key !== ACTIVE_PROFILE_STORAGE_KEY) return;
-            setActiveProfileName(event.newValue || defaultProfileKey);
+            if (!event.newValue) {
+                setActiveProfileName(defaultProfileKey);
+                return;
+            }
+            try {
+                const parsed = JSON.parse(event.newValue);
+                setActiveProfileName(typeof parsed === 'string' && parsed.trim() ? parsed : event.newValue);
+            } catch {
+                setActiveProfileName(event.newValue);
+            }
         };
         window.addEventListener(ACTIVE_PROFILE_EVENT, handleProfileChange as EventListener);
         window.addEventListener('storage', handleStorage);
@@ -372,6 +396,17 @@ export const LocalWebWidget: FC = () => {
     }, [activeProfileName]);
 
     useEffect(() => {
+        const handleLocalWebChange = () => {
+            refreshSites(activeProfileName);
+            refreshStorage();
+        };
+        window.addEventListener('local-web-data-changed', handleLocalWebChange);
+        return () => {
+            window.removeEventListener('local-web-data-changed', handleLocalWebChange);
+        };
+    }, [activeProfileName]);
+
+    useEffect(() => {
         return () => {
             objectUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
             objectUrlsRef.current = [];
@@ -379,34 +414,37 @@ export const LocalWebWidget: FC = () => {
     }, []);
 
     const storageLabel = useMemo(() => {
-        const { quota } = storageEstimate;
-        if (quota != null) {
-            const percent = Math.min(100, Math.round((localUsage / quota) * 100));
+        const { usage, quota } = storageEstimate;
+        if (usage != null && quota != null) {
+            const percent = Math.min(100, Math.round((usage / quota) * 100));
             return t('widgets.local_web.storage_usage', {
-                used: formatBytes(localUsage),
+                used: formatBytes(usage),
                 total: formatBytes(quota),
                 percent,
             });
         }
-        return t('widgets.local_web.storage_local_used', { used: formatBytes(localUsage) });
-    }, [storageEstimate, localUsage, t]);
+        if (usage != null) {
+            return t('widgets.local_web.storage_used', { used: formatBytes(usage) });
+        }
+        return t('widgets.local_web.storage_unknown');
+    }, [storageEstimate, t]);
 
     const storageClass = useMemo(() => {
-        const { quota } = storageEstimate;
-        if (quota == null) {
+        const { usage, quota } = storageEstimate;
+        if (usage == null || quota == null) {
             return 'local-web-storage-neutral';
         }
-        const ratio = localUsage / quota;
+        const ratio = usage / quota;
         if (ratio < 0.7) return 'local-web-storage-ok';
         if (ratio < 0.85) return 'local-web-storage-warn';
         return 'local-web-storage-danger';
-    }, [storageEstimate, localUsage]);
+    }, [storageEstimate]);
 
     const storagePercent = useMemo(() => {
-        const { quota } = storageEstimate;
-        if (quota == null) return null;
-        return Math.min(100, Math.max(0, Math.round((localUsage / quota) * 100)));
-    }, [storageEstimate, localUsage]);
+        const { usage, quota } = storageEstimate;
+        if (usage == null || quota == null) return null;
+        return Math.min(100, Math.max(0, Math.round((usage / quota) * 100)));
+    }, [storageEstimate]);
 
     const resetPreview = () => {
         setActiveSiteId(null);
@@ -527,6 +565,7 @@ export const LocalWebWidget: FC = () => {
         setStatusMessage(t('widgets.local_web.import_done'));
         await refreshSites(activeProfileName);
         await refreshStorage();
+        notifyStorageChange();
     };
 
     const importFolder = async (files: FileList) => {
@@ -564,6 +603,7 @@ export const LocalWebWidget: FC = () => {
         setStatusMessage(t('widgets.local_web.import_done'));
         await refreshSites(activeProfileName);
         await refreshStorage();
+        notifyStorageChange();
     };
 
     const openSite = async (site: SiteMeta) => {
@@ -673,6 +713,7 @@ export const LocalWebWidget: FC = () => {
         await deleteSite(siteId);
         await refreshSites(activeProfileName);
         await refreshStorage();
+        notifyStorageChange();
     };
 
     return (

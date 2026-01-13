@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ArrowDown, ArrowUp, Check, FolderOpen, Trash2 } from 'lucide-react';
 import { defaultTheme, useTheme } from '../../context/ThemeContext';
 import { cloneLocalWebData } from '../../utils/backup';
 import type { ProfileCollection } from '../../types';
@@ -226,30 +227,37 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
                 <button
                   onClick={() => moveProfile(name, 'up')}
                   disabled={index === 0}
-                  className="py-1 px-2 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="p-2 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
                   title={t('settings.profiles.move_up')}
                   aria-label={t('settings.profiles.move_up')}
                 >
-                  ↑
+                  <ArrowUp size={16} />
                 </button>
                 <button
                   onClick={() => moveProfile(name, 'down')}
                   disabled={index === orderedProfileNames.length - 1}
-                  className="py-1 px-2 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="p-2 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
                   title={t('settings.profiles.move_down')}
                   aria-label={t('settings.profiles.move_down')}
                 >
-                  ↓
+                  <ArrowDown size={16} />
                 </button>
                 <button
                   onClick={() => setActiveProfileName(name)}
                   disabled={name === activeProfileName}
-                  className="font-semibold py-1 px-3 rounded-lg bg-blue-500 text-white disabled:opacity-50"
+                  className="p-2 rounded-lg bg-blue-500 text-white disabled:opacity-50"
+                  title={name === activeProfileName ? t('settings.profiles.active_button') : t('settings.profiles.load_button')}
+                  aria-label={name === activeProfileName ? t('settings.profiles.active_button') : t('settings.profiles.load_button')}
                 >
-                  {name === activeProfileName ? t('settings.profiles.active_button') : t('settings.profiles.load_button')}
+                  {name === activeProfileName ? <Check size={16} /> : <FolderOpen size={16} />}
                 </button>
-                <button onClick={() => handleDelete(name)} className="font-semibold py-1 px-3 rounded-lg bg-red-500 text-white">
-                  {t('settings.profiles.delete_button')}
+                <button
+                  onClick={() => handleDelete(name)}
+                  className="p-2 rounded-lg bg-red-500 text-white"
+                  title={t('settings.profiles.delete_button')}
+                  aria-label={t('settings.profiles.delete_button')}
+                >
+                  <Trash2 size={16} />
                 </button>
               </div>
             </li>

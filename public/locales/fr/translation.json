@@ -114,7 +114,8 @@
     "start": "Démarrer",
     "settings": "Configuration",
     "widgetLibrary": "Bibliothèque de programmes",
-    "remove_widget": "Retirer ce programme",
+    "add_widget": "Ajouter aux favoris",
+    "remove_widget": "Retirer des favoris",
     "no_open_windows": "Aucune fenêtre ouverte"
   },
   "help": {
@@ -199,7 +200,7 @@
     "open_knowledge_decalogue": "Décalogue de la Connaissance Ouverte"
   },
   "context_menu": {
-    "new_widget": "Nouveau programme...",
+    "new_widget": "Nouveau favori",
     "settings": "Configurer ED",
     "manage_profiles": "Gérer les profils",
     "change_background": "Changer le fond...",
@@ -207,7 +208,7 @@
     "hide_datetime": "Masquer la date et l'heure",
     "show_toolbar": "Barre inférieure",
     "hide_toolbar": "Masquer la barre inférieure",
-    "reset_layout": "Fermer toutes les fenêtres ouvertes",
+    "reset_layout": "Fermer toutes les fenêtres",
     "reset_layout_confirm": "Voulez-vous fermer toutes les fenêtres du bureau ?",
     "show_system_stats": "Statistiques système",
     "hide_system_stats": "Masquer les statistiques système",

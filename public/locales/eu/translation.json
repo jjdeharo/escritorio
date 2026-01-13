@@ -112,7 +112,8 @@
     "start": "Hasiera",
     "settings": "Ezarpenak",
     "widgetLibrary": "Programa Liburutegia",
-    "remove_widget": "Kendu programa hau",
+    "add_widget": "Gehitu gogokoetara",
+    "remove_widget": "Gogokoetatik kendu",
     "no_open_windows": "Ez dago leiho irekirik"
   },
   "help": {
@@ -197,7 +198,7 @@
     "open_knowledge_decalogue": "Ezagutza Irekiaren Dekalogoarekin"
   },
   "context_menu": {
-    "new_widget": "Programa berria...",
+    "new_widget": "Gogoko berria",
     "settings": "ED konfiguratu",
     "manage_profiles": "Profilak kudeatu",
     "change_background": "Aldatu atzeko planoa...",
@@ -205,7 +206,7 @@
     "hide_datetime": "Ezkutatu data eta ordua",
     "show_toolbar": "Beheko barra",
     "hide_toolbar": "Ezkutatu beheko barra",
-    "reset_layout": "Irekitako leiho guztiak itxi",
+    "reset_layout": "Leiho guztiak itxi",
     "reset_layout_confirm": "Mahaigaineko leiho guztiak itxi nahi dituzu?",
     "show_system_stats": "Sistemaren estatistikak",
     "hide_system_stats": "Sistemaren estatistikak ezkutatu",

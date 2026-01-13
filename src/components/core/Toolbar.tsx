@@ -89,6 +89,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   const handleBarContextMenu = (event: React.MouseEvent) => {
     const target = event.target as HTMLElement | null;
     if (target?.closest('[data-widget-button="true"]')) return;
+    if (target?.closest('[data-task-button="true"]')) return;
     onOpenContextMenu(event, undefined, true);
   };
 
@@ -135,7 +136,11 @@ export const Toolbar: React.FC<ToolbarProps> = ({
               key={widget.instanceId}
               type="button"
               onClick={() => onTaskClick(widget.instanceId)}
-              onContextMenu={(event) => onTaskContextMenu(event, widget.instanceId)}
+              onContextMenu={(event) => {
+                event.stopPropagation();
+                onTaskContextMenu(event, widget.instanceId);
+              }}
+              data-task-button="true"
               className={`max-w-[180px] truncate px-3 py-2 rounded-lg border text-xs font-semibold transition ${
                 widget.isMinimized
                   ? 'bg-white/60 border-gray-200 text-gray-500'

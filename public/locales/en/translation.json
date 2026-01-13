@@ -113,7 +113,8 @@
     "start": "Start",
     "settings": "Settings",
     "widgetLibrary": "Program Library",
-    "remove_widget": "Remove this program",
+    "add_widget": "Add to favorites",
+    "remove_widget": "Remove from favorites",
     "no_open_windows": "No open windows"
   },
   "help": {
@@ -198,7 +199,7 @@
     "open_knowledge_decalogue": "Open Knowledge Decalogue"
   },
   "context_menu": {
-    "new_widget": "New program...",
+    "new_widget": "New favorite",
     "settings": "Configure ED",
     "manage_profiles": "Manage profiles",
     "change_background": "Change background...",
@@ -206,7 +207,7 @@
     "hide_datetime": "Hide date and time",
     "show_toolbar": "Bottom bar",
     "hide_toolbar": "Hide bottom bar",
-    "reset_layout": "Close all open windows",
+    "reset_layout": "Close all windows",
     "reset_layout_confirm": "Do you want to close all desktop windows?",
     "show_system_stats": "System stats",
     "hide_system_stats": "Hide system stats",

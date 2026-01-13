@@ -260,10 +260,12 @@ export const exportLocalWebRecords = async (
 export const getLocalWebStats = async (profileNames?: string[], _fallbackProfileName?: string): Promise<LocalWebStats> => {
   const db = await openLocalWebDb();
   return new Promise<LocalWebStats>((resolve, reject) => {
-    const tx = db.transaction(LOCAL_WEB_SITES, 'readonly');
-    const request = tx.objectStore(LOCAL_WEB_SITES).getAll();
-    request.onsuccess = () => {
-      const sites = (request.result as LocalWebSite[]) ?? [];
+    const tx = db.transaction([LOCAL_WEB_SITES, LOCAL_WEB_FILES], 'readonly');
+    const sitesRequest = tx.objectStore(LOCAL_WEB_SITES).getAll();
+    const filesRequest = tx.objectStore(LOCAL_WEB_FILES).getAll();
+    tx.oncomplete = () => {
+      const sites = (sitesRequest.result as LocalWebSite[]) ?? [];
+      const files = (filesRequest.result as Array<{ siteId: string; size?: number }>) ?? [];
 
       // Sites without profileName are considered available for all profiles
       // Sites with profileName are only available if their profile is in the selection
@@ -271,12 +273,18 @@ export const getLocalWebStats = async (profileNames?: string[], _fallbackProfile
         ? sites.filter((site) => !site.profileName || profileNames.includes(site.profileName))
         : sites;
 
+      const selectedSiteIds = new Set(selectedSites.map((site) => site.id));
+      const bytesFromSites = selectedSites.reduce((sum, site) => sum + (site.totalBytes || 0), 0);
+      const bytesFromFiles = files
+        .filter((file) => selectedSiteIds.has(file.siteId))
+        .reduce((sum, file) => sum + (file.size || 0), 0);
+
       resolve({
         siteCount: selectedSites.length,
-        totalBytes: selectedSites.reduce((sum, site) => sum + (site.totalBytes || 0), 0),
+        totalBytes: bytesFromFiles > 0 ? bytesFromFiles : bytesFromSites,
       });
     };
-    request.onerror = () => reject(request.error);
+    tx.onerror = () => reject(tx.error);
   });
 };
 

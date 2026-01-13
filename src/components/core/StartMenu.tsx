@@ -109,6 +109,7 @@ export const StartMenu: React.FC<StartMenuProps> = ({
 
     const widgetList = useMemo(() => Object.values(WIDGET_REGISTRY), []);
     const normalizedSearch = searchTerm.trim().toLowerCase();
+    const showSearchResults = normalizedSearch.length > 0;
     const filteredWidgets = useMemo(() => {
         if (!normalizedSearch) return widgetList;
         return widgetList.filter((widget) => t(widget.title).toLowerCase().includes(normalizedSearch));
@@ -271,7 +272,11 @@ export const StartMenu: React.FC<StartMenuProps> = ({
             const maxHeight = Math.floor(window.innerHeight * 0.72);
             const availableColumnsHeight = Math.max(0, maxHeight - headerHeight - searchHeight - paddingTopBottom);
             const leftContentHeight = left.scrollHeight;
-            const columnsHeight = Math.min(leftContentHeight, availableColumnsHeight);
+            const minColumnsHeight = showSearchResults ? Math.min(availableColumnsHeight, 220) : 0;
+            const columnsHeight = Math.min(
+                availableColumnsHeight,
+                Math.max(leftContentHeight, minColumnsHeight)
+            );
             setLeftColumnHeight(columnsHeight);
             setNeedsCategoryScroll(leftContentHeight > availableColumnsHeight + 1);
             setMenuHeight(headerHeight + searchHeight + paddingTopBottom + columnsHeight);
@@ -281,7 +286,7 @@ export const StartMenu: React.FC<StartMenuProps> = ({
         return () => {
             window.removeEventListener('resize', update);
         };
-    }, [i18n.language, isOpen, menuPosition, visibleCategories]);
+    }, [i18n.language, isOpen, menuPosition, showSearchResults, visibleCategories]);
 
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
@@ -361,7 +366,6 @@ export const StartMenu: React.FC<StartMenuProps> = ({
     const activeCategory = activeCategoryId
         ? visibleCategories.find((category) => category.id === activeCategoryId) || null
         : null;
-    const showSearchResults = normalizedSearch.length > 0;
 
     const renderWidgetList = (widgets: typeof filteredWidgets, highlightFavorites = true) => (
         <div className="space-y-1">

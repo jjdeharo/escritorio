@@ -12,7 +12,7 @@ import { AboutModal } from './components/core/AboutModal';
 import { StartMenu } from './components/core/StartMenu';
 import { ThemeProvider, defaultTheme, type Theme } from './context/ThemeContext';
 import type { ActiveWidget, DesktopProfile, ProfileCollection } from './types';
-import { PlusSquare, Image, Settings, X, Users, Maximize2, Minimize2, PinOff } from 'lucide-react';
+import { PlusSquare, Image, Settings, X, Users, Maximize2, Minimize2, Pin, PinOff } from 'lucide-react';
 import { defaultWallpaperValue, isWallpaperValueValid } from './utils/wallpapers';
 import { withBaseUrl } from './utils/assetPaths';
 // --- ¡AQUÍ ESTÁ EL CAMBIO! Importamos el nuevo componente ---
@@ -308,11 +308,12 @@ const DesktopUI: React.FC<{
 
     const handleTaskContextMenu = (event: React.MouseEvent, instanceId: string) => {
         event.preventDefault();
+        const targetWidgetId = activeProfile.activeWidgets.find(widget => widget.instanceId === instanceId)?.widgetId ?? null;
         setContextMenu({
             isOpen: true,
             x: event.clientX,
             y: event.clientY,
-            widgetId: null,
+            widgetId: targetWidgetId,
             windowInstanceId: instanceId,
         });
     };
@@ -379,7 +380,12 @@ const DesktopUI: React.FC<{
         };
         updateStorage();
         const intervalId = window.setInterval(updateStorage, 30000);
-        return () => window.clearInterval(intervalId);
+        const handleStorageUsageChange = () => updateStorage();
+        window.addEventListener('storage-usage-changed', handleStorageUsageChange);
+        return () => {
+            window.clearInterval(intervalId);
+            window.removeEventListener('storage-usage-changed', handleStorageUsageChange);
+        };
     }, []);
 
     useEffect(() => {
@@ -421,6 +427,13 @@ const DesktopUI: React.FC<{
     const showStorageRows = storageUsed != null && storageQuota != null;
     const showStorageFree = showStorageRows && storageQuotaRounded !== storageFreeRounded;
     const statsRows: Array<{ label: string; value: string }> = [];
+    const contextWidgetId = contextMenu.widgetId
+        ?? (contextMenu.windowInstanceId
+            ? activeProfile.activeWidgets.find(widget => widget.instanceId === contextMenu.windowInstanceId)?.widgetId
+            : null);
+    const contextIsPinned = contextWidgetId ? activeProfile.pinnedWidgets.includes(contextWidgetId) : false;
+    const showFavoriteAction = Boolean(contextWidgetId);
+    const showWindowActions = Boolean(contextMenu.windowInstanceId) || hasOpenWidgets;
     if (showStorageRows) {
         statsRows.push({
             label: t('system_stats.storage_used'),
@@ -632,34 +645,22 @@ const DesktopUI: React.FC<{
                     className="fixed z-[10000] min-w-[220px] bg-white/95 backdrop-blur-md rounded-lg shadow-xl border border-gray-200 py-2 text-sm text-text-dark"
                     style={{ left: contextMenu.x, top: contextMenu.y }}
                 >
-                    {contextMenu.widgetId && (
+                    {showFavoriteAction && (
                         <>
                             <button
                                 className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
                                 onClick={() => {
-                                    setPinnedWidgets(prev => prev.filter(id => id !== contextMenu.widgetId));
-                                    setContextMenu(prev => ({ ...prev, isOpen: false, widgetId: null }));
+                                    if (contextIsPinned) {
+                                        setPinnedWidgets(prev => prev.filter(id => id !== contextWidgetId));
+                                    } else {
+                                        setPinnedWidgets(prev => (prev.includes(contextWidgetId) ? prev : [...prev, contextWidgetId]));
+                                    }
+                                    setContextMenu(prev => ({ ...prev, isOpen: false, widgetId: null, windowInstanceId: null }));
                                 }}
                             >
-                                <PinOff size={16} />
-                                {t('toolbar.remove_widget')}
+                                {contextIsPinned ? <PinOff size={16} /> : <Pin size={16} />}
+                                {contextIsPinned ? t('toolbar.remove_widget') : t('toolbar.add_widget')}
                             </button>
-                            <div className="my-1 border-t border-gray-200" />
-                        </>
-                    )}
-                    {contextMenu.windowInstanceId && (
-                        <>
-                            <button
-                                className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-700 flex items-center gap-2"
-                                onClick={() => {
-                                    closeWidget(contextMenu.windowInstanceId as string);
-                                    setContextMenu(prev => ({ ...prev, isOpen: false, windowInstanceId: null }));
-                                }}
-                            >
-                                <X size={16} />
-                                {t('context_menu.close_window')}
-                            </button>
-                            <div className="my-1 border-t border-gray-200" />
                         </>
                     )}
                     <button
@@ -669,7 +670,7 @@ const DesktopUI: React.FC<{
                         <PlusSquare size={16} />
                         {t('context_menu.new_widget')}
                     </button>
-                    <div className="my-1 border-t border-gray-200" />
+                    {showWindowActions && <div className="my-1 border-t border-gray-200" />}
                     <button
                         className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
                         onClick={() => openSettingsTab('profiles')}
@@ -695,6 +696,16 @@ const DesktopUI: React.FC<{
                     <button
                         className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center justify-between gap-3"
                         onClick={() => {
+                            setToolbarHidden(!isToolbarHidden);
+                            setContextMenu(prev => ({ ...prev, isOpen: false }));
+                        }}
+                    >
+                        <span>{t('context_menu.show_toolbar')}</span>
+                        <span className={`h-4 w-4 rounded border ${!isToolbarHidden ? 'bg-accent border-accent' : 'border-gray-400'}`} />
+                    </button>
+                    <button
+                        className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center justify-between gap-3"
+                        onClick={() => {
                             toggleDateTime();
                             setContextMenu(prev => ({ ...prev, isOpen: false }));
                         }}
@@ -712,19 +723,9 @@ const DesktopUI: React.FC<{
                         <span>{t('context_menu.show_system_stats')}</span>
                         <span className={`h-4 w-4 rounded border ${showSystemStats ? 'bg-accent border-accent' : 'border-gray-400'}`} />
                     </button>
-                    <button
-                        className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center justify-between gap-3"
-                        onClick={() => {
-                            setToolbarHidden(!isToolbarHidden);
-                            setContextMenu(prev => ({ ...prev, isOpen: false }));
-                        }}
-                    >
-                        <span>{t('context_menu.show_toolbar')}</span>
-                        <span className={`h-4 w-4 rounded border ${!isToolbarHidden ? 'bg-accent border-accent' : 'border-gray-400'}`} />
-                    </button>
                     {hasOpenWidgets && (
                         <>
-                            <div className="my-2 border-t-2 border-gray-200" />
+                            <div className="my-1 border-t border-gray-200" />
                             <button
                                 className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
                                 onClick={() => {
@@ -735,20 +736,20 @@ const DesktopUI: React.FC<{
                                 <Minimize2 size={16} />
                                 {t('context_menu.minimize_windows')}
                             </button>
-                            {hasMinimizedWidgets && (
+                            {contextMenu.windowInstanceId && (
                                 <button
                                     className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
                                     onClick={() => {
-                                        restoreAllWindows();
-                                        setContextMenu(prev => ({ ...prev, isOpen: false }));
+                                        closeWidget(contextMenu.windowInstanceId as string);
+                                        setContextMenu(prev => ({ ...prev, isOpen: false, windowInstanceId: null }));
                                     }}
                                 >
-                                    <Maximize2 size={16} />
-                                    {t('context_menu.restore_windows')}
+                                    <X size={16} />
+                                    {t('context_menu.close_window')}
                                 </button>
                             )}
                             <button
-                                className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-700 flex items-center gap-2"
+                                className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2"
                                 onClick={resetLayout}
                             >
                                 <X size={16} />

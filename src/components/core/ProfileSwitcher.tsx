@@ -48,6 +48,7 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
   const [includeLocalWeb, setIncludeLocalWeb] = useState(true);
   const [hasWidgetData, setHasWidgetData] = useState(false);
   const [hasLocalWeb, setHasLocalWeb] = useState(false);
+  const [hasSelectedLocalWeb, setHasSelectedLocalWeb] = useState(false);
   const [selectedProfiles, setSelectedProfiles] = useState<string[]>([]);
   const [importMode, setImportMode] = useState<'replace' | 'merge'>('replace');
   const [backupStatus, setBackupStatus] = useState('');
@@ -70,7 +71,7 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
     selectedProfiles.length > 0 &&
     selectedProfiles.length < profileNames.length;
   const canIncludeLocalWeb =
-    hasLocalWeb &&
+    (hasLocalWeb || hasSelectedLocalWeb) &&
     selectedProfiles.length > 0;
   const containerRef = useRef<HTMLDivElement>(null);
   const importInputRef = useRef<HTMLInputElement>(null);
@@ -133,11 +134,11 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
     });
     setHasWidgetData(widgetDataAvailable);
     setIncludeWidgetData(widgetDataAvailable);
-    getLocalWebStats(profileNames, activeProfileName)
+    getLocalWebStats()
       .then((stats) => {
         const available = stats.siteCount > 0;
         setHasLocalWeb(available);
-        setIncludeLocalWeb(available);
+        if (!available) setIncludeLocalWeb(false);
       })
       .catch(() => {
         setHasLocalWeb(false);
@@ -151,11 +152,11 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
     getLocalWebStats(selectedProfiles, activeProfileName)
       .then((stats) => {
         const available = stats.siteCount > 0;
-        setHasLocalWeb(available);
+        setHasSelectedLocalWeb(available);
         if (!available) setIncludeLocalWeb(false);
       })
       .catch(() => {
-        setHasLocalWeb(false);
+        setHasSelectedLocalWeb(false);
         setIncludeLocalWeb(false);
       });
   }, [isBackupOpen, selectedProfiles, activeProfileName]);
@@ -271,9 +272,11 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
     if (includeWidgetData && hasWidgetData && !isPartialProfileSelection) {
       total += await estimateWidgetDataSize();
     }
-    if (includeLocalWeb && hasLocalWeb) {
+    if (includeLocalWeb) {
       const stats = await getLocalWebStats(selectedProfiles, activeProfileName);
-      total += Math.ceil(stats.totalBytes * 1.1);
+      if (stats.siteCount > 0) {
+        total += Math.ceil(stats.totalBytes * 1.1);
+      }
     }
     return total;
   };
@@ -317,8 +320,11 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
     abortControllerRef.current = controller;
     try {
       const payload = await buildDataForExport();
-      const localWebRecords = includeLocalWeb && hasLocalWeb
-        ? await exportLocalWebRecords(selectedProfiles, activeProfileName)
+      const fallbackProfileName = selectedProfiles.includes(activeProfileName)
+        ? activeProfileName
+        : selectedProfiles[0];
+      const localWebRecords = includeLocalWeb
+        ? await exportLocalWebRecords(selectedProfiles, fallbackProfileName)
         : undefined;
       let lastUpdate = 0;
       let processed = 0;
@@ -456,6 +462,7 @@ export const ProfileSwitcher: React.FC<ProfileSwitcherProps> = ({
         } else if (payload.data.localWeb) {
           await importLocalWebData(payload.data.localWeb, { profileNameMap, fallbackProfileName });
         }
+        window.dispatchEvent(new Event('local-web-data-changed'));
       }
       setBackupStatus(t('backup.import_done'));
       if (!controller.signal.aborted) {
