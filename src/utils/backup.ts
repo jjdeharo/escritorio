@@ -20,6 +20,8 @@ export const WIDGET_DATA_KEYS = [
   'scoreboard-players',
   'toolbar-hidden',
   'i18nextLng',
+  'profile-order',
+  'widgets-view-mode',
 ];
 
 type BackupMeta = {
