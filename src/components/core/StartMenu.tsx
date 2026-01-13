@@ -502,14 +502,6 @@ export const StartMenu: React.FC<StartMenuProps> = ({
                         </div>
                     )}
                 </div>
-                <button
-                    onClick={onClose}
-                    className="p-1.5 rounded-full hover:bg-gray-100 text-gray-600"
-                    aria-label={t('start_menu.close')}
-                    title={t('start_menu.close')}
-                >
-                    <X size={16} />
-                </button>
             </div>
             <div data-start-menu-search="true" className="px-4 py-3 border-b border-gray-200 bg-white/70">
                 <div className="relative">

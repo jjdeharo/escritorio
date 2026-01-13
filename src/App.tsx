@@ -555,11 +555,11 @@ const DesktopUI: React.FC<{
                 ref={startButtonRef}
                 onClick={(event) => toggleStartMenu(event.currentTarget.getBoundingClientRect())}
                 onContextMenu={(event) => handleContextMenu(event, undefined, true)}
-                className={`fixed bottom-4 left-4 z-[10001] flex items-center gap-2 px-4 py-2 rounded-full shadow-lg border border-black/10 backdrop-blur-md transition ${isStartMenuOpen ? 'bg-accent text-text-dark' : 'bg-white/90 text-text-dark hover:bg-white'}`}
+                className={`fixed bottom-4 left-4 z-[10001] flex items-center gap-2 px-5 py-2.5 rounded-full shadow-lg border border-black/10 backdrop-blur-md transition ${isStartMenuOpen ? 'bg-accent text-text-dark' : 'bg-white/90 text-text-dark hover:bg-white'}`}
                 title={t('toolbar.start')}
                 aria-label={t('toolbar.start')}
             >
-                <img src={withBaseUrl('escritorio-digital.png')} alt={t('toolbar.start')} width="22" height="22" />
+                <img src={withBaseUrl('escritorio-digital.png')} alt={t('toolbar.start')} width="24" height="24" />
                 <span className="text-sm font-semibold">{t('toolbar.start')}</span>
             </button>
             <StartMenu
