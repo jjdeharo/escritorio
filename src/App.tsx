@@ -635,6 +635,7 @@ const DesktopUI: React.FC<{
                 onMouseLeave={() => {
                     if (isToolbarHidden) setToolbarPeek(false);
                 }}
+                startButtonRef={startButtonRef}
             />
             <button
                 ref={startButtonRef}

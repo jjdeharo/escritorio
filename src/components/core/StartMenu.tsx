@@ -240,6 +240,7 @@ export const StartMenu: React.FC<StartMenuProps> = ({
         const menu = menuRef.current;
         if (!menu) return;
         const rect = menu.getBoundingClientRect();
+        const toolbar = document.querySelector('[data-toolbar="true"]') as HTMLElement | null;
         const padding = 8;
         let nextLeft = menuPosition.left;
         let nextBottom = menuPosition.bottom;
@@ -254,6 +255,13 @@ export const StartMenu: React.FC<StartMenuProps> = ({
         }
         if (rect.bottom > window.innerHeight - padding) {
             nextBottom += rect.bottom - (window.innerHeight - padding);
+        }
+        if (toolbar) {
+            const toolbarTop = toolbar.getBoundingClientRect().top;
+            const limitBottom = toolbarTop - padding;
+            if (rect.bottom > limitBottom) {
+                nextBottom += rect.bottom - limitBottom;
+            }
         }
         if (nextLeft !== menuPosition.left || nextBottom !== menuPosition.bottom) {
             setMenuPosition({ left: nextLeft, bottom: nextBottom });
@@ -319,6 +327,7 @@ export const StartMenu: React.FC<StartMenuProps> = ({
                 onClick={() => handleWidgetAdd(widget.id)}
                 onContextMenu={(event) => {
                     event.preventDefault();
+                    event.stopPropagation();
                     const rect = menuRef.current?.getBoundingClientRect();
                     const nextX = rect ? event.clientX - rect.left : event.clientX;
                     const nextY = rect ? event.clientY - rect.top : event.clientY;
@@ -375,6 +384,7 @@ export const StartMenu: React.FC<StartMenuProps> = ({
                     onClick={() => handleWidgetAdd(widget.id)}
                     onContextMenu={(event) => {
                         event.preventDefault();
+                        event.stopPropagation();
                         const rect = menuRef.current?.getBoundingClientRect();
                         const nextX = rect ? event.clientX - rect.left : event.clientX;
                         const nextY = rect ? event.clientY - rect.top : event.clientY;
@@ -403,6 +413,10 @@ export const StartMenu: React.FC<StartMenuProps> = ({
                 left: menuPosition.left,
                 bottom: menuPosition.bottom,
                 height: menuHeight ? `${menuHeight}px` : undefined,
+            }}
+            onContextMenu={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
             }}
         >
             <div

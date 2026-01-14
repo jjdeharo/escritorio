@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LayoutGrid } from 'lucide-react';
 import { DndContext, PointerSensor, KeyboardSensor, useSensor, useSensors, closestCenter, type DragEndEvent } from '@dnd-kit/core';
@@ -19,6 +19,7 @@ interface ToolbarProps {
   isHidden?: boolean;
   isPeeking?: boolean;
   onMouseLeave?: () => void;
+  startButtonRef?: React.RefObject<HTMLButtonElement | null>;
 }
 
 export const Toolbar: React.FC<ToolbarProps> = ({
@@ -33,8 +34,12 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   isHidden = false,
   isPeeking = false,
   onMouseLeave,
+  startButtonRef,
 }) => {
   const { t } = useTranslation();
+  const toolbarRef = useRef<HTMLDivElement>(null);
+  const [anchorLeft, setAnchorLeft] = useState<number | null>(null);
+  const [anchorMaxWidth, setAnchorMaxWidth] = useState<number | null>(null);
   const highestZ = openWidgets.reduce((acc, widget) => Math.max(acc, widget.zIndex), 0);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -71,8 +76,11 @@ export const Toolbar: React.FC<ToolbarProps> = ({
     return (
       <div ref={setNodeRef} style={style} className="flex-shrink-0">
         <button
-          onClick={() => onWidgetClick(widget.id)}
-          onContextMenu={(event) => onOpenContextMenu(event, widget.id)}
+          onClick={() => onWidgetClick(widgetId)}
+          onContextMenu={(event) => {
+            event.stopPropagation();
+            onOpenContextMenu(event, widgetId);
+          }}
           data-widget-button="true"
           className="group w-14 h-14 bg-accent text-2xl rounded-lg flex items-center justify-center hover:brightness-110 hover:scale-105"
           title={t(widget.title)}
@@ -93,13 +101,50 @@ export const Toolbar: React.FC<ToolbarProps> = ({
     onOpenContextMenu(event, undefined, true);
   };
 
+  useLayoutEffect(() => {
+    const updateShift = () => {
+      const toolbar = toolbarRef.current;
+      const startButton = startButtonRef?.current;
+      if (!toolbar || !startButton) {
+        setAnchorLeft(null);
+        setAnchorMaxWidth(null);
+        return;
+      }
+      const padding = 8;
+      const toolbarRect = toolbar.getBoundingClientRect();
+      const startRect = startButton.getBoundingClientRect();
+      const centerLeft = window.innerWidth / 2 - toolbarRect.width / 2;
+      const minLeft = startRect.right + padding;
+      if (centerLeft < minLeft) {
+        const nextMaxWidth = Math.max(240, window.innerWidth - minLeft - padding);
+        setAnchorLeft(minLeft);
+        setAnchorMaxWidth(nextMaxWidth);
+      } else {
+        setAnchorLeft(null);
+        setAnchorMaxWidth(null);
+      }
+    };
+    updateShift();
+    window.addEventListener('resize', updateShift);
+    return () => window.removeEventListener('resize', updateShift);
+  }, [pinnedWidgets, openWidgets, isHidden, isPeeking, startButtonRef]);
+
+  const translateY = isHidden && !isPeeking ? '0.75rem' : '0rem';
+
   return (
     <div
-      className={`fixed bottom-5 left-1/2 -translate-x-1/2 bg-widget-bg p-2 rounded-2xl flex items-center gap-3 shadow-lg z-[10000] border border-custom-border max-w-[calc(100vw-1rem)] transition-all duration-200 ${
+      ref={toolbarRef}
+      className={`fixed bottom-5 left-1/2 bg-widget-bg p-2 rounded-2xl flex items-center gap-3 shadow-lg z-[10000] border border-custom-border max-w-[calc(100vw-1rem)] transition-all duration-200 ${
         isHidden && !isPeeking
-          ? 'opacity-0 translate-y-3 pointer-events-none'
-          : 'opacity-100 translate-y-0'
+          ? 'opacity-0 pointer-events-none'
+          : 'opacity-100'
       }`}
+      style={{
+        transform: `${anchorLeft === null ? 'translate(-50%, ' : 'translate(0, '}${translateY})`,
+        left: anchorLeft === null ? undefined : `${anchorLeft}px`,
+        maxWidth: anchorMaxWidth === null ? undefined : `${anchorMaxWidth}px`,
+      }}
+      data-toolbar="true"
       onContextMenu={handleBarContextMenu}
       onMouseLeave={onMouseLeave}
     >
@@ -130,7 +175,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
       {visibleTasks.length > 0 && (
         <>
           <div className="h-10 w-px bg-white/30"></div>
-          <div className="flex items-center gap-2 overflow-x-auto pr-1">
+          <div className="flex items-center gap-2 overflow-x-auto pr-1 min-w-0 flex-1">
             {visibleTasks.map((widget) => (
             <button
               key={widget.instanceId}
@@ -141,7 +186,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
                 onTaskContextMenu(event, widget.instanceId);
               }}
               data-task-button="true"
-              className={`max-w-[180px] truncate px-3 py-2 rounded-lg border text-xs font-semibold transition ${
+              className={`min-w-[120px] max-w-[180px] truncate px-3 py-2 rounded-lg border text-xs font-semibold transition ${
                 widget.isMinimized
                   ? 'bg-white/60 border-gray-200 text-gray-500'
                   : widget.zIndex === highestZ
