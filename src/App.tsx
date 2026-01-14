@@ -63,6 +63,7 @@ const DesktopUI: React.FC<{
     }, [activeProfile, activeProfileName, setProfiles, showSystemStats]);
 
     const [highestZ, setHighestZ] = useState(100);
+    const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
     const [isSettingsOpen, setSettingsOpen] = useState(false);
     const [isCreditsOpen, setIsCreditsOpen] = useState(false);
     const [isAboutOpen, setIsAboutOpen] = useState(false);
@@ -88,6 +89,20 @@ const DesktopUI: React.FC<{
     const contextMenuRef = useRef<HTMLDivElement>(null);
     const [showStorageWarning, setShowStorageWarning] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(!!document.fullscreenElement);
+
+    useEffect(() => {
+        if (activeProfile.activeWidgets.length === 0) {
+            setActiveWindowId(null);
+            return;
+        }
+        if (!activeWindowId || !activeProfile.activeWidgets.some((w) => w.instanceId === activeWindowId)) {
+            const nextActive = activeProfile.activeWidgets.reduce<ActiveWidget | null>((acc, item) => {
+                if (!acc) return item;
+                return item.zIndex > acc.zIndex ? item : acc;
+            }, null);
+            setActiveWindowId(nextActive ? nextActive.instanceId : null);
+        }
+    }, [activeProfile.activeWidgets, activeWindowId]);
 
     useEffect(() => {
         const names = Object.keys(profiles);
@@ -155,13 +170,25 @@ const DesktopUI: React.FC<{
             zIndex: newZ,
         };
         setActiveWidgets(prev => [...prev, newWidget]);
+        setActiveWindowId(newWidget.instanceId);
     };
 
-    const closeWidget = (instanceId: string) => setActiveWidgets(prev => prev.filter(w => w.instanceId !== instanceId));
+    const closeWidget = (instanceId: string) => setActiveWidgets(prev => {
+        const next = prev.filter(w => w.instanceId !== instanceId);
+        if (activeWindowId === instanceId) {
+            const nextActive = next.reduce<ActiveWidget | null>((acc, item) => {
+                if (!acc) return item;
+                return item.zIndex > acc.zIndex ? item : acc;
+            }, null);
+            setActiveWindowId(nextActive ? nextActive.instanceId : null);
+        }
+        return next;
+    });
     const focusWidget = (instanceId: string) => {
         const newZ = highestZ + 1;
         setHighestZ(newZ);
         setActiveWidgets(prev => prev.map(w => (w.instanceId === instanceId ? { ...w, zIndex: newZ } : w)));
+        setActiveWindowId(instanceId);
     };
     const toggleMinimize = (instanceId: string) => setActiveWidgets(prev => prev.map(w => (w.instanceId === instanceId ? { ...w, isMinimized: !w.isMinimized } : w)));
     const handleTaskClick = useCallback((instanceId: string) => {
@@ -297,8 +324,14 @@ const DesktopUI: React.FC<{
         return Boolean(target.closest('input, textarea, select, [contenteditable="true"]'));
     };
 
+    const hasTextSelection = (): boolean => {
+        const selection = window.getSelection?.();
+        return Boolean(selection && !selection.isCollapsed && selection.toString().trim());
+    };
+
     const handleContextMenu = (event: React.MouseEvent<Element>, widgetId?: string, force = false) => {
         if (!force && isEditableTarget(event.target)) return;
+        if (!force && hasTextSelection()) return;
         event.preventDefault();
         setContextMenu({
             isOpen: true,
@@ -522,6 +555,7 @@ const DesktopUI: React.FC<{
                 }
                 const Component = config.component;
                 const isPinned = activeProfile.pinnedWidgets.includes(widget.widgetId);
+                const isActiveWindow = widget.instanceId === activeWindowId;
                 return (
                     <WidgetWindow
                         key={widget.instanceId}
@@ -536,10 +570,13 @@ const DesktopUI: React.FC<{
                         onToggleMaximize={() => toggleMaximize(widget.instanceId)}
                         onClose={() => closeWidget(widget.instanceId)}
                         onFocus={() => focusWidget(widget.instanceId)}
-                        onDragStop={(_e, d) => setActiveWidgets(prev => prev.map(w => (w.instanceId === widget.instanceId ? { ...w, position: { x: d.x, y: d.y } } : w)))}
+                        onDragStop={(_e, d) => {
+                            setActiveWidgets(prev => prev.map(w => (w.instanceId === widget.instanceId ? { ...w, position: { x: d.x, y: d.y } } : w)));
+                        }}
                         onResizeStop={(_e, _direction, ref, _delta, position) => setActiveWidgets(prev => prev.map(w => (w.instanceId === widget.instanceId ? { ...w, size: { width: ref.style.width, height: ref.style.height }, position } : w)))}
                         onOpenContextMenu={(event) => handleWindowContextMenu(event, widget.widgetId, widget.instanceId)}
                         isPinned={isPinned}
+                        isActive={isActiveWindow}
                         onTogglePin={() => {
                             setPinnedWidgets((prev) => (
                                 prev.includes(widget.widgetId)

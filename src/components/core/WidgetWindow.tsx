@@ -24,12 +24,13 @@ interface WidgetWindowProps {
   onTogglePin?: () => void;
   pinLabel?: string;
   unpinLabel?: string;
+  isActive?: boolean;
 }
 
 export const WidgetWindow: React.FC<WidgetWindowProps> = ({ 
     title, children, position, size, zIndex, onDragStop, onResizeStop, 
     onClose, onFocus, isMinimized, isMaximized, onToggleMinimize, onToggleMaximize, onOpenContextMenu,
-    isPinned, onTogglePin, pinLabel, unpinLabel
+    isPinned, onTogglePin, pinLabel, unpinLabel, isActive
 }) => {
   const [isHeaderHovered, setIsHeaderHovered] = React.useState(false);
   const finalSize = isMinimized ? { ...size, height: 40 } : size;
@@ -38,6 +39,7 @@ export const WidgetWindow: React.FC<WidgetWindowProps> = ({
     opacity: isMinimized ? 0 : 1,
     pointerEvents: isMinimized ? 'none' : 'auto',
     transform: isMinimized ? 'scale(0.98)' : 'scale(1)',
+    filter: !isMinimized && !isActive ? 'brightness(0.97)' : 'none',
     transition: 'width 220ms ease, height 220ms ease, opacity 220ms ease, transform 220ms ease',
   };
   
@@ -54,7 +56,8 @@ export const WidgetWindow: React.FC<WidgetWindowProps> = ({
         style={containerStyle}
         onMouseDown={onFocus}
         onMouseDownCapture={onFocus}
-        className="bg-widget-bg rounded-lg shadow-2xl border-2 border-widget-header relative"
+        onDragStart={() => onFocus()}
+        className={`bg-widget-bg rounded-lg border-2 border-widget-header relative ${isActive ? 'ring-2 ring-accent/70 shadow-2xl' : 'shadow-xl'}`}
         dragHandleClassName="widget-header-drag-handle"
         bounds="parent" 
       >
