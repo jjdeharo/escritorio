@@ -36,10 +36,9 @@ export const WidgetWindow: React.FC<WidgetWindowProps> = ({
   const finalSize = isMinimized ? { ...size, height: 40 } : size;
   const containerStyle: React.CSSProperties = {
     zIndex,
-    opacity: isMinimized ? 0 : 1,
+    opacity: isMinimized ? 0 : (!isMinimized && !isActive ? 0.97 : 1),
     pointerEvents: isMinimized ? 'none' : 'auto',
     transform: isMinimized ? 'scale(0.98)' : 'scale(1)',
-    opacity: !isMinimized && !isActive ? 0.97 : 1,
     transition: isMinimized
       ? 'width 220ms ease, height 220ms ease, opacity 220ms ease, transform 220ms ease'
       : 'opacity 120ms ease',

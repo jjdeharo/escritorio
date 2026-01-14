@@ -106,7 +106,6 @@ export const StartMenu: React.FC<StartMenuProps> = ({
     });
     const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
     const [leftColumnHeight, setLeftColumnHeight] = useState<number | null>(null);
-    const [needsCategoryScroll, setNeedsCategoryScroll] = useState(false);
     const [menuHeight, setMenuHeight] = useState<number | null>(null);
 
     const widgetList = useMemo(() => Object.values(WIDGET_REGISTRY), []);
@@ -280,7 +279,6 @@ export const StartMenu: React.FC<StartMenuProps> = ({
                 Math.max(leftContentHeight, minColumnsHeight)
             );
             setLeftColumnHeight(columnsHeight);
-            setNeedsCategoryScroll(leftContentHeight > availableColumnsHeight + 1);
             setMenuHeight(headerHeight + searchHeight + paddingTopBottom + columnsHeight);
         };
         update();
