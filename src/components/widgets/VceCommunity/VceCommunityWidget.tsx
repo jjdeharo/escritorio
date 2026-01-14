@@ -30,6 +30,9 @@ const GOOGLE_HOSTS = new Set([
     'sites.google.com',
     'gemini.google.com',
     'app.goo.gl',
+    'ai.studio',
+    'www.ai.studio',
+    'aistudio.google.com',
     'withgoogle.com',
     'googleusercontent.com',
     'googleapis.com',
@@ -189,6 +192,7 @@ export const VceCommunityWidget = () => {
                 || host.endsWith('.googleusercontent.com')
                 || host.endsWith('.googleapis.com')
                 || host.endsWith('.withgoogle.com')
+                || host.endsWith('.ai.studio')
             );
         } catch {
             return false;
