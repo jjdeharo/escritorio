@@ -62,7 +62,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   }, [isOpen]);
 
   useEffect(() => {
-    if (!isOpen || themeModalRequestId == null) return;
+    if (!isOpen || themeModalRequestId == null || themeModalRequestId <= 0) return;
     if (lastThemeRequestRef.current === themeModalRequestId) return;
     lastThemeRequestRef.current = themeModalRequestId;
     setActiveTab('theme');
