@@ -767,7 +767,8 @@ function App() {
         'Escritorio Principal': {
             theme: defaultTheme,
             activeWidgets: [],
-            pinnedWidgets: ['work-list', 'timer', 'file-opener'],
+            pinnedWidgets: ['work-list', 'timer', 'file-opener', 'vce-community'],
+            vceFavorites: [],
         },
     });
     const [profileOrder, setProfileOrder] = useLocalStorage<string[]>('profile-order', []);
@@ -775,6 +776,26 @@ function App() {
         'active-profile-name',
         'Escritorio Principal'
     );
+
+    useEffect(() => {
+        const handleVceFavoritesUpdate = (event: Event) => {
+            const detail = (event as CustomEvent<{ profileName?: string; favorites?: string[] }>).detail;
+            if (!detail?.profileName || !detail?.favorites) return;
+            setProfiles((prev) => {
+                const profile = prev[detail.profileName];
+                if (!profile) return prev;
+                return {
+                    ...prev,
+                    [detail.profileName]: {
+                        ...profile,
+                        vceFavorites: detail.favorites,
+                    },
+                };
+            });
+        };
+        window.addEventListener('vce-favorites-update', handleVceFavoritesUpdate as EventListener);
+        return () => window.removeEventListener('vce-favorites-update', handleVceFavoritesUpdate as EventListener);
+    }, [setProfiles]);
 
     const activeProfile = profiles[activeProfileName] || Object.values(profiles)[0];
     const theme = activeProfile.theme || defaultTheme;
@@ -813,6 +834,10 @@ function App() {
     useEffect(() => {
         window.dispatchEvent(new CustomEvent('active-profile-change', { detail: { name: activeProfileName } }));
     }, [activeProfileName]);
+
+    useEffect(() => {
+        window.dispatchEvent(new Event('profiles-updated'));
+    }, [profiles]);
 
     const themeContextValue = {
         theme,

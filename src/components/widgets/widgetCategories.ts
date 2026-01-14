@@ -23,6 +23,11 @@ export const WIDGET_CATEGORIES: WidgetCategory[] = [
         widgetIds: ['scientific-calculator', 'unit-converter', 'latex-markdown'],
     },
     {
+        id: 'community',
+        titleKey: 'settings.widgets.categories.community',
+        widgetIds: ['vce-community'],
+    },
+    {
         id: 'resources',
         titleKey: 'settings.widgets.categories.resources',
         widgetIds: [

@@ -30,7 +30,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
   const [editingProfile, setEditingProfile] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
   const { theme } = useTheme();
-  const defaultPinnedWidgets = ['work-list', 'timer', 'file-opener'];
+  const defaultPinnedWidgets = ['work-list', 'timer', 'file-opener', 'vce-community'];
   const defaultProfileKey = 'Escritorio Principal';
   const orderedProfileNames = profileOrder.filter((name) => profiles[name]);
   Object.keys(profiles).forEach((name) => {
@@ -53,6 +53,7 @@ export const ProfileManager: React.FC<ProfileManagerProps> = ({
             theme: defaultTheme,
             activeWidgets: [],
             pinnedWidgets: defaultPinnedWidgets,
+            vceFavorites: [],
           };
       setProfiles(prev => ({
         ...prev,

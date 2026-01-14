@@ -42,6 +42,7 @@ export interface DesktopProfile {
   theme: any; // Usamos 'any' por simplicidad, se refiere a la estructura Theme de ThemeContext
   activeWidgets: ActiveWidget[];
   pinnedWidgets: string[];
+  vceFavorites?: string[];
 }
 
 /**
