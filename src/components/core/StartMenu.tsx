@@ -135,7 +135,7 @@ export const StartMenu: React.FC<StartMenuProps> = ({
         const nextPosition = anchorRect
             ? {
                 left: Math.round(anchorRect.left),
-                bottom: Math.round(window.innerHeight - anchorRect.top + 8),
+                bottom: Math.round(window.innerHeight - anchorRect.top + 4),
             }
             : { left: 16, bottom: 96 };
         setMenuPosition(nextPosition);
@@ -240,7 +240,6 @@ export const StartMenu: React.FC<StartMenuProps> = ({
         const menu = menuRef.current;
         if (!menu) return;
         const rect = menu.getBoundingClientRect();
-        const toolbar = document.querySelector('[data-toolbar="true"]') as HTMLElement | null;
         const padding = 8;
         let nextLeft = menuPosition.left;
         let nextBottom = menuPosition.bottom;
@@ -255,13 +254,6 @@ export const StartMenu: React.FC<StartMenuProps> = ({
         }
         if (rect.bottom > window.innerHeight - padding) {
             nextBottom += rect.bottom - (window.innerHeight - padding);
-        }
-        if (toolbar) {
-            const toolbarTop = toolbar.getBoundingClientRect().top;
-            const limitBottom = toolbarTop - padding;
-            if (rect.bottom > limitBottom) {
-                nextBottom += rect.bottom - limitBottom;
-            }
         }
         if (nextLeft !== menuPosition.left || nextBottom !== menuPosition.bottom) {
             setMenuPosition({ left: nextLeft, bottom: nextBottom });
