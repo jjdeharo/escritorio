@@ -291,8 +291,14 @@ const DesktopUI: React.FC<{
         setIsStartMenuOpen((prev) => !prev);
     };
 
+    const isEditableTarget = (target: EventTarget | null): boolean => {
+        if (!(target instanceof HTMLElement)) return false;
+        if (target.isContentEditable) return true;
+        return Boolean(target.closest('input, textarea, select, [contenteditable="true"]'));
+    };
+
     const handleContextMenu = (event: React.MouseEvent<Element>, widgetId?: string, force = false) => {
-        if (!force && !widgetId && event.target !== event.currentTarget) return;
+        if (!force && isEditableTarget(event.target)) return;
         event.preventDefault();
         setContextMenu({
             isOpen: true,
@@ -317,6 +323,7 @@ const DesktopUI: React.FC<{
 
     const handleWindowContextMenu = (event: React.MouseEvent, widgetId: string, instanceId: string) => {
         event.preventDefault();
+        event.stopPropagation();
         setContextMenu({
             isOpen: true,
             x: event.clientX,
