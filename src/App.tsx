@@ -63,6 +63,13 @@ const DesktopUI: React.FC<{
     }, [activeProfile, activeProfileName, setProfiles, showSystemStats]);
 
     const [highestZ, setHighestZ] = useState(100);
+    useEffect(() => {
+        const maxZ = activeProfile.activeWidgets.reduce(
+            (max, widget) => (widget.zIndex > max ? widget.zIndex : max),
+            100
+        );
+        setHighestZ((prev) => (prev < maxZ ? maxZ : prev));
+    }, [activeProfile.activeWidgets]);
     const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
     const [isSettingsOpen, setSettingsOpen] = useState(false);
     const [isCreditsOpen, setIsCreditsOpen] = useState(false);
@@ -128,17 +135,29 @@ const DesktopUI: React.FC<{
     const clampWidgetToViewport = (widget: ActiveWidget): ActiveWidget => {
         if (widget.isMaximized) return widget;
         const { margin, maxWidth, maxHeight } = getViewportBounds();
-        const widthValue = typeof widget.size.width === 'number' ? Math.min(widget.size.width, maxWidth) : widget.size.width;
-        const heightValue = typeof widget.size.height === 'number' ? Math.min(widget.size.height, maxHeight) : widget.size.height;
-        const numericWidth = typeof widthValue === 'number' ? widthValue : maxWidth;
-        const numericHeight = typeof heightValue === 'number' ? heightValue : maxHeight;
+        const parseDimension = (value: number | string, fallback: number) => {
+            if (typeof value === 'number') return value;
+            const trimmed = value.trim();
+            if (trimmed.endsWith('vw')) {
+                const parsed = Number.parseFloat(trimmed);
+                return Number.isFinite(parsed) ? (window.innerWidth * parsed) / 100 : fallback;
+            }
+            if (trimmed.endsWith('vh')) {
+                const parsed = Number.parseFloat(trimmed);
+                return Number.isFinite(parsed) ? (window.innerHeight * parsed) / 100 : fallback;
+            }
+            const parsed = Number.parseFloat(trimmed);
+            return Number.isFinite(parsed) ? parsed : fallback;
+        };
+        const numericWidth = Math.min(parseDimension(widget.size.width, maxWidth), maxWidth);
+        const numericHeight = Math.min(parseDimension(widget.size.height, maxHeight), maxHeight);
         const maxX = Math.max(margin, window.innerWidth - numericWidth - margin);
         const maxY = Math.max(margin, window.innerHeight - numericHeight - margin);
         const x = Math.min(Math.max(widget.position.x, margin), maxX);
         const y = Math.min(Math.max(widget.position.y, margin), maxY);
         return {
             ...widget,
-            size: { width: widthValue, height: heightValue },
+            size: { width: numericWidth, height: numericHeight },
             position: { x, y },
         };
     };
@@ -589,7 +608,22 @@ const DesktopUI: React.FC<{
                         onDragStop={(_e, d) => {
                             setActiveWidgets(prev => prev.map(w => (w.instanceId === widget.instanceId ? { ...w, position: { x: d.x, y: d.y } } : w)));
                         }}
-                        onResizeStop={(_e, _direction, ref, _delta, position) => setActiveWidgets(prev => prev.map(w => (w.instanceId === widget.instanceId ? { ...w, size: { width: ref.style.width, height: ref.style.height }, position } : w)))}
+                        onResizeStop={(_e, _direction, ref, _delta, position) => {
+                            const nextWidth = Number.parseFloat(ref.style.width);
+                            const nextHeight = Number.parseFloat(ref.style.height);
+                            setActiveWidgets((prev) => prev.map((w) => (
+                                w.instanceId === widget.instanceId
+                                    ? {
+                                        ...w,
+                                        size: {
+                                            width: Number.isFinite(nextWidth) ? nextWidth : w.size.width,
+                                            height: Number.isFinite(nextHeight) ? nextHeight : w.size.height,
+                                        },
+                                        position,
+                                    }
+                                    : w
+                            )));
+                        }}
                         onOpenContextMenu={(event) => handleWindowContextMenu(event, widget.widgetId, widget.instanceId)}
                         isPinned={isPinned}
                         isActive={isActiveWindow}
