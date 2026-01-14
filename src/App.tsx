@@ -77,6 +77,7 @@ const DesktopUI: React.FC<{
     }, [activeProfile, activeProfileName, setProfiles, showSystemStats]);
 
     const [highestZ, setHighestZ] = useState(100);
+    const highestZRef = useRef(100);
     useEffect(() => {
         const maxZ = activeProfile.activeWidgets.reduce(
             (max, widget) => (widget.zIndex > max ? widget.zIndex : max),
@@ -84,6 +85,9 @@ const DesktopUI: React.FC<{
         );
         setHighestZ((prev) => (prev < maxZ ? maxZ : prev));
     }, [activeProfile.activeWidgets]);
+    useEffect(() => {
+        highestZRef.current = highestZ;
+    }, [highestZ]);
     const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
     const [isSettingsOpen, setSettingsOpen] = useState(false);
     const [isCreditsOpen, setIsCreditsOpen] = useState(false);
@@ -218,16 +222,15 @@ const DesktopUI: React.FC<{
         }
         return next;
     });
-    const focusWidget = (instanceId: string) => {
-        setHighestZ((prev) => {
-            const newZ = prev + 1;
-            setActiveWidgets((widgets) =>
-                widgets.map((w) => (w.instanceId === instanceId ? { ...w, zIndex: newZ } : w))
-            );
-            return newZ;
-        });
+    const focusWidget = useCallback((instanceId: string) => {
+        const newZ = highestZRef.current + 1;
+        highestZRef.current = newZ;
+        setHighestZ(newZ);
+        setActiveWidgets((widgets) =>
+            widgets.map((w) => (w.instanceId === instanceId ? { ...w, zIndex: newZ } : w))
+        );
         setActiveWindowId(instanceId);
-    };
+    }, [setActiveWidgets]);
     const toggleMinimize = (instanceId: string) => setActiveWidgets(prev => prev.map(w => (w.instanceId === instanceId ? { ...w, isMinimized: !w.isMinimized } : w)));
     const handleTaskClick = useCallback((instanceId: string) => {
         const target = activeProfile.activeWidgets.find((widget) => widget.instanceId === instanceId);

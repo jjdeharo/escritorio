@@ -1,9 +1,12 @@
 import type { WidgetConfig } from '../../../types';
-import { BarChart3 } from 'lucide-react';
+import { withBaseUrl } from '../../../utils/assetPaths';
 
 export const widgetConfig: Omit<WidgetConfig, 'component'> = {
     id: 'directo-vota',
     title: 'widgets.directo_vota.title',
-    icon: <BarChart3 size={44} className="text-indigo-600" />,
+    icon: (() => {
+      const Icon = () => <img src={withBaseUrl('icons/DirectoVota.png')} alt="" width={52} height={52} />;
+      return <Icon />;
+    })(),
     defaultSize: { width: 900, height: 600 },
 };
