@@ -780,15 +780,17 @@ function App() {
     useEffect(() => {
         const handleVceFavoritesUpdate = (event: Event) => {
             const detail = (event as CustomEvent<{ profileName?: string; favorites?: string[] }>).detail;
-            if (!detail?.profileName || !detail?.favorites) return;
+            if (!detail || !detail.profileName || !detail.favorites) return;
+            const profileName = detail.profileName;
+            const favorites = detail.favorites;
             setProfiles((prev) => {
-                const profile = prev[detail.profileName];
+                const profile = prev[profileName];
                 if (!profile) return prev;
                 return {
                     ...prev,
-                    [detail.profileName]: {
+                    [profileName]: {
                         ...profile,
-                        vceFavorites: detail.favorites,
+                        vceFavorites: favorites,
                     },
                 };
             });
