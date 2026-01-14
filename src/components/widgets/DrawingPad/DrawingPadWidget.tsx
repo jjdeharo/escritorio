@@ -347,7 +347,7 @@ export const DrawingPadWidget = () => {
       resizeObserver.disconnect();
       window.removeEventListener('resize', resizeCanvas);
     };
-  }, []); // Sin dependencias para evitar bucles - todo se maneja internamente
+  }, [getBackupCanvas, redrawCanvasWithPan]); // Dependencias explícitas; ambas están memoizadas
 
   // Efecto para cambiar el modo de composición global del canvas (dibujar vs. borrar)
   useEffect(() => {
