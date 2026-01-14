@@ -65,6 +65,10 @@ export const WidgetWindow: React.FC<WidgetWindowProps> = ({
         <div
           className="widget-header flex items-center justify-between h-10 bg-widget-header text-text-light font-bold px-3 absolute top-0 left-0 right-0"
           onContextMenu={onOpenContextMenu}
+          onDoubleClick={(event) => {
+            event.stopPropagation();
+            onToggleMaximize();
+          }}
           onMouseEnter={() => setIsHeaderHovered(true)}
           onMouseLeave={() => setIsHeaderHovered(false)}
         >
