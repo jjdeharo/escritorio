@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { LucideIcon } from 'lucide-react';
@@ -109,6 +109,7 @@ export const StartMenu: React.FC<StartMenuProps> = ({
     const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
     const [leftColumnHeight, setLeftColumnHeight] = useState<number | null>(null);
     const [menuHeight, setMenuHeight] = useState<number | null>(null);
+    const stableColumnsHeightRef = useRef<number | null>(null);
 
     const widgetList = useMemo(() => Object.values(WIDGET_REGISTRY), []);
     const normalizedSearch = searchTerm.trim().toLowerCase();
@@ -262,33 +263,51 @@ export const StartMenu: React.FC<StartMenuProps> = ({
         }
     }, [isOpen, menuPosition]);
 
+    const recalcLayoutHeights = useCallback(() => {
+        if (!isOpen || !menuPosition) return;
+        const header = menuRef.current?.querySelector('[data-start-menu-header="true"]') as HTMLElement | null;
+        const search = menuRef.current?.querySelector('[data-start-menu-search="true"]') as HTMLElement | null;
+        const left = leftColumnRef.current;
+        if (!header || !search || !left) return;
+        const paddingTopBottom = 24; // py-3 in body container
+        const headerHeight = header.getBoundingClientRect().height;
+        const searchHeight = search.getBoundingClientRect().height;
+        const maxHeight = Math.floor(window.innerHeight * 0.72);
+        const availableColumnsHeight = Math.max(0, maxHeight - headerHeight - searchHeight - paddingTopBottom);
+        const leftContentHeight = left.scrollHeight;
+        const minColumnsHeight = Math.min(availableColumnsHeight, 220);
+        const contentColumnsHeight = Math.min(availableColumnsHeight, Math.max(leftContentHeight, minColumnsHeight));
+        let columnsHeight = contentColumnsHeight;
+        if (showSearchResults) {
+            columnsHeight = stableColumnsHeightRef.current ?? contentColumnsHeight;
+        } else {
+            stableColumnsHeightRef.current = contentColumnsHeight;
+        }
+        setLeftColumnHeight(columnsHeight);
+        setMenuHeight(headerHeight + searchHeight + paddingTopBottom + columnsHeight);
+    }, [isOpen, menuPosition, showSearchResults]);
+
     useLayoutEffect(() => {
         if (!isOpen || !menuPosition) return;
-        const update = () => {
-            const header = menuRef.current?.querySelector('[data-start-menu-header="true"]') as HTMLElement | null;
-            const search = menuRef.current?.querySelector('[data-start-menu-search="true"]') as HTMLElement | null;
-            const left = leftColumnRef.current;
-            if (!header || !search || !left) return;
-            const paddingTopBottom = 24; // py-3 in body container
-            const headerHeight = header.getBoundingClientRect().height;
-            const searchHeight = search.getBoundingClientRect().height;
-            const maxHeight = Math.floor(window.innerHeight * 0.72);
-            const availableColumnsHeight = Math.max(0, maxHeight - headerHeight - searchHeight - paddingTopBottom);
-            const leftContentHeight = left.scrollHeight;
-            const minColumnsHeight = Math.min(availableColumnsHeight, 220);
-            const columnsHeight = Math.min(
-                availableColumnsHeight,
-                Math.max(leftContentHeight, minColumnsHeight)
-            );
-            setLeftColumnHeight(columnsHeight);
-            setMenuHeight(headerHeight + searchHeight + paddingTopBottom + columnsHeight);
-        };
-        update();
-        window.addEventListener('resize', update);
+        recalcLayoutHeights();
+        window.addEventListener('resize', recalcLayoutHeights);
         return () => {
-            window.removeEventListener('resize', update);
+            window.removeEventListener('resize', recalcLayoutHeights);
         };
-    }, [i18n.language, isOpen, menuPosition, visibleCategories]);
+    }, [isOpen, menuPosition, recalcLayoutHeights]);
+
+    useEffect(() => {
+        if (!isOpen) return;
+        const frame = requestAnimationFrame(recalcLayoutHeights);
+        return () => {
+            cancelAnimationFrame(frame);
+        };
+    }, [isOpen, recalcLayoutHeights]);
+
+    useEffect(() => {
+        if (!isOpen) return;
+        recalcLayoutHeights();
+    }, [isOpen, showSearchResults, recalcLayoutHeights]);
 
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),

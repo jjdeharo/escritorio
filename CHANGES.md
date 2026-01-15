@@ -1,5 +1,8 @@
 # Cambios realizados
 
+## 1.3.1
+- El menú Inicio conserva el alto durante las búsquedas y se reajusta al panel izquierdo al cerrar el buscador o reabrir.
+
 ## 1.3.0
 - Añadido el programa EdiMarkWeb al menú Inicio con visor integrado y acceso a pestaña nueva.
 - Icono y traducciones completos en todos los idiomas para el nuevo programa.
