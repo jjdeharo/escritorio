@@ -1,5 +1,8 @@
 # Cambios realizados
 
+## 1.3.5
+- Optimización de bundles: librerías pesadas separadas para reducir la carga inicial.
+
 ## 1.3.4
 - Barra inferior oculta en pantallas estrechas para evitar desbordes y mantener solo el botón Inicio.
 

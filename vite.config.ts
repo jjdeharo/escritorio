@@ -30,4 +30,22 @@ export default defineConfig(() => ({
             },
         })
     ],
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (id.includes('node_modules')) {
+                        if (id.includes('katex')) return 'katex';
+                        if (id.includes('tiptap')) return 'tiptap';
+                        if (id.includes('jspdf')) return 'jspdf';
+                        if (id.includes('html2canvas')) return 'html2canvas';
+                        if (id.includes('marked') || id.includes('turndown')) return 'markdown';
+                        if (id.includes('react')) return 'react-vendor';
+                        if (id.includes('@dnd-kit')) return 'dnd-kit';
+                        return 'vendor';
+                    }
+                },
+            },
+        },
+    },
 }))
