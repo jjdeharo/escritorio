@@ -7,6 +7,7 @@ import { X, Minus, Maximize, Minimize, Pin, PinOff } from 'lucide-react';
 interface WidgetWindowProps {
   id: string;
   title: string;
+  icon?: React.ReactNode | string;
   children: React.ReactNode;
   position: { x: number; y: number };
   size: { width: number | string; height: number | string };
@@ -28,7 +29,7 @@ interface WidgetWindowProps {
 }
 
 export const WidgetWindow: React.FC<WidgetWindowProps> = ({ 
-    title, children, position, size, zIndex, onDragStop, onResizeStop, 
+    title, icon, children, position, size, zIndex, onDragStop, onResizeStop, 
     onClose, onFocus, isMinimized, isMaximized, onToggleMinimize, onToggleMaximize, onOpenContextMenu,
     isPinned, onTogglePin, pinLabel, unpinLabel, isActive
 }) => {
@@ -44,6 +45,10 @@ export const WidgetWindow: React.FC<WidgetWindowProps> = ({
       : 'opacity 120ms ease',
   };
   
+  const headerIcon = typeof icon === 'string'
+    ? <img src={icon} alt="" aria-hidden="true" />
+    : icon;
+
   return (
       <Rnd
         size={finalSize}
@@ -73,7 +78,10 @@ export const WidgetWindow: React.FC<WidgetWindowProps> = ({
           onMouseLeave={() => setIsHeaderHovered(false)}
         >
           {/* --- LÍNEA MODIFICADA: Se han añadido clases de flexbox para centrar --- */}
-          <span className="widget-header-drag-handle flex-grow h-full cursor-move flex items-center">{title}</span>
+          <span className="widget-header-drag-handle flex-grow h-full cursor-move flex items-center gap-2">
+            {headerIcon && <span className="widget-header-icon">{headerIcon}</span>}
+            <span>{title}</span>
+          </span>
           
           <div className="flex items-center gap-1">
             {onTogglePin && isHeaderHovered && (

@@ -14,6 +14,7 @@ type VceApp = {
 };
 
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSj_hltRI4Q0QolINWJVcKxCMMjfpdiCkKzSdgp9d8RlGTdUU1UIKvaj-TBSkq0JQGneDhfUkSQuFzy/pub?output=csv';
+const COMMUNITY_URL = 'https://vibe-coding-educativo.github.io/';
 const ACTIVE_PROFILE_STORAGE_KEY = 'active-profile-name';
 const ACTIVE_PROFILE_EVENT = 'active-profile-change';
 const PROFILES_UPDATED_EVENT = 'profiles-updated';
@@ -305,6 +306,13 @@ export const VceCommunityWidget = () => {
                     <div className="vce-subtitle">{t('widgets.vce.subtitle')}</div>
                 </div>
                 <div className="vce-actions">
+                    <button
+                        type="button"
+                        className="vce-open"
+                        onClick={() => window.open(COMMUNITY_URL, '_blank', 'noopener,noreferrer')}
+                    >
+                        {t('widgets.vce.community_link')}
+                    </button>
                     <button
                         type="button"
                         className="vce-open"

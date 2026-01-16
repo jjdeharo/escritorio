@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { X, Search } from 'lucide-react';
@@ -96,14 +96,28 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     setTheme({ ...theme, '--color-bg': value, '--wallpaper': 'none' });
   };
 
+  const normalizeText = useCallback((value: string) => (
+    value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+  ), []);
+
   const filteredWidgets = useMemo(() => {
-    const normalizedSearch = searchTerm.toLowerCase();
+    const normalizedSearch = normalizeText(searchTerm.trim());
     const results = Object.values(WIDGET_REGISTRY).filter(widget => {
-      if (!searchTerm) return true;
-      return t(widget.title).toLowerCase().includes(normalizedSearch);
+      if (!searchTerm.trim()) return true;
+      const title = normalizeText(t(widget.title));
+      const tooltip = widget.startTooltip ? normalizeText(t(widget.startTooltip)) : '';
+      const keywordMatches = (widget.searchKeywords || [])
+        .flatMap((key) => t(key).split(','))
+        .map((value) => normalizeText(value.trim()))
+        .filter(Boolean)
+        .some((value) => value.includes(normalizedSearch));
+      return title.includes(normalizedSearch) || tooltip.includes(normalizedSearch) || keywordMatches;
     });
     return results.sort((a, b) => t(a.title).localeCompare(t(b.title)));
-  }, [searchTerm, t]);
+  }, [normalizeText, searchTerm, t]);
 
   const widgetsByCategory = useMemo(() => buildWidgetsByCategory(filteredWidgets, t), [filteredWidgets, t]);
 

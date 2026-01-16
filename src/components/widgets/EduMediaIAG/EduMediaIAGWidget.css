@@ -1,0 +1,145 @@
+.edumedia-widget {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(248, 250, 252, 0.95));
+}
+
+.edumedia-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    background: rgba(255, 255, 255, 0.94);
+}
+
+.edumedia-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.edumedia-subtitle {
+    margin-top: 2px;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.edumedia-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #0f172a;
+    color: #f8fafc;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.edumedia-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.22);
+}
+
+.edumedia-body {
+    flex: 1;
+    overflow: auto;
+    padding: 18px 20px 24px;
+}
+
+.edumedia-intro {
+    display: grid;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: #374151;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 16px 18px;
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+    margin-bottom: 18px;
+}
+
+.edumedia-note {
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(254, 243, 199, 0.6);
+    color: #92400e;
+    font-size: 0.82rem;
+}
+
+.edumedia-section {
+    margin-top: 18px;
+}
+
+.edumedia-section h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 12px;
+}
+
+.edumedia-grid {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.edumedia-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    box-shadow: 0 10px 18px rgba(15, 23, 42, 0.06);
+}
+
+.edumedia-card h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 6px;
+}
+
+.edumedia-card p {
+    font-size: 0.82rem;
+    color: #4b5563;
+    line-height: 1.4;
+}
+
+.edumedia-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #0f766e;
+    text-decoration: none;
+}
+
+.edumedia-link:hover {
+    color: #0b5f56;
+}
+
+.edumedia-card-muted {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 720px) {
+    .edumedia-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .edumedia-cta {
+        width: fit-content;
+    }
+}

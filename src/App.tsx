@@ -619,6 +619,7 @@ const DesktopUI: React.FC<{
                         key={widget.instanceId}
                         id={widget.instanceId}
                         title={t(config.title)}
+                        icon={config.icon}
                         position={widget.position}
                         size={widget.size}
                         zIndex={widget.zIndex}

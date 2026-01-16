@@ -4,17 +4,16 @@ import { withBaseUrl } from '../../../utils/assetPaths';
 import type { WidgetConfig } from '../../../types';
 
 export const widgetConfig: Omit<WidgetConfig, 'component'> = {
-    id: 'vce-community',
-    title: 'widgets.vce.title',
-    startTooltip: 'widgets.vce.start_tooltip',
-    searchKeywords: ['widgets.vce.search_keywords'],
+    id: 'comunidad-chatgpt-ia-edu',
+    title: 'widgets.chatgpt_ia_edu.title',
+    searchKeywords: ['widgets.chatgpt_ia_edu.search_keywords'],
     icon: (() => {
         const WidgetIcon: FC = () => {
             const { t } = useTranslation();
             return (
                 <img
-                    src={withBaseUrl('icons/vibe_coding_educativo.png')}
-                    alt={t('widgets.vce.title')}
+                    src={withBaseUrl('icons/ComunidadChatGPT-IA-edu.png')}
+                    alt={t('widgets.chatgpt_ia_edu.title')}
                     width={52}
                     height={52}
                 />
@@ -22,5 +21,5 @@ export const widgetConfig: Omit<WidgetConfig, 'component'> = {
         };
         return <WidgetIcon />;
     })(),
-    defaultSize: { width: 980, height: 620 },
+    defaultSize: { width: 900, height: 620 },
 };

@@ -1,0 +1,39 @@
+.link-portal-widget {
+    @apply w-full h-full flex flex-col bg-gray-100;
+}
+
+.link-portal-header {
+    @apply flex items-start justify-between gap-3 px-4 py-3 border-b border-gray-300 bg-white;
+}
+
+.link-portal-title {
+    @apply text-base font-semibold text-gray-800;
+}
+
+.link-portal-description {
+    @apply mt-1 text-sm text-gray-600;
+}
+
+.link-portal-actions {
+    @apply flex flex-wrap items-start gap-2;
+}
+
+.link-portal-button {
+    @apply inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-accent text-text-dark font-semibold text-sm transition-colors hover:bg-[#8ec9c9];
+}
+
+.link-portal-button-secondary {
+    @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+}
+
+.link-portal-icon {
+    @apply inline-flex;
+}
+
+.link-portal-body {
+    @apply flex-1 p-3;
+}
+
+.link-portal-frame {
+    @apply w-full h-full border-0 rounded-lg bg-white shadow-inner;
+}

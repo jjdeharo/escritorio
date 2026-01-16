@@ -25,23 +25,30 @@ export const WIDGET_CATEGORIES: WidgetCategory[] = [
     {
         id: 'community',
         titleKey: 'settings.widgets.categories.community',
-        widgetIds: ['vce-community'],
+        widgetIds: ['vce-community', 'comunidad-chatgpt-ia-edu', 'edumedia-iag'],
+    },
+    {
+        id: 'board_writing',
+        titleKey: 'settings.widgets.categories.board_writing',
+        widgetIds: [
+            'notepad',
+            'drawing-pad',
+            'image-carousel',
+            'edimarkweb',
+            'html-sandbox',
+            'boardlive',
+        ],
     },
     {
         id: 'resources',
         titleKey: 'settings.widgets.categories.resources',
         widgetIds: [
-            'notepad',
-            'drawing-pad',
-            'image-carousel',
             'iframe',
-            'edimarkweb',
             'local-web',
             'pdf-viewer',
             'file-opener',
             'directo-viewer',
-            'html-sandbox',
-            'boardlive',
+            'wikipedia-search',
         ],
     },
     {

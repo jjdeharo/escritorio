@@ -34,6 +34,21 @@ body.high-contrast {
   color: #ffffff;
 }
 
+.widget-header-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.widget-header-icon img,
+.widget-header-icon svg {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
 /* --- Theme color picker (clean circular swatch) --- */
 .theme-color-input {
   -webkit-appearance: none;

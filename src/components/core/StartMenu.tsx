@@ -18,10 +18,12 @@ import {
     Clock,
     Sigma,
     PenTool,
+    Pencil,
     Puzzle,
     Hand,
     Layers,
     Megaphone,
+    Globe,
     Sliders,
 } from 'lucide-react';
 import { DndContext, PointerSensor, KeyboardSensor, useSensor, useSensors, closestCenter, type DragEndEvent } from '@dnd-kit/core';
@@ -63,11 +65,13 @@ const categoryIcons: Record<string, CategoryIconConfig> = {
     organization: { Icon: ClipboardList, className: 'bg-emerald-100 text-emerald-700' },
     time: { Icon: Clock, className: 'bg-blue-100 text-blue-700' },
     math_science: { Icon: Sigma, className: 'bg-teal-100 text-teal-700' },
+    board_writing: { Icon: Pencil, className: 'bg-amber-100 text-amber-700' },
     resources: { Icon: PenTool, className: 'bg-amber-100 text-amber-700' },
     interaction: { Icon: Users, className: 'bg-rose-100 text-rose-700' },
     participation: { Icon: Megaphone, className: 'bg-indigo-100 text-indigo-700' },
     logic_games: { Icon: Puzzle, className: 'bg-purple-100 text-purple-700' },
     gestures: { Icon: Hand, className: 'bg-orange-100 text-orange-700' },
+    community: { Icon: Globe, className: 'bg-sky-100 text-sky-700' },
     other: { Icon: Layers, className: 'bg-gray-100 text-gray-700' },
 };
 
@@ -111,13 +115,29 @@ export const StartMenu: React.FC<StartMenuProps> = ({
     const [menuHeight, setMenuHeight] = useState<number | null>(null);
     const stableColumnsHeightRef = useRef<number | null>(null);
 
+    const normalizeText = useCallback((value: string) => (
+        value
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+    ), []);
+
     const widgetList = useMemo(() => Object.values(WIDGET_REGISTRY), []);
-    const normalizedSearch = searchTerm.trim().toLowerCase();
+    const normalizedSearch = normalizeText(searchTerm.trim());
     const showSearchResults = normalizedSearch.length > 0;
     const filteredWidgets = useMemo(() => {
         if (!normalizedSearch) return widgetList;
-        return widgetList.filter((widget) => t(widget.title).toLowerCase().includes(normalizedSearch));
-    }, [normalizedSearch, t, widgetList]);
+        return widgetList.filter((widget) => {
+            const title = normalizeText(t(widget.title));
+            const tooltip = widget.startTooltip ? normalizeText(t(widget.startTooltip)) : '';
+            const keywordMatches = (widget.searchKeywords || [])
+                .flatMap((key) => t(key).split(','))
+                .map((value) => normalizeText(value.trim()))
+                .filter(Boolean)
+                .some((value) => value.includes(normalizedSearch));
+            return title.includes(normalizedSearch) || tooltip.includes(normalizedSearch) || keywordMatches;
+        });
+    }, [normalizeText, normalizedSearch, t, widgetList]);
 
     const widgetsByCategory = useMemo(() => buildWidgetsByCategory(filteredWidgets, t), [filteredWidgets, t]);
     const pinnedWidgetIds = useMemo(() => pinnedWidgets.filter((id) => WIDGET_REGISTRY[id]), [pinnedWidgets]);
@@ -147,6 +167,15 @@ export const StartMenu: React.FC<StartMenuProps> = ({
         });
         return () => cancelAnimationFrame(frame);
     }, [anchorRect, isOpen]);
+
+    useEffect(() => {
+        if (!isOpen) return;
+        const timer = window.setTimeout(() => {
+            searchRef.current?.focus();
+            searchRef.current?.select();
+        }, 0);
+        return () => window.clearTimeout(timer);
+    }, [isOpen]);
 
     useEffect(() => {
         if (!isOpen) {
@@ -534,6 +563,7 @@ export const StartMenu: React.FC<StartMenuProps> = ({
                 <div className="relative">
                     <input
                         ref={searchRef}
+                        autoFocus
                         type="text"
                         placeholder={t('settings.widgets.search')}
                         value={searchTerm}

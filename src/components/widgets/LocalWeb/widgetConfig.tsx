@@ -6,6 +6,7 @@ import type { WidgetConfig } from '../../../types';
 export const widgetConfig: Omit<WidgetConfig, 'component'> = {
     id: 'local-web',
     title: 'widgets.local_web.title',
+    searchKeywords: ['widgets.local_web.search_keywords'],
     icon: (() => {
         const WidgetIcon: FC = () => {
             const { t } = useTranslation();
