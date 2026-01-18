@@ -31,6 +31,19 @@ export default defineConfig(() => ({
         })
     ],
     build: {
-        chunkSizeWarningLimit: 1000,
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (!id.includes('node_modules')) {
+                        return;
+                    }
+                    const parts = id.split('node_modules/')[1].split('/');
+                    const name = parts[0].startsWith('@')
+                        ? `${parts[0]}-${parts[1]}`
+                        : parts[0];
+                    return `vendor-${name.replace('@', '')}`;
+                },
+            },
+        },
     },
 }))
