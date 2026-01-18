@@ -1,1 +1,0 @@
-const o=new Set(["es","ca","gl","eu","en","de"]),c=(e,t)=>{const n=(t.language||"es").split("-")[0],a=o.has(n)?n:"es";return`/directo/${e.startsWith("/")?e.slice(1):e}?lang=${encodeURIComponent(a)}`};export{c as g};
