@@ -9,6 +9,12 @@ export default defineConfig(() => ({
         react(),
         VitePWA({
             registerType: 'autoUpdate',
+            workbox: {
+                navigateFallbackDenylist: [
+                    /^\/escritorio\/directo\//,
+                    /^\/directo\//,
+                ],
+            },
             manifest: {
                 name: 'Escritorio Digital',
                 short_name: 'Escritorio',
