@@ -1,0 +1,1 @@
+import{u as o,j as r}from"./index-DksIdG-h.js";import{o as l}from"./index-DksIdG-h.js";import{ExternalAppWidget as e}from"./ExternalAppWidget-B2siufhR.js";import{g as i}from"./getDirectoAppUrl-Brf42f6P.js";const m=()=>{const{i18n:t}=o();return r.jsx(e,{url:i("vota.html",t),titleKey:"widgets.directo_vota.title"})};export{m as DirectoVotaWidget,l as widgetConfig};

@@ -1,0 +1,1 @@
+import{u as e,j as r}from"./index-DksIdG-h.js";import{k as g}from"./index-DksIdG-h.js";import{ExternalAppWidget as i}from"./ExternalAppWidget-B2siufhR.js";import{g as o}from"./getDirectoAppUrl-Brf42f6P.js";const m=()=>{const{i18n:t}=e();return r.jsx(i,{url:o("ideas.html",t),titleKey:"widgets.directo_ideas.title"})};export{m as DirectoIdeasWidget,g as widgetConfig};
